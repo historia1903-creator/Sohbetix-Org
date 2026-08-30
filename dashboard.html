@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Sohbetix Kontrol Paneli</title>
+  <link rel="stylesheet" href="styles.css">
+<meta name="theme-color" content="#ffffff">
+</head>
+<body class="dashboard-page">
+<header class="dash-top">
+  <div class="dash-wrap dash-nav">
+    <a class="brand" href="index.html">Sohbet<span>ix</span></a>
+    <a class="dash-tab active" href="dashboard.html">SOHBET KONTROL PANELİ</a>
+    <button class="dash-tab coins-disabled" type="button" disabled>JETONLAR — 🪙 0</button>
+    <div class="dash-account">👤 Sohbetix Kullanıcısı ▾</div>
+  </div>
+</header>
+
+<main class="dash-wrap dash-main">
+  <section class="dash-left">
+    <div class="chat-select">
+      <strong>Sohbetix</strong>
+      <button type="button">▾</button>
+      <div class="plan-box">
+        <span class="free">☆ ÜCRETSİZ</span>
+        <span class="pro">PRO'ya geç</span>
+      </div>
+    </div>
+
+    <div class="dash-grid">
+      <aside class="dash-menu">
+        <button onclick="location.href='settings.html'">🔧 Ayarlar</button>
+        <button onclick="location.href='users-admin.html'">👤 Kullanıcılar</button>
+        <button onclick="location.href='design.html'">🖼️ Tasarım ve ifadeler</button>
+        <button type="button">📥 Mesaj geçmişi</button>
+        <button class="widget-btn" type="button">↗ Site için sohbet kutusu al ▾</button>
+      </aside>
+
+      <section class="stats-card">
+        <div class="stats-head">
+          <span>Toplam kayıtlar</span>
+          <span class="online-text">Çevrimiçi 0 / 24</span>
+        </div>
+        <div class="chart-box">
+          <svg viewBox="0 0 600 180" preserveAspectRatio="none" aria-label="Kayıt grafiği">
+            <polyline points="20,145 20,90 155,78 290,65 315,64 322,52 520,50 575,49"
+              fill="none" stroke="#4b9ed0" stroke-width="2"/>
+            <polygon points="20,145 20,90 155,78 290,65 315,64 322,52 520,50 575,49 575,145"
+              fill="#d9edf8"/>
+          </svg>
+          <div class="chart-y"><span>25</span><span>20</span><span>15</span><span>10</span><span>5</span><span>0</span></div>
+          <div class="chart-x"><span>01.01</span><span>01.04</span><span>01.07</span><span>01.10</span><span>01.01</span><span>01.04</span><span>01.07</span><span>01.10</span></div>
+        </div>
+      </section>
+    </div>
+
+    <button class="create-chat-btn" type="button">Yeni sohbet oluştur</button>
+  </section>
+
+  <aside class="dash-right">
+    <div class="side-box">
+      <a href="#">Durum sayfası</a>
+      <a href="#">Yardım ve destek merkezi</a>
+      <a href="#">Sohbet odaları kataloğu</a>
+    </div>
+
+    <div class="side-box social-box">
+      <div class="side-title">Sohbetix internette</div>
+      <a href="#">🐦 x.com/sohbetix</a>
+      <a href="#">✈ t.me/sohbetix</a>
+      <a href="#">f facebook.com/sohbetix</a>
+    </div>
+
+    <div class="side-box referral">
+      👍 Referans programı
+    </div>
+  </aside>
+</main>
+
+<footer class="dash-footer">
+  <div class="dash-wrap footer-inner">
+    <div>© 2026 Sohbetix</div>
+    <select><option>Türkçe</option><option>English</option></select>
+  </div>
+</footer>
+</body>
+</html>

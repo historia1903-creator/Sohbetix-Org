@@ -1,0 +1,72 @@
+<!doctype html><html lang="tr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Ana ayarlar - Sohbetix</title><link rel="stylesheet" href="styles.css"><meta name="theme-color" content="#ffffff">
+</head>
+<body class="admin-page">
+<header class="admin-top">
+  <div class="admin-wrap admin-nav">
+    <a class="brand" href="index.html">Sohbet<span>ix</span></a>
+    <a class="admin-nav-link active" href="dashboard.html">SOHBET KONTROL PANELİ</a>
+    <span class="admin-nav-link disabled">JETONLAR — 🪙 0</span>
+    <div class="admin-user">👤 Sohbetix Kullanıcısı ▾</div>
+  </div>
+</header>
+
+<main class="admin-main"><div class="admin-wrap">
+
+<div class="admin-breadcrumb">
+  <a class="root" href="dashboard.html">Kontrol paneli</a>
+  <span class="sep">→</span>
+  <strong>Sohbetix</strong>
+  <span class="sep">→</span>
+  <span>Ayarlar</span>
+  <a class="admin-open-chat" href="open-chat.html" target="_blank">↗ Sohbeti aç</a>
+</div>
+
+<div class="admin-tabs">
+<a class="admin-tab active" href="settings.html">Ana ayarlar</a>
+<a class="admin-tab" href="rooms.html">Odalar</a>
+<a class="admin-tab" href="domain.html">Sohbet adresi (alan adı)</a>
+</div>
+
+<div class="admin-form">
+<div class="admin-row"><label>Sohbet başlığı</label><input type="text" value="Sohbetix"></div>
+<div class="admin-row"><label>Varsayılan dil</label><select><option>Türkçe</option><option>English</option></select></div>
+<div class="admin-row"><label>Varsayılan sekme</label><select><option>Ana sayfa</option><option>Genel</option></select></div>
+
+<label class="admin-check"><input type="checkbox" checked disabled> Misafirlerin sohbete girmesi için Captcha gerekli</label>
+<label class="admin-check"><input type="checkbox"> Kayıtlı kullanıcıların sohbete girmesi için Captcha gerekli</label>
+<label class="admin-check"><input type="checkbox"> Sohbet yalnızca yetişkinler içindir</label>
+<label class="admin-check"><input type="checkbox"> Sohbeti geçici olarak devre dışı bırak</label>
+<label class="admin-check"><input type="checkbox"> Yeni kullanıcıların sohbete girişini geçici olarak kapat</label>
+<label class="admin-check"><input type="checkbox"> Açılır pencere düğmesini devre dışı bırak</label>
+<label class="admin-check"><input type="checkbox" checked> “Bu sohbeti al” menü öğesini göster</label>
+<label class="admin-check"><input type="checkbox"> Sohbetix menü öğesini gizle <span class="pro-badge">PRO</span></label>
+<label class="admin-check"><input type="checkbox"> Yeni pencereleri web sitenin içinde aç</label>
+<label class="admin-check"><input type="checkbox" checked> Resim paylaşımı</label>
+
+<h2 class="admin-section-title">Kullanıcı listesi (sağ sütun)</h2>
+<div class="admin-row"><label>Varsayılan genişlik (piksel)</label><input type="number" value="120"></div>
+<label class="admin-check"><input type="checkbox"> Varsayılan olarak gizli</label>
+
+<h2 class="admin-section-title">Özel görüşmeler</h2>
+<div class="admin-row"><label>Özel görüşmelere izin verilenler</label><select><option>Sohbete girenler</option><option>Kayıtlı kullanıcılar</option></select></div>
+<div class="admin-row"><label>Özel sohbetlerde bağlantıya izin verilenler</label><select><option>Sohbete girenler</option><option>Kayıtlı kullanıcılar</option></select></div>
+
+<h2 class="admin-section-title">Sohbet kataloğu</h2>
+<label class="admin-check"><input type="checkbox" checked> Sohbeti katalogda göster (sohbetix.com/chats/)</label>
+<div class="admin-row"><label>Sohbet açıklaması</label><textarea placeholder="Örn. Müzik sevenler için sohbet"></textarea></div>
+<div class="admin-row"><label>Sohbet anahtar kelimeleri</label><textarea placeholder="Örn. müzik, eğlence, sohbet"></textarea></div>
+<div class="admin-row"><label>Katalog bölümleri</label><select multiple size="6"><option>Arkadaşlık</option><option>Haber</option><option>Eğlence</option><option>Radyo</option><option>Sağlık ve güzellik</option><option>Otomobil</option><option>Spor</option></select></div>
+
+<h2 class="admin-section-title">Ban sistemi</h2>
+<div class="admin-row"><label>Ban sezgisel seviyesi (0-100%)</label><input type="number" value="30"></div>
+<div class="small-note" style="margin-left:247px"><span class="warn-badge">UYARI</span> Daha yüksek değerler moderatör olmayan kullanıcıların yanlışlıkla banlanmasına yol açabilir. Varsayılan değer 30 önerilir.</div>
+<button class="admin-save">Değişiklikleri kaydet</button>
+</div>
+</div></main>
+<footer class="admin-footer">
+  <div class="admin-wrap footer-inner">
+    <div>© 2026 Sohbetix</div>
+    <select><option>Türkçe</option><option>English</option></select>
+  </div>
+</footer>
+</body></html>

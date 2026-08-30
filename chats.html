@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sohbet Odaları - Sohbetix</title>
+<link rel="stylesheet" href="styles.css">
+<meta name="theme-color" content="#ffffff">
+</head>
+<body class="catalog-page">
+
+<header class="topbar">
+  <div class="wrap nav">
+    <a class="brand" href="index.html">Sohbet<span>ix</span></a>
+    <nav>
+      <a href="chats.html">SOHBET ODALARI</a>
+      <a href="about.html">HAKKINDA</a>
+      <div class="more-nav">
+        <button class="more-btn more2" type="button">DAHA FAZLA ▾</button>
+        <div class="more-menu menu2" hidden>
+          <a href="coins.html">JETONLAR</a>
+          <a href="account.html">HESAP</a>
+          <a href="help.html">YARDIM VE DESTEK</a>
+        </div>
+      </div>
+    </nav>
+    <a class="control" href="control.html">SOHBET KONTROL PANELİ</a>
+    <button class="mobile-menu-btn" type="button" aria-label="Menü"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<div class="mobile-nav-panel" hidden>
+  <a href="chats.html">SOHBET ODALARI</a>
+  <a href="about.html">HAKKINDA</a>
+  <button class="mobile-more-toggle" type="button">DAHA FAZLA ▾</button>
+  <div class="mobile-more-menu" hidden>
+    <a href="coins.html">JETONLAR</a>
+    <a href="account.html">HESAP</a>
+    <a href="help.html">YARDIM VE DESTEK</a>
+  </div>
+  <a class="mobile-control-link" href="control.html">SOHBET KONTROL PANELİ</a>
+</div>
+
+<main class="catalog-main">
+  <div class="catalog-wrap">
+    <div class="catalog-toolbar">
+      <div class="catalog-left">
+        <button id="categoryBtn" class="catalog-filter-btn" type="button">Tüm kategoriler ▾</button>
+        <button id="englishOnly" class="english-only" type="button">Yalnızca Türkçe</button>
+
+        <div id="categoryMenu" class="catalog-category-menu" hidden>
+          <button data-cat="all" class="selected">Tüm kategoriler</button>
+          <button data-cat="Arkadaşlık">Arkadaşlık</button>
+          <button data-cat="Haber">Haber</button>
+          <button data-cat="Eğlence">Eğlence</button>
+          <button data-cat="Radyo">Radyo</button>
+          <button data-cat="Sağlık ve güzellik">Sağlık ve güzellik</button>
+          <button data-cat="Otomobil">Otomobil</button>
+          <button data-cat="Spor">Spor</button>
+          <button data-cat="İş">İş</button>
+          <button data-cat="İnternet">İnternet</button>
+          <button data-cat="Ücretsiz">Ücretsiz</button>
+          <button data-cat="Sanat">Sanat</button>
+          <button data-cat="Paranormal">Paranormal</button>
+          <button data-cat="Ev ve aile">Ev ve aile</button>
+          <button data-cat="Ürün ve hizmetler">Ürün ve hizmetler</button>
+          <button data-cat="Toplum">Toplum</button>
+          <button data-cat="Evcil hayvanlar">Evcil hayvanlar</button>
+        </div>
+      </div>
+
+      <form id="catalogSearch" class="catalog-search">
+        <input id="chatTitleSearch" type="search" placeholder="Sohbet adı..." autocomplete="off">
+        <button class="catalog-search-btn" type="submit">Ara</button>
+      </form>
+    </div>
+
+    <div id="resultsArea">
+      <div id="emptyState" class="catalog-empty">
+        Sohbet odaları burada listelenecek. Bir sohbet adı yazıp <b>Ara</b> düğmesine basabilir veya kategori seçebilirsin.
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="catalog-foot">
+  <div class="wrap footer-inner">
+    <div>
+      <div>© 2026 Sohbetix</div>
+      <div class="stats">📶 Online 345 of 3.344 users in 620 chats</div>
+      <div><a href="terms.html">Kullanım şartları</a> · <a href="privacy.html">Gizlilik politikası</a></div>
+    </div>
+    <select><option>Türkçe</option><option>English</option></select>
+  </div>
+</footer>
+
+<script>
+const rooms=[
+ {name:"Sohbetix Genel",desc:"Genel sohbet ve yeni insanlarla tanışma odası.",online:24,lang:"Türkçe",cat:"Arkadaşlık"},
+ {name:"Müzik Sohbet",desc:"Müzik, şarkılar ve radyo üzerine sohbet.",online:12,lang:"Türkçe",cat:"Radyo"},
+ {name:"Oyun Dünyası",desc:"Oyunlar ve teknoloji üzerine sohbet.",online:9,lang:"Türkçe",cat:"Eğlence"},
+ {name:"Spor Meydanı",desc:"Futbol ve diğer sporlar üzerine sohbet.",online:7,lang:"Türkçe",cat:"Spor"},
+ {name:"Sanat Atölyesi",desc:"Çizim, tasarım ve sanat sohbetleri.",online:4,lang:"Türkçe",cat:"Sanat"},
+ {name:"Aile Sohbeti",desc:"Aile ve günlük yaşam üzerine sohbet.",online:3,lang:"Türkçe",cat:"Ev ve aile"}
+];
+
+let selectedCategory="all";
+let onlyTurkish=false;
+
+const categoryBtn=document.getElementById("categoryBtn");
+const categoryMenu=document.getElementById("categoryMenu");
+const resultsArea=document.getElementById("resultsArea");
+const searchInput=document.getElementById("chatTitleSearch");
+
+categoryBtn.addEventListener("click",e=>{
+ e.stopPropagation();
+ categoryMenu.hidden=!categoryMenu.hidden;
+});
+categoryMenu.addEventListener("click",e=>e.stopPropagation());
+document.addEventListener("click",()=>categoryMenu.hidden=true);
+
+categoryMenu.querySelectorAll("button").forEach(btn=>{
+ btn.addEventListener("click",()=>{
+   selectedCategory=btn.dataset.cat;
+   categoryMenu.querySelectorAll("button").forEach(x=>x.classList.remove("selected"));
+   btn.classList.add("selected");
+   categoryBtn.textContent=(selectedCategory==="all"?"Tüm kategoriler":selectedCategory)+" ▾";
+   categoryMenu.hidden=true;
+   renderResults(true);
+ });
+});
+
+document.getElementById("englishOnly").addEventListener("click",function(){
+ onlyTurkish=!onlyTurkish;
+ this.classList.toggle("active",onlyTurkish);
+ this.textContent=onlyTurkish?"✓ Yalnızca Türkçe":"Yalnızca Türkçe";
+ renderResults(true);
+});
+
+document.getElementById("catalogSearch").addEventListener("submit",e=>{
+ e.preventDefault();
+ renderResults(true);
+});
+
+function renderResults(userAction){
+ const q=searchInput.value.trim().toLocaleLowerCase("tr-TR");
+ let filtered=rooms.filter(r=>{
+   const nameOk=!q || r.name.toLocaleLowerCase("tr-TR").includes(q);
+   const catOk=selectedCategory==="all" || r.cat===selectedCategory;
+   const langOk=!onlyTurkish || r.lang==="Türkçe";
+   return nameOk && catOk && langOk;
+ });
+
+ // Başlangıçta hiçbir sohbet görünmesin.
+ if(!userAction){
+   filtered=[];
+ }
+
+ if(!filtered.length){
+   resultsArea.innerHTML='<div class="catalog-empty">Aramana uygun sohbet odası bulunamadı.</div>';
+   return;
+ }
+
+ resultsArea.innerHTML=`
+   <div class="catalog-results-head">
+     <div>Sohbet adı</div><div>Çevrimiçi</div><div>Dil</div>
+   </div>
+   ${filtered.map(r=>`
+     <div class="catalog-row">
+       <div><a href="open-chat.html">${escapeHtml(r.name)}</a><p>${escapeHtml(r.desc)}</p></div>
+       <div class="catalog-count">${r.online}</div>
+       <div class="catalog-language">${r.lang}</div>
+     </div>`).join("")}
+   <div class="catalog-pagination">
+     <button class="active">1</button><button>2</button><button>3</button><button>4</button><button>5</button>
+   </div>`;
+}
+
+function escapeHtml(s){
+ return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
+}
+
+// desktop More
+document.querySelectorAll(".more2").forEach(b=>{
+ const m=b.parentElement.querySelector(".menu2");
+ b.addEventListener("click",e=>{e.stopPropagation();m.hidden=!m.hidden});
+ m.addEventListener("click",e=>e.stopPropagation());
+});
+document.addEventListener("click",()=>document.querySelectorAll(".menu2").forEach(m=>m.hidden=true));
+
+// mobile menu
+const mobileBtn=document.querySelector(".mobile-menu-btn");
+const mobilePanel=document.querySelector(".mobile-nav-panel");
+const mobileMore=document.querySelector(".mobile-more-toggle");
+const mobileMoreMenu=document.querySelector(".mobile-more-menu");
+if(mobileBtn&&mobilePanel) mobileBtn.addEventListener("click",e=>{e.stopPropagation();mobilePanel.hidden=!mobilePanel.hidden;if(mobilePanel.hidden&&mobileMoreMenu)mobileMoreMenu.hidden=true});
+if(mobileMore&&mobileMoreMenu) mobileMore.addEventListener("click",e=>{e.stopPropagation();mobileMoreMenu.hidden=!mobileMoreMenu.hidden});
+</script>
+</body>
+</html>
