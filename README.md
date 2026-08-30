@@ -1,14 +1,10 @@
-# Sohbetix V12 FIX — 2026 Modern Tam Sürüm
-
-Bu paket 23 kök dosyadan oluşur ve eksik olan `app.js` geri eklenmiştir.
-
-Düzeltmeler:
-- V12 modern tasarım korunur.
-- Profil açma, kullanıcı hover menüsü, üyeler penceresi, hediye menüsü ve üye araması tekrar çalışır.
-- `index.html` içindeki `app.js` referansı artık gerçek dosyaya karşılık gelir.
-- Tüm yerel HTML sayfa bağlantıları kontrol edilmiştir.
-- GitHub Pages için statik dosya yapısı korunmuştur.
-
-Önemli:
-GitHub Actions ekranında görülen `Repository not found` / exit code 128 hatası HTML/CSS/JS paketinden kaynaklanmaz.
-Bu hata GitHub'ın `babareis-dot/sohbetix` reposunu checkout aşamasında bulamadığını veya erişemediğini gösterir.
+# Sohbetix V13
+- Türkçe rumuzlar
+- Özel oda sekmesi kapalı
+- Tüm sayfalarda ortak Türkçe/English seçimi
+- SVG Twitter/X, Facebook, Telegram ikonları
+- Şeffaf Sohbetix coin görseli
+- 200 coin = 100 TL; miktara göre otomatik hesaplama
+- Havale/EFT ve BTC ödeme seçenekleri
+- Turuncu vurgu yerine kan kırmızısı (#8B0000)
+- Ödeme ekranı şu an demo; gerçek ödeme sağlayıcısı sonraki aşamada bağlanacak

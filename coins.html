@@ -1,9 +1,37 @@
-<!doctype html><html lang="tr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Jetonlar - Sohbetix</title><link rel="stylesheet" href="styles.css"><meta name="theme-color" content="#ffffff">
-</head><body class="public-page"><header class="topbar"><div class="wrap nav"><a class="brand" href="index.html">Sohbet<span>ix</span></a><nav><a href="chats.html">SOHBET ODALARI</a><a href="about.html">HAKKINDA</a><div class="more-nav"><button class="more-btn more2" type="button">DAHA FAZLA ▾</button><div class="more-menu menu2" hidden><a href="coins.html">JETONLAR</a><a href="account.html">HESAP</a><a href="help.html">YARDIM VE DESTEK</a></div></div></nav><a class="control" href="control.html">SOHBET KONTROL PANELİ</a><button class="mobile-menu-btn" type="button" aria-label="Menü"><span></span><span></span><span></span></button></div></header><div class="mobile-nav-panel" hidden><a href="chats.html">SOHBET ODALARI</a><a href="about.html">HAKKINDA</a><button class="mobile-more-toggle" type="button">DAHA FAZLA ▾</button><div class="mobile-more-menu" hidden><a href="coins.html">JETONLAR</a><a href="account.html">HESAP</a><a href="help.html">YARDIM VE DESTEK</a></div><a class="mobile-control-link" href="control.html">SOHBET KONTROL PANELİ</a></div><main class="public-main"><div class="public-content"><div class="coins-layout"><aside class="coins-menu"><div style="color:#ff9800;margin-bottom:18px">🪙 0</div><a href="#">⟳ Yenile</a><a href="#">✚ Jeton satın al</a><a href="#">➜ Jeton transfer et</a><a href="#">▣ Geçmiş</a><a href="#">👍 Referans programı</a></aside><section><div class="info-blue">Buradan jeton satın alabilir, transfer edebilir ve Sohbetix hizmetlerinde kullanabilirsin.</div></section></div></div></main><footer><div class="wrap footer-inner"><div><div>© 2026 Sohbetix</div><div class="stats">📶 Online 345 of 3.344 users in 620 chats</div><div><a href="terms.html">Kullanım şartları</a> · <a href="privacy.html">Gizlilik politikası</a></div></div><select><option>Türkçe</option><option>English</option></select></div></footer><script>document.querySelectorAll('.more2').forEach(function(b){var m=b.parentElement.querySelector('.menu2');b.onclick=function(e){e.stopPropagation();m.hidden=!m.hidden};m.onclick=function(e){e.stopPropagation()}});document.addEventListener('click',function(){document.querySelectorAll('.menu2').forEach(function(m){m.hidden=true})});</script><script>
-document.addEventListener('DOMContentLoaded',function(){
- const b=document.querySelector('.mobile-menu-btn'),p=document.querySelector('.mobile-nav-panel');
- const mb=document.querySelector('.mobile-more-toggle'),mm=document.querySelector('.mobile-more-menu');
- if(b&&p)b.addEventListener('click',function(e){e.stopPropagation();p.hidden=!p.hidden;if(p.hidden&&mm)mm.hidden=true;});
- if(mb&&mm)mb.addEventListener('click',function(e){e.stopPropagation();mm.hidden=!mm.hidden;});
-});
-</script></body></html>
+<!DOCTYPE html>
+<html lang="tr"><head>
+<meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>Jetonlar - Sohbetix</title><link href="styles.css" rel="stylesheet"/><meta content="#ffffff" name="theme-color"/>
+</head><body class="public-page coins-page">
+<header class="topbar"><div class="wrap nav"><a class="brand" href="index.html">Sohbet<span>ix</span></a>
+<nav><a href="chats.html">SOHBET ODALARI</a><a href="about.html">HAKKINDA</a><div class="more-nav"><button class="more-btn more2" type="button">DAHA FAZLA ▾</button><div class="more-menu menu2" hidden=""><a href="coins.html">JETONLAR</a><a href="account.html">HESAP</a><a href="help.html">YARDIM VE DESTEK</a></div></div></nav>
+<a class="control" href="control.html">SOHBET KONTROL PANELİ</a><button aria-label="Menü" class="mobile-menu-btn" type="button"><span></span><span></span><span></span></button></div></header>
+<div class="mobile-nav-panel" hidden=""><a href="chats.html">SOHBET ODALARI</a><a href="about.html">HAKKINDA</a><button class="mobile-more-toggle" type="button">DAHA FAZLA ▾</button><div class="mobile-more-menu" hidden=""><a href="coins.html">JETONLAR</a><a href="account.html">HESAP</a><a href="help.html">YARDIM VE DESTEK</a></div><a class="mobile-control-link" href="control.html">SOHBET KONTROL PANELİ</a></div>
+<main class="public-main coins-main"><div class="public-content"><div class="coins-layout v13-coins">
+<aside class="coins-menu">
+<div class="coin-balance"><img alt="Sohbetix jetonu" src="sohbetix-coin.png"/><b>0</b></div>
+<a href="#">⟳ Yenile</a><a class="active" href="#buy">✚ Jeton satın al</a><a href="#">➜ Jeton transfer et</a><a href="#">▣ Geçmiş</a><a href="#">👍 Referans programı</a>
+</aside>
+<section class="coin-shop" id="buy">
+<div class="info-blue">Buradan jeton satın alabilir, transfer edebilir ve Sohbetix hizmetlerinde kullanabilirsin.</div>
+<div class="coin-purchase-card">
+<div class="coin-title-row"><img alt="Sohbetix jetonu" src="sohbetix-coin.png"/><div><h1>Jeton satın al</h1><p>200 jeton = 100 TL</p></div></div>
+<h2>Ödeme yöntemini seç</h2>
+<div class="payment-tabs">
+<button class="payment-tab active" id="cardTab" type="button"><span class="card-icon"></span> Kart</button>
+<button class="payment-tab" id="morePayTab" type="button"><span class="dots-icon">•••</span> Diğer</button>
+</div>
+<div class="payment-panel" id="cardPanel">
+<div class="coin-calc"><label for="coinAmount">Jeton miktarı</label>
+<div class="coin-calc-row"><input id="coinAmount" inputmode="numeric" min="1" step="1" type="number" value="200"/><span>jeton</span></div>
+<div class="price-result"><strong id="coinPrice">100,00 TL</strong><small>1 jeton = 0,50 TL</small></div></div>
+<button class="pay-button" id="cardPayBtn" type="button">Kart ile Öde</button>
+</div>
+<div class="payment-panel" hidden="" id="morePayPanel">
+<button class="alt-pay bank-pay" type="button"><span class="bank-logo"><svg viewbox="0 0 64 64"><path d="M32 6 6 18v6h52v-6L32 6Zm-18 24h8v20h-8V30Zm14 0h8v20h-8V30Zm14 0h8v20h-8V30ZM8 54h48v6H8v-6Z"></path></svg></span><span><b>Havale / EFT</b><small>Banka hesabına ödeme</small></span></button>
+<button class="alt-pay btc-pay" type="button"><span class="btc-logo">₿</span><span><b>BTC ile Ödeme</b><small>Bitcoin ile ödeme seçeneği</small></span></button>
+</div>
+<div class="payment-notice" hidden="" id="paymentNotice">Demo arayüzü: gerçek ödeme altyapısı daha sonra bağlanacak.</div>
+</div></section></div></div></main>
+<footer><div class="wrap footer-inner"><div><div>© 2026 Sohbetix</div><div class="stats">📶 Online 345 of 3.344 users in 620 chats</div><div><a href="terms.html">Kullanım şartları</a> · <a href="privacy.html">Gizlilik politikası</a></div></div><select class="lang-switch"><option value="tr">Türkçe</option><option value="en">English</option></select></div></footer>
+<script src="app.js"></script></body></html>

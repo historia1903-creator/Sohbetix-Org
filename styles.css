@@ -7,8 +7,8 @@
   --text:#172033;
   --muted:#6b7280;
   --line:#dfe6ee;
-  --brand:#ff5a1f;
-  --brand-2:#ff7a45;
+  --brand:#8b0000;
+  --brand-2:#b11226;
   --blue:#2185d0;
   --blue-2:#4aa8ea;
   --green:#22a06b;
@@ -89,10 +89,10 @@ img,svg{max-width:100%}
 .control{
   color:var(--brand);
   margin-left:auto;
-  border:1px solid #ffd5c6;
-  background:#fff7f3;
+  border:1px solid #d8a2a8;
+  background:#fff5f5;
 }
-.control:hover{background:#ffede5}
+.control:hover{background:#f8e6e8}
 .more-nav{position:relative}
 .more-menu{
   position:absolute;
@@ -208,7 +208,7 @@ input:focus,select:focus,textarea:focus{
 .ico{
   width:52px;height:52px;border-radius:14px;
   display:grid;place-items:center;
-  background:linear-gradient(135deg,#fff7f3,#f0f6ff);
+  background:linear-gradient(135deg,#fff5f5,#f0f6ff);
   font-size:30px;
 }
 .feature-grid h3{margin:3px 0 6px;font-size:15px}
@@ -613,3 +613,28 @@ footer,.admin-footer,.dash-footer,.control-footer{
   .chat-layout{grid-template-columns:minmax(0,1fr) 32%}.users li{font-size:10px}.mini-avatar{width:18px;height:18px}
   .profile-content{grid-template-columns:82px 1fr}.profile-main{grid-template-columns:82px 1fr}.profile-picture{width:82px;height:82px;font-size:50px}
 }
+
+/* Sohbetix V13 */
+:root{--blood:#8b0000;--blood2:#b11226}
+.brand span,.control,.more-btn,.mobile-control-link{color:var(--blood)!important}
+.btn.green{background:var(--blood)!important;border-color:var(--blood)!important}.btn.green:hover{background:#690000!important}
+.tab.active,.chat-title,.profile-bluebar,.users-tab-active{background:var(--blood)!important}.tab:nth-child(2){display:none!important}
+.social{display:inline-flex;align-items:center;gap:8px}.social-icon{width:18px;height:18px;fill:currentColor;flex:0 0 18px}
+.social.x{background:#080808;color:#fff}.social.fb{background:#1877f2;color:#fff}.social.tg{background:#229ed9;color:#fff}
+.coin-balance{display:flex;align-items:center;gap:10px;font-size:18px;color:var(--blood);margin-bottom:18px}.coin-balance img{width:30px;height:30px;object-fit:contain}
+.coins-menu a.active{background:var(--blood)!important;color:#fff!important;border-radius:10px}
+.coins-main .public-content{max-width:1040px}.v13-coins{align-items:start}.coin-shop{min-width:0}
+.coin-purchase-card{max-width:650px;margin:24px 0;background:#fff;border:1px solid #e1e5ea;border-radius:18px;padding:24px;box-shadow:0 14px 36px rgba(17,24,39,.08)}
+.coin-title-row{display:flex;align-items:center;gap:18px;margin-bottom:24px}.coin-title-row img{width:74px;height:74px;object-fit:contain;filter:drop-shadow(0 6px 10px rgba(0,0,0,.16))}
+.coin-title-row h1{margin:0 0 4px;font-size:28px}.coin-title-row p{margin:0;color:#667085}
+.payment-tabs{display:flex;gap:10px;margin:14px 0 22px}.payment-tab{border:1px solid #cfd6de;background:#fff;border-radius:10px;padding:12px 18px;font-size:16px;display:inline-flex;align-items:center;gap:9px;cursor:pointer}.payment-tab.active{background:#f2f4f7;border-color:#98a2b3}
+.card-icon{width:24px;height:16px;border:2px solid currentColor;border-radius:3px;position:relative;display:inline-block}.card-icon:after{content:"";position:absolute;left:0;right:0;top:3px;border-top:2px solid currentColor}
+.dots-icon{font-size:20px;letter-spacing:2px}.payment-panel{padding-top:4px}.coin-calc label{display:block;font-weight:700;margin-bottom:8px}
+.coin-calc-row{display:flex;align-items:center;gap:12px}.coin-calc-row input{width:150px;font-size:20px;padding:12px;border:1px solid #98a2b3;border-radius:8px}
+.price-result{margin:16px 0 20px;display:flex;flex-direction:column;gap:4px}.price-result strong{font-size:28px;color:var(--blood)}.price-result small{color:#667085}
+.pay-button{background:var(--blood);color:#fff;border:0;border-radius:10px;padding:14px 22px;font-weight:700;font-size:16px;cursor:pointer}
+.alt-pay{width:100%;display:flex;align-items:center;gap:16px;text-align:left;border:1px solid #e0e4e8;border-radius:14px;background:#fff;padding:16px;margin:12px 0;cursor:pointer}.alt-pay span:last-child{display:flex;flex-direction:column;gap:3px}.alt-pay small{color:#667085}
+.bank-logo{width:45px;height:45px;border-radius:50%;display:grid;place-items:center;background:#eef2f6}.bank-logo svg{width:28px;height:28px;fill:#172033}
+.btc-logo{width:45px;height:45px;border-radius:50%;display:grid;place-items:center;background:#f7931a;color:#fff;font-weight:800;font-size:30px}
+.payment-notice{margin-top:18px;border:1px solid #e5c4c8;background:#fff6f7;color:#5f1018;border-radius:10px;padding:12px}.info-blue{border-left:4px solid var(--blood)!important}
+@media(max-width:700px){.v13-coins{display:block!important}.coins-menu{width:auto!important;margin-bottom:20px}.coin-purchase-card{padding:18px;border-radius:14px}.coin-title-row img{width:58px;height:58px}.coin-title-row h1{font-size:24px}.payment-tabs{width:100%}.payment-tab{flex:1;justify-content:center}}

@@ -1,272 +1,247 @@
-<!doctype html>
+<!DOCTYPE html>
+
 <html lang="tr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sohbetix - Sohbetini Oluştur</title>
-  <link rel="stylesheet" href="styles.css" />
-<meta name="theme-color" content="#ffffff">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sohbetix - Sohbetini Oluştur</title>
+<link href="styles.css" rel="stylesheet"/>
+<meta content="#ffffff" name="theme-color"/>
 </head>
 <body>
-  <header class="topbar">
-    <div class="wrap nav">
-      <a class="brand" href="#">Sohbet<span>ix</span></a>
-      <nav>
-        <a href="chats.html">SOHBET ODALARI</a>
-        
-        <a href="about.html">HAKKINDA</a>
-        <div class="more-nav"><button id="moreBtn" class="more-btn" type="button">DAHA FAZLA ▾</button><div id="moreMenu" class="more-menu" hidden><a href="coins.html">JETONLAR</a><a href="account.html">HESAP</a><a href="help.html">YARDIM VE DESTEK</a></div></div>
-      </nav>
-      <a class="control" href="control.html">SOHBET KONTROL PANELİ</a>
-<button class="mobile-menu-btn" type="button" aria-label="Menü">
-  <span></span><span></span><span></span>
+<header class="topbar">
+<div class="wrap nav">
+<a class="brand" href="#">Sohbet<span>ix</span></a>
+<nav>
+<a href="chats.html">SOHBET ODALARI</a>
+<a href="about.html">HAKKINDA</a>
+<div class="more-nav"><button class="more-btn" id="moreBtn" type="button">DAHA FAZLA ▾</button><div class="more-menu" hidden="" id="moreMenu"><a href="coins.html">JETONLAR</a><a href="account.html">HESAP</a><a href="help.html">YARDIM VE DESTEK</a></div></div>
+</nav>
+<a class="control" href="control.html">SOHBET KONTROL PANELİ</a>
+<button aria-label="Menü" class="mobile-menu-btn" type="button">
+<span></span><span></span><span></span>
 </button>
-    </div>
-  </header><div class="mobile-nav-panel" hidden><a href="chats.html">SOHBET ODALARI</a><a href="about.html">HAKKINDA</a><button class="mobile-more-toggle" type="button">DAHA FAZLA ▾</button><div class="mobile-more-menu" hidden><a href="coins.html">JETONLAR</a><a href="account.html">HESAP</a><a href="help.html">YARDIM VE DESTEK</a></div><a class="mobile-control-link" href="control.html">SOHBET KONTROL PANELİ</a></div>
-
-  <main>
-    <section class="hero">
-      <div class="wrap">
-        <h1>Sohbetix</h1>
-        <p>Web siten veya bağımsız topluluğun için hızlı, sade ve çok kullanıcılı sohbet deneyimi.</p>
-        <a class="btn green" href="control.html">Sohbetini oluştur!</a>
-      </div>
-    </section>
-
-    <section class="advantages wrap">
-      <h2>Sohbetix'in öne çıkan özellikleri</h2>
-      <div class="feature-grid">
-        <article><div class="ico">🚀</div><div><h3>Her zaman hızlı</h3><p>Masaüstü ve mobilde akıcı kullanım.</p></div></article>
-        <article><div class="ico">🔋</div><div><h3>Ücretsiz başlangıç</h3><p>Topluluğunu kolayca büyüt.</p></div></article>
-        <article><div class="ico">⏱️</div><div><h3>Hızlı mesajlaşma</h3><p>Gerçek zamanlı sisteme hazır yapı.</p></div></article>
-        <article><div class="ico">💼</div><div><h3>Her amaç için</h3><p>Topluluk, destek, eğlence veya özel odalar.</p></div></article>
-        <article><div class="ico">☁️</div><div><h3>Her yerden erişim</h3><p>Telefon, tablet ve bilgisayarda uyumlu.</p></div></article>
-        <article><div class="ico">⚙️</div><div><h3>Özelleştirilebilir</h3><p>Roller, odalar, rozetler ve temalar.</p></div></article>
-        <article><div class="ico">💎</div><div><h3>VIP sistemi</h3><p>VIP, Gold ve özel yetkiler eklenebilir.</p></div></article>
-        <article><div class="ico">💬</div><div><h3>Genel ve özel odalar</h3><p>Genel odalar ve özel sohbetler.</p></div></article>
-        <article><div class="ico">❤️</div><div><h3>Sohbetix topluluğu</h3><p>Kendi sistemimize göre büyütülebilir.</p></div></article>
-      </div>
-    </section>
-
-    <section class="wrap demo-wrap" id="demo">
-      <div class="chatbox">
-        <div class="chat-title">Sohbetix demo sohbet <span>▾</span></div>
-        <div class="chat-layout">
-          <div class="chat-main">
-            <div class="tabs">
-              <button class="tab active">Genel</button>
-              <button class="tab">Özel oda <span>×</span></button>
-            </div>
-
-            <div class="messages">
-              <div class="message">
-                <div class="avatar gold"><div class="avatar-inner">👨</div></div>
-                <div><div><b class="red">Alex</b> <small>23:00</small></div><p><b>Herkese merhaba! Sohbetix'e hoş geldiniz 😺</b></p></div>
-              </div>
-              <div class="message">
-                <div class="avatar gold"><div class="avatar-inner">👩</div></div>
-                <div><div><b>Bella</b> <small>23:00</small></div><p>Bugün sohbet odası baya hareketli görünüyor 😄</p></div>
-              </div>
-              <div class="message">
-                <div class="avatar gold"><div class="avatar-inner">🧑</div></div>
-                <div><div><b class="blue">Chris</b> <small>23:00</small></div><p>Yeni tasarım çok temiz olmuş. Mobil sürümü de deneyelim 📱</p></div>
-              </div>
-              <div class="message">
-                <div class="avatar gold"><div class="avatar-inner">👩‍🦰</div></div>
-                <div><div><b class="pink">Dana</b> <small>23:00</small></div><p>VIP rozetleri ve özel odalar da gelirse çok iyi olur ✨</p></div>
-              </div>
-              <div class="message">
-                <div class="avatar gold"><div class="avatar-inner">🧔</div></div>
-                <div><div><b>Ethan</b> <small>23:00</small></div><p><b>Hazırım! Sohbetix V2 başladı 🚀</b></p></div>
-              </div>
-            </div>
-
-            <div class="locked-composer">
-              <span class="lock">🔒</span>
-              <span>Mesaj alanı kilitli · yalnızca yöneticiler kullanabilir</span>
-            </div>
-          </div>
-
-          <aside class="users">
-            <div class="online-count">5 çevrimiçi</div>
-            <ul class="user-list">
-              <li class="user-row" data-user="alex"><span class="mini-avatar gold">👨</span><b class="red user-nick">Alex</b><span class="crown">♛</span></li>
-              <li class="user-row" data-user="bella"><span class="mini-avatar gold">👩</span><b class="user-nick">Bella</b><span class="crown">♛</span></li>
-              <li class="user-row" data-user="chris"><span class="mini-avatar gold">🧑</span><b class="blue user-nick">Chris</b><span class="crown">♛</span></li>
-              <li class="user-row" data-user="dana"><span class="mini-avatar gold">👩‍🦰</span><b class="pink user-nick">Dana</b><span class="crown">♛</span></li>
-              <li class="user-row" data-user="ethan"><span class="mini-avatar gold">🧔</span><b class="user-nick">Ethan</b><span class="crown">♛</span></li>
-            </ul>
-
-            <div id="userMenu" class="user-popover" hidden>
-              <div class="popover-head">
-                <span class="mini-avatar gold">👨</span>
-                <b id="menuName" class="red">Alex</b>
-                <span class="crown">♛</span>
-              </div>
-              <div class="popover-body">
-                <div class="popover-photo" id="menuPhoto">👨</div>
-                <div class="popover-actions">
-                  <button type="button">＠ Bahset</button>
-                  <button type="button">💬 Özel sohbet</button>
-                  <button type="button" id="openProfile">👤 Profil</button>
-                  <button type="button">🚫 Yoksay</button>
-                </div>
-              </div>
-            </div>
-          </aside>
-        </div>
-      </div>
-    </section>
-
-    <div id="profileModal" class="profile-modal" hidden>
-      <div class="profile-window">
-        <div class="profile-window-top">
-          <span id="profileTitle">Alex - Sohbetix demo chat</span>
-          <button id="closeProfile" type="button" aria-label="Kapat">×</button>
-        </div>
-        <div class="profile-address">chat.sohbetix.local/user/profile</div>
-        <div class="profile-bluebar">Sohbetix demo chat</div>
-
-        <div class="profile-content">
-          <aside class="profile-sidebar">
-            <button class="enter-chat-btn">Sohbete gir</button>
-            <button id="openUsers" class="users-link" type="button">Üyeler</button>
-          </aside>
-
-          <div class="profile-main">
-            <div class="profile-picture" id="profilePicture">👨</div>
-            <div class="profile-info">
-              <div class="profile-name-line">
-                <span class="mini-avatar gold">👨</span>
-                <b id="profileName" class="red">Alex</b>
-                <span class="crown">♛</span>, <span id="profileAge">36</span>
-                <span class="vip-badge">VIP</span>
-                <span class="online-badge">ÇEVRİMİÇİ</span>
-              </div>
-              <div id="profileLocation">United States, Medford</div>
-              <div id="profileStatus">It's Complicated</div>
-              <div class="admin-text">Yönetici</div>
-              <button class="open-private">Özel sohbet aç</button>
-              <div class="about-title">Hakkımda:</div>
-              <div id="profileAbout">Animal lover and amateur chef at heart. I find joy in little things, like my cat's daily antics and perfecting my lasagna recipe.</div>
-              <div class="gift-wrap">
-                <button id="giftBtn" class="gift-btn" type="button">🎁 Hediye gönder ▾</button>
-                <div id="giftMenu" class="gift-menu" hidden>
-                  <button type="button">VIP Durumu</button>
-                  <button type="button">Jetonlar</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="profile-footer">
-          <span>© 2026 Sohbetix</span>
-          <span>🌐 Türkçe ▾</span>
-        </div>
-      </div>
-    </div>
-
-    <section class="wrap how">
-      <h2>Nasıl çalışır?</h2>
-      <ol>
-        <li>GitHub Pages üzerinden Sohbetix arayüzünü aç.</li>
-        <li>Mobil ve masaüstü görünümünü test et.</li>
-        <li>Sonraki aşamada gerçek kullanıcı, veritabanı ve canlı mesajlaşmayı bağla.</li>
-      </ol>
-
-      <div class="socials">
-        <a class="social x" href="#" aria-label="Twitter">𝕏 <span>Twitter</span></a>
-        <a class="social fb" href="#" aria-label="Facebook">f <span>Facebook</span></a>
-        <a class="social tg" href="#" aria-label="Telegram">✈ <span>Telegram</span></a>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    <div class="wrap footer-inner">
-      <div>
-        <div>© 2026 Sohbetix</div>
-        <div class="stats">📶 Online 345 of 3.344 users in 620 chats</div>
-        <div><a href="terms.html">Kullanım şartları</a> · <a href="privacy.html">Gizlilik politikası</a></div>
-      </div>
-      <select><option>Türkçe</option><option>English</option></select>
-    </div>
-  </footer>
-
-<div id="usersModal" class="users-modal" hidden>
-  <div class="users-window">
-    <div class="profile-window-top">
-      <span>Üyeler - Sohbetix demo chat</span>
-      <button id="closeUsers" type="button" aria-label="Kapat">×</button>
-    </div>
-    <div class="profile-address">chat.sohbetix.local/users/</div>
-    <div class="profile-bluebar">Sohbetix demo chat</div>
-
-    <div class="users-content">
-      <aside class="users-sidebar-panel">
-        <button class="enter-chat-btn">Sohbete gir</button>
-        <button class="users-tab-active" type="button">Üyeler</button>
-
-        <label>Aranan:</label>
-        <select>
-          <option>Herkes</option>
-          <option>Erkek</option>
-          <option>Kadın</option>
-        </select>
-
-        <label>Yaş:</label>
-        <div class="age-row">
-          <input type="number" min="18" max="99" aria-label="Minimum yaş">
-          <span>–</span>
-          <input type="number" min="18" max="99" aria-label="Maksimum yaş">
-        </div>
-
-        <label>Rumuz:</label>
-        <input type="text" id="memberNickFilter">
-
-        <label class="check"><input type="checkbox"> Fotoğraflı</label>
-        <label class="check"><input type="checkbox"> Çevrimiçi</label>
-        <label class="check"><input type="checkbox"> Yöneticiler</label>
-        <label class="check"><input type="checkbox"> Tüm sohbetlerde</label>
-
-        <button id="memberSearchBtn" class="search-btn" type="button">Ara</button>
-      </aside>
-
-      <section class="members-panel">
-        <div class="found">Bulundu: <b id="memberCount">26.233</b></div>
-        <div id="membersList" class="members-list">
-          <div class="member-card" data-name="Danny365478">
-            <div class="member-photo placeholder">📷</div>
-            <a href="#">👤 Danny365478</a>
-          </div>
-          <div class="member-card" data-name="Dani006">
-            <div class="member-photo placeholder">📷</div>
-            <a href="#">👤 Dani006</a>
-          </div>
-          <div class="member-card" data-name="Akshay 1234">
-            <div class="member-photo art">🎨</div>
-            <a href="#">👤 Akshay 1234</a>
-          </div>
-          <div class="member-card" data-name="Dharani">
-            <div class="member-photo placeholder">📷</div>
-            <a href="#">👤 Dharani</a>
-          </div>
-          <div class="member-card" data-name="SohbetixUser">
-            <div class="member-photo">🙂</div>
-            <a href="#">👤 SohbetixUser</a>
-          </div>
-        </div>
-      </section>
-    </div>
-
-    <div class="profile-footer">
-      <span>© 2026 Sohbetix</span>
-      <span>🌐 Türkçe ▾</span>
-    </div>
-  </div>
 </div>
-
+</header><div class="mobile-nav-panel" hidden=""><a href="chats.html">SOHBET ODALARI</a><a href="about.html">HAKKINDA</a><button class="mobile-more-toggle" type="button">DAHA FAZLA ▾</button><div class="mobile-more-menu" hidden=""><a href="coins.html">JETONLAR</a><a href="account.html">HESAP</a><a href="help.html">YARDIM VE DESTEK</a></div><a class="mobile-control-link" href="control.html">SOHBET KONTROL PANELİ</a></div>
+<main>
+<section class="hero">
+<div class="wrap">
+<h1>Sohbetix</h1>
+<p>Web siten veya bağımsız topluluğun için hızlı, sade ve çok kullanıcılı sohbet deneyimi.</p>
+<a class="btn green" href="control.html">Sohbetini oluştur!</a>
+</div>
+</section>
+<section class="advantages wrap">
+<h2>Sohbetix'in öne çıkan özellikleri</h2>
+<div class="feature-grid">
+<article><div class="ico">🚀</div><div><h3>Her zaman hızlı</h3><p>Masaüstü ve mobilde akıcı kullanım.</p></div></article>
+<article><div class="ico">🔋</div><div><h3>Ücretsiz başlangıç</h3><p>Topluluğunu kolayca büyüt.</p></div></article>
+<article><div class="ico">⏱️</div><div><h3>Hızlı mesajlaşma</h3><p>Gerçek zamanlı sisteme hazır yapı.</p></div></article>
+<article><div class="ico">💼</div><div><h3>Her amaç için</h3><p>Topluluk, destek, eğlence veya özel odalar.</p></div></article>
+<article><div class="ico">☁️</div><div><h3>Her yerden erişim</h3><p>Telefon, tablet ve bilgisayarda uyumlu.</p></div></article>
+<article><div class="ico">⚙️</div><div><h3>Özelleştirilebilir</h3><p>Roller, odalar, rozetler ve temalar.</p></div></article>
+<article><div class="ico">💎</div><div><h3>VIP sistemi</h3><p>VIP, Gold ve özel yetkiler eklenebilir.</p></div></article>
+<article><div class="ico">💬</div><div><h3>Genel ve özel odalar</h3><p>Genel odalar ve özel sohbetler.</p></div></article>
+<article><div class="ico">❤️</div><div><h3>Sohbetix topluluğu</h3><p>Kendi sistemimize göre büyütülebilir.</p></div></article>
+</div>
+</section>
+<section class="wrap demo-wrap" id="demo">
+<div class="chatbox">
+<div class="chat-title">Sohbetix demo sohbet <span>▾</span></div>
+<div class="chat-layout">
+<div class="chat-main">
+<div class="tabs">
+<button class="tab active">Genel</button>
+</div>
+<div class="messages">
+<div class="message">
+<div class="avatar gold"><div class="avatar-inner">👨</div></div>
+<div><div><b class="red">Mert</b> <small>23:00</small></div><p><b>Herkese merhaba! Sohbetix'e hoş geldiniz 😺</b></p></div>
+</div>
+<div class="message">
+<div class="avatar gold"><div class="avatar-inner">👩</div></div>
+<div><div><b>Elif</b> <small>23:00</small></div><p>Bugün sohbet odası baya hareketli görünüyor 😄</p></div>
+</div>
+<div class="message">
+<div class="avatar gold"><div class="avatar-inner">🧑</div></div>
+<div><div><b class="blue">Can</b> <small>23:00</small></div><p>Yeni tasarım çok temiz olmuş. Mobil sürümü de deneyelim 📱</p></div>
+</div>
+<div class="message">
+<div class="avatar gold"><div class="avatar-inner">👩‍🦰</div></div>
+<div><div><b class="pink">Zeynep</b> <small>23:00</small></div><p>VIP rozetleri ve özel odalar da gelirse çok iyi olur ✨</p></div>
+</div>
+<div class="message">
+<div class="avatar gold"><div class="avatar-inner">🧔</div></div>
+<div><div><b>Emre</b> <small>23:00</small></div><p><b>Hazırım! Sohbetix V2 başladı 🚀</b></p></div>
+</div>
+</div>
+<div class="locked-composer">
+<span class="lock">🔒</span>
+<span>Mesaj alanı kilitli · yalnızca yöneticiler kullanabilir</span>
+</div>
+</div>
+<aside class="users">
+<div class="online-count">5 çevrimiçi</div>
+<ul class="user-list">
+<li class="user-row" data-user="alex"><span class="mini-avatar gold">👨</span><b class="red user-nick">Mert</b><span class="crown">♛</span></li>
+<li class="user-row" data-user="bella"><span class="mini-avatar gold">👩</span><b class="user-nick">Elif</b><span class="crown">♛</span></li>
+<li class="user-row" data-user="chris"><span class="mini-avatar gold">🧑</span><b class="blue user-nick">Can</b><span class="crown">♛</span></li>
+<li class="user-row" data-user="dana"><span class="mini-avatar gold">👩‍🦰</span><b class="pink user-nick">Zeynep</b><span class="crown">♛</span></li>
+<li class="user-row" data-user="ethan"><span class="mini-avatar gold">🧔</span><b class="user-nick">Emre</b><span class="crown">♛</span></li>
+</ul>
+<div class="user-popover" hidden="" id="userMenu">
+<div class="popover-head">
+<span class="mini-avatar gold">👨</span>
+<b class="red" id="menuName">Mert</b>
+<span class="crown">♛</span>
+</div>
+<div class="popover-body">
+<div class="popover-photo" id="menuPhoto">👨</div>
+<div class="popover-actions">
+<button type="button">＠ Bahset</button>
+<button type="button">💬 Özel sohbet</button>
+<button id="openProfile" type="button">👤 Profil</button>
+<button type="button">🚫 Yoksay</button>
+</div>
+</div>
+</div>
+</aside>
+</div>
+</div>
+</section>
+<div class="profile-modal" hidden="" id="profileModal">
+<div class="profile-window">
+<div class="profile-window-top">
+<span id="profileTitle">Mert - Sohbetix demo chat</span>
+<button aria-label="Kapat" id="closeProfile" type="button">×</button>
+</div>
+<div class="profile-address">chat.sohbetix.local/user/profile</div>
+<div class="profile-bluebar">Sohbetix demo chat</div>
+<div class="profile-content">
+<aside class="profile-sidebar">
+<button class="enter-chat-btn">Sohbete gir</button>
+<button class="users-link" id="openUsers" type="button">Üyeler</button>
+</aside>
+<div class="profile-main">
+<div class="profile-picture" id="profilePicture">👨</div>
+<div class="profile-info">
+<div class="profile-name-line">
+<span class="mini-avatar gold">👨</span>
+<b class="red" id="profileName">Mert</b>
+<span class="crown">♛</span>, <span id="profileAge">36</span>
+<span class="vip-badge">VIP</span>
+<span class="online-badge">ÇEVRİMİÇİ</span>
+</div>
+<div id="profileLocation">United States, Medford</div>
+<div id="profileStatus">It's Complicated</div>
+<div class="admin-text">Yönetici</div>
+<button class="open-private">Özel sohbet aç</button>
+<div class="about-title">Hakkımda:</div>
+<div id="profileAbout">Animal lover and amateur chef at heart. I find joy in little things, like my cat's daily antics and perfecting my lasagna recipe.</div>
+<div class="gift-wrap">
+<button class="gift-btn" id="giftBtn" type="button">🎁 Hediye gönder ▾</button>
+<div class="gift-menu" hidden="" id="giftMenu">
+<button type="button">VIP Durumu</button>
+<button type="button">Jetonlar</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="profile-footer">
+<span>© 2026 Sohbetix</span>
+<span>🌐 Türkçe ▾</span>
+</div>
+</div>
+</div>
+<section class="wrap how">
+<h2>Nasıl çalışır?</h2>
+<ol>
+<li>GitHub Pages üzerinden Sohbetix arayüzünü aç.</li>
+<li>Mobil ve masaüstü görünümünü test et.</li>
+<li>Sonraki aşamada gerçek kullanıcı, veritabanı ve canlı mesajlaşmayı bağla.</li>
+</ol>
+<div class="socials">
+<a aria-label="Twitter" class="social x" href="#"><svg aria-hidden="true" class="social-icon" viewbox="0 0 24 24"><path d="M18.8 2H22l-7 8 8.2 12H16.8l-5-7.3L5.4 22H2.2l8.1-9.2L2.4 2H9l4.5 6.6L18.8 2Zm-1.1 17.9h1.8L8 4H6.1l11.6 15.9Z"></path></svg><span>Twitter</span></a>
+<a aria-label="Facebook" class="social fb" href="#"><svg aria-hidden="true" class="social-icon" viewbox="0 0 24 24"><path d="M14 8h3V4.2c-.5-.1-2-.2-3.5-.2C10.4 4 8.2 5.9 8.2 9.4V12H5v4h3.2v8H12v-8h3.3l.5-4H12V9.8C12 8.6 12.3 8 14 8Z"></path></svg><span>Facebook</span></a>
+<a aria-label="Telegram" class="social tg" href="#"><svg aria-hidden="true" class="social-icon" viewbox="0 0 24 24"><path d="M21.6 3.4 18.4 20c-.2 1.2-.9 1.5-1.9.9l-4.9-3.6-2.4 2.3c-.3.3-.5.5-1 .5l.4-5 9-8.1c.4-.3-.1-.5-.6-.2L5.8 13.9 1 12.4c-1-.3-1.1-1 .2-1.5L20 3.7c.9-.3 1.7.2 1.6-.3Z"></path></svg><span>Telegram</span></a>
+</div>
+</section>
+</main>
+<footer>
+<div class="wrap footer-inner">
+<div>
+<div>© 2026 Sohbetix</div>
+<div class="stats">📶 Online 345 of 3.344 users in 620 chats</div>
+<div><a href="terms.html">Kullanım şartları</a> · <a href="privacy.html">Gizlilik politikası</a></div>
+</div>
+<select class="lang-switch"><option value="tr">Türkçe</option><option value="en">English</option></select>
+</div>
+</footer>
+<div class="users-modal" hidden="" id="usersModal">
+<div class="users-window">
+<div class="profile-window-top">
+<span>Üyeler - Sohbetix demo chat</span>
+<button aria-label="Kapat" id="closeUsers" type="button">×</button>
+</div>
+<div class="profile-address">chat.sohbetix.local/users/</div>
+<div class="profile-bluebar">Sohbetix demo chat</div>
+<div class="users-content">
+<aside class="users-sidebar-panel">
+<button class="enter-chat-btn">Sohbete gir</button>
+<button class="users-tab-active" type="button">Üyeler</button>
+<label>Aranan:</label>
+<select>
+<option>Herkes</option>
+<option>Erkek</option>
+<option>Kadın</option>
+</select>
+<label>Yaş:</label>
+<div class="age-row">
+<input aria-label="Minimum yaş" max="99" min="18" type="number"/>
+<span>–</span>
+<input aria-label="Maksimum yaş" max="99" min="18" type="number"/>
+</div>
+<label>Rumuz:</label>
+<input id="memberNickFilter" type="text"/>
+<label class="check"><input type="checkbox"/> Fotoğraflı</label>
+<label class="check"><input type="checkbox"/> Çevrimiçi</label>
+<label class="check"><input type="checkbox"/> Yöneticiler</label>
+<label class="check"><input type="checkbox"/> Tüm sohbetlerde</label>
+<button class="search-btn" id="memberSearchBtn" type="button">Ara</button>
+</aside>
+<section class="members-panel">
+<div class="found">Bulundu: <b id="memberCount">26.233</b></div>
+<div class="members-list" id="membersList">
+<div class="member-card" data-name="Deniz365">
+<div class="member-photo placeholder">📷</div>
+<a href="#">👤 Deniz365</a>
+</div>
+<div class="member-card" data-name="Derya006">
+<div class="member-photo placeholder">📷</div>
+<a href="#">👤 Derya006</a>
+</div>
+<div class="member-card" data-name="Akın 1234">
+<div class="member-photo art">🎨</div>
+<a href="#">👤 Akın 1234</a>
+</div>
+<div class="member-card" data-name="Ece">
+<div class="member-photo placeholder">📷</div>
+<a href="#">👤 Ece</a>
+</div>
+<div class="member-card" data-name="SohbetixUyesi">
+<div class="member-photo">🙂</div>
+<a href="#">👤 SohbetixUyesi</a>
+</div>
+</div>
+</section>
+</div>
+<div class="profile-footer">
+<span>© 2026 Sohbetix</span>
+<span>🌐 Türkçe ▾</span>
+</div>
+</div>
+</div>
 <script src="app.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded',function(){

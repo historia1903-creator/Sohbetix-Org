@@ -1,163 +1,36 @@
 
-const users = {
-  alex: {
-    name: "Alex", age: 36, icon: "👨", color: "red",
-    location: "Amerika Birleşik Devletleri, Medford",
-    status: "İlişkisi karışık",
-    about: "Hayvanları seven ve amatör aşçı olan biriyim. Kedimin günlük maceraları ve güzel bir lazanya yapmak beni mutlu eder."
-  },
-  bella: {
-    name: "Bella", age: 30, icon: "👩", color: "",
-    location: "Amerika Birleşik Devletleri",
-    status: "Çevrimiçi",
-    about: "El işi ve sanatla ilgileniyorum. Günlük eşyaları benzersiz şeylere dönüştürmeyi ve akşamları çizim yapmayı seviyorum."
-  },
-  chris: {
-    name: "Chris", age: 31, icon: "🧑", color: "blue",
-    location: "Almanya, Berlin",
-    status: "Müsait",
-    about: "Oyunlar, teknoloji ve gece sohbetlerini seviyorum."
-  },
-  dana: {
-    name: "Dana", age: 27, icon: "👩‍🦰", color: "pink",
-    location: "Türkiye, İzmir",
-    status: "Çevrimiçi",
-    about: "Kahve, arkadaşlık ve eğlenceli sohbetleri seviyorum."
-  },
-  ethan: {
-    name: "Ethan", age: 34, icon: "🧔", color: "",
-    location: "Birleşik Krallık, Londra",
-    status: "Meşgul",
-    about: "Filmler, yemek ve topluluk sohbetlerini seviyorum."
-  }
+const T={"SOHBET ODALARI":"CHAT ROOMS","HAKKINDA":"ABOUT","DAHA FAZLA ▾":"MORE ▾","JETONLAR":"COINS","HESAP":"ACCOUNT","YARDIM VE DESTEK":"HELP & SUPPORT","SOHBET KONTROL PANELİ":"CHAT CONTROL PANEL","Sohbetini oluştur!":"Create your chat!","Sohbetix'in öne çıkan özellikleri":"Key advantages of Sohbetix chat service","Her zaman hızlı":"Always fast","Masaüstü ve mobilde akıcı kullanım.":"Smooth use on desktop and mobile.","Ücretsiz başlangıç":"Free to start","Topluluğunu kolayca büyüt.":"Grow your community easily.","Hızlı mesajlaşma":"Fast messaging","Gerçek zamanlı sisteme hazır yapı.":"Ready for real-time messaging.","Her amaç için":"For any purpose","Topluluk, destek, eğlence veya özel odalar.":"Communities, support, entertainment or private rooms.","Her yerden erişim":"Access from anywhere","Telefon, tablet ve bilgisayarda uyumlu.":"Works on phone, tablet and desktop.","Özelleştirilebilir":"Highly customizable","Roller, odalar, rozetler ve temalar.":"Roles, rooms, badges and themes.","VIP sistemi":"VIP system","VIP, Gold ve özel yetkiler eklenebilir.":"VIP, Gold and special permissions can be added.","Genel ve özel odalar":"Public and private rooms","Genel odalar ve özel sohbetler.":"Public rooms and private chats.","Sohbetix topluluğu":"Sohbetix community","Kendi sistemimize göre büyütülebilir.":"Can grow with our own system.","Sohbetix demo sohbet":"Sohbetix demo chat","Genel":"Main","5 çevrimiçi":"5 online","Mesaj alanı kilitli · yalnızca yöneticiler kullanabilir":"Message area locked · administrators only","＠ Bahset":"＠ Mention","💬 Özel sohbet":"💬 Private","👤 Profil":"👤 Profile","🚫 Yoksay":"🚫 Ignore","Sohbete gir":"Enter chat","Üyeler":"Users","ÇEVRİMİÇİ":"ONLINE","Yönetici":"Administrator","Özel sohbet aç":"Open private","Hakkımda:":"About me:","🎁 Hediye gönder ▾":"🎁 Send gift ▾","VIP Durumu":"VIP status","Jetonlar":"Coins","Nasıl çalışır?":"How it Works","Kullanım şartları":"Terms of use","Gizlilik politikası":"Privacy policy","Aranan:":"Looking for:","Herkes":"Everyone","Erkek":"Male","Kadın":"Female","Yaş:":"Age:","Rumuz:":"Nick:","Fotoğraflı":"With photo","Çevrimiçi":"Online","Yöneticiler":"Admins","Tüm sohbetlerde":"In all chats","Ara":"Search","Bulundu:":"Found:","Tüm kategoriler ▾":"All categories ▾","Yalnızca Türkçe":"Only Turkish","Sohbet başlığı":"Chat title","Dil:":"Language:","Tüm kategoriler":"All categories","Arkadaşlık":"Dating","Haber":"News","Eğlence":"Entertainment","Radyo":"Radio","Sağlık ve güzellik":"Health & beauty","Otomobil":"Auto","Spor":"Sport","İş":"Business","İnternet":"Internet","Ücretsiz":"Free","Sanat":"Art","Paranormal":"Paranormal","Ev ve aile":"Home & family","Ürün ve hizmetler":"Goods & services","Toplum":"State and society","Evcil hayvanlar":"Pets","⟳ Yenile":"⟳ Refresh","✚ Jeton satın al":"✚ Buy coins","➜ Jeton transfer et":"➜ Transfer coins","▣ Geçmiş":"▣ History","👍 Referans programı":"👍 Referral program","Jeton satın al":"Buy coins","200 jeton = 100 TL":"200 coins = 100 TRY","Ödeme yöntemini seç":"Choose payment method","Kart":"Card","Diğer":"More","Jeton miktarı":"Coin amount","jeton":"coins","1 jeton = 0,50 TL":"1 coin = 0.50 TRY","Kart ile Öde":"Pay by card","Havale / EFT":"Bank Transfer / EFT","Banka hesabına ödeme":"Pay to a bank account","BTC ile Ödeme":"Pay with BTC","Bitcoin ile ödeme seçeneği":"Bitcoin payment option","Buradan jeton satın alabilir, transfer edebilir ve Sohbetix hizmetlerinde kullanabilirsin.":"You can buy coins, transfer them and use them for Sohbetix services here.","Demo arayüzü: gerçek ödeme altyapısı daha sonra bağlanacak.":"Demo interface: real payment processing will be connected later.","Bize ulaşın":"Contact us","Teknik destek:":"Technical support:","Ücretli hizmetler":"Paid services","Hesap ID:":"Account ID:","E-posta:":"Email:","Kaydet":"Save","Bildirim ayarları":"Notification settings","Hesap geçmişi":"Account history","Ayarlar":"Settings","Kullanıcılar":"Users","Tasarım ve ifadeler":"Design and smileys","Mesaj geçmişi":"Message history","Yeni sohbet oluştur":"Create new chat","Toplam kayıtlar":"Total registrations","Durum sayfası":"Status page","Yardım ve destek merkezi":"Help and support center","Sohbet kataloğu":"Chats catalog","Ana ayarlar":"Main settings","Odalar":"Rooms","Sohbet adresi (alan adı)":"Chat address (domain)","Varsayılan dil":"Default language","Varsayılan sekme":"Default tab","Kullanıcı listesi (sağ sütun)":"Userlist (right column)","Varsayılan genişlik (piksel)":"Default width (pixels)","Özel görüşmeler":"Private dialogs","Sohbet açıklaması":"Chat description","Sohbet anahtar kelimeleri":"Chat keywords","Katalog bölümleri":"Chat catalog sections","Ban sistemi":"Ban system","Değişiklikleri kaydet":"Save changes","Oda ayarları":"Room settings","Başlık:":"Title:","Gizli oda":"Hidden room","Karşılama mesajı":"Welcome message","Spam koruması ve erişim kontrolü":"Spam protection and access control","Mesajları okuyabilecekler:":"Read messages allowed for:","Odaya girebilecekler:":"Enter room allowed for:","Mesaj gönderebilecekler:":"Send messages allowed for:","Bağlantı gönderebilecekler:":"Send links allowed for:","Maksimum mesaj uzunluğu:":"Maximum message length:","Flood kontrolü":"Flood control","Özel CSS kurallarını etkinleştir":"Enable custom CSS rules","İfade modunu seç":"Choose smileys mode","İfadeler kapalı":"Without smileys","Standart ifade setleri":"Standard sets of smileys","Özel ifadeler":"Custom smileys","Sohbet için ifade setleri":"Sets of smileys for the chat","Açık":"On","Kapalı":"Off","Standart":"Standard","İnternet memeleri":"Internet memes","Sohbet sistem adı":"Chat system name","Kendi sohbet alan adın":"Your own chat domain","Kayıtlı kullanıcılar (0)":"Registered users (0)","Şimdilik kayıtlı kullanıcı listesi boş.":"The registered user list is empty for now.","Yardım konusu seç:":"Select help topic:","Sohbetler":"Chats","Reklam":"Advertising","Ortaklık":"Partnership","Kullanım Şartları":"Terms and Conditions","Gizlilik Politikası":"Privacy Policy","Veri toplama":"Data collection","Veri silme":"Data deletion","Çerezler":"Cookies","Ödeme bilgileri":"Payment information","Bilgi paylaşımı":"Information sharing","Bilgi güvenliği":"Information security","Sorumluluk sınırı":"Limitation of Liability","Ana sayfa":"Home"};
+function getLang(){return localStorage.getItem('sohbetix-lang')||'tr'}
+function setupLang(){
+ const lang=getLang();
+ document.querySelectorAll('select').forEach(s=>{
+   const os=[...s.options]; if(!os.some(o=>/Türkçe|English|Turkish/i.test(o.textContent)))return;
+   os.forEach(o=>{if(/Türkçe|Turkish/i.test(o.textContent))o.value='tr';if(/English/i.test(o.textContent))o.value='en'});
+   s.value=lang;s.addEventListener('change',()=>{localStorage.setItem('sohbetix-lang',s.value==='en'?'en':'tr');location.reload()})
+ });
+ if(lang==='en'){
+   document.documentElement.lang='en';
+   const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT),a=[];while(w.nextNode())a.push(w.currentNode);
+   a.forEach(n=>{if(!n.parentElement||['SCRIPT','STYLE'].includes(n.parentElement.tagName))return;let x=n.nodeValue;Object.keys(T).sort((a,b)=>b.length-a.length).forEach(k=>{if(x.includes(k))x=x.split(k).join(T[k])});n.nodeValue=x});
+ }
+}
+const users={
+ alex:{name:'Mert',age:36,icon:'👨',color:'red',tr:['Türkiye, İstanbul','İlişkisi karışık','Hayvanları seven ve amatör aşçı olan biriyim.'],en:['Türkiye, Istanbul',"It's complicated",'I love animals and cooking.']},
+ bella:{name:'Elif',age:30,icon:'👩',color:'',tr:['Türkiye, Ankara','Çevrimiçi','El işi ve sanatla ilgileniyorum.'],en:['Türkiye, Ankara','Online',"I'm interested in crafts and art."]},
+ chris:{name:'Can',age:31,icon:'🧑',color:'blue',tr:['Türkiye, Bursa','Müsait','Oyunlar ve teknolojiyi seviyorum.'],en:['Türkiye, Bursa','Available','I enjoy games and technology.']},
+ dana:{name:'Zeynep',age:27,icon:'👩‍🦰',color:'pink',tr:['Türkiye, İzmir','Çevrimiçi','Kahve ve eğlenceli sohbetleri seviyorum.'],en:['Türkiye, Izmir','Online','I enjoy coffee and fun chats.']},
+ ethan:{name:'Emre',age:34,icon:'🧔',color:'',tr:['Türkiye, Antalya','Meşgul','Filmler ve topluluk sohbetlerini seviyorum.'],en:['Türkiye, Antalya','Busy','I enjoy movies and community chats.']}
 };
-
-document.addEventListener("DOMContentLoaded", () => {
-  const pop = document.getElementById("userMenu");
-  const profileModal = document.getElementById("profileModal");
-  const usersModal = document.getElementById("usersModal");
-  const giftBtn = document.getElementById("giftBtn");
-  const giftMenu = document.getElementById("giftMenu");
-  let activeUser = users.alex;
-  let hideTimer = null;
-
-  function setText(id, text) {
-    const el = document.getElementById(id);
-    if (el) el.textContent = text;
-  }
-
-  function showMenu(row) {
-    if (!pop) return;
-    clearTimeout(hideTimer);
-    activeUser = users[row.dataset.user] || users.alex;
-    const r = row.getBoundingClientRect();
-
-    setText("menuName", activeUser.name);
-    setText("menuPhoto", activeUser.icon);
-    const menuName = document.getElementById("menuName");
-    if (menuName) menuName.className = activeUser.color || "";
-
-    pop.hidden = false;
-    const menuWidth = 180;
-    let left = r.left - menuWidth - 8;
-    let top = r.top - 6;
-    if (left < 8) left = Math.min(window.innerWidth - menuWidth - 8, r.right + 8);
-    if (top < 8) top = 8;
-    pop.style.left = `${Math.max(8, left)}px`;
-    pop.style.top = `${top}px`;
-  }
-
-  function scheduleHide() {
-    clearTimeout(hideTimer);
-    hideTimer = setTimeout(() => {
-      if (pop) pop.hidden = true;
-    }, 220);
-  }
-
-  document.querySelectorAll(".user-row").forEach((row) => {
-    row.addEventListener("mouseenter", () => showMenu(row));
-    row.addEventListener("mouseleave", scheduleHide);
-    row.addEventListener("click", () => showMenu(row));
-  });
-
-  if (pop) {
-    pop.addEventListener("mouseenter", () => clearTimeout(hideTimer));
-    pop.addEventListener("mouseleave", scheduleHide);
-  }
-
-  const openProfile = document.getElementById("openProfile");
-  if (openProfile) {
-    openProfile.addEventListener("click", () => {
-      setText("profileTitle", `${activeUser.name} - Sohbetix demo sohbet`);
-      setText("profileName", activeUser.name);
-      setText("profileAge", activeUser.age);
-      setText("profileLocation", activeUser.location);
-      setText("profileStatus", activeUser.status);
-      setText("profileAbout", activeUser.about);
-      setText("profilePicture", activeUser.icon);
-
-      const profileName = document.getElementById("profileName");
-      if (profileName) profileName.className = activeUser.color || "";
-
-      if (profileModal) profileModal.hidden = false;
-      if (pop) pop.hidden = true;
-    });
-  }
-
-  const closeProfile = document.getElementById("closeProfile");
-  if (closeProfile && profileModal) {
-    closeProfile.addEventListener("click", () => profileModal.hidden = true);
-    profileModal.addEventListener("click", (e) => {
-      if (e.target === profileModal) profileModal.hidden = true;
-    });
-  }
-
-  if (giftBtn && giftMenu) {
-    giftBtn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      giftMenu.hidden = !giftMenu.hidden;
-    });
-    giftMenu.addEventListener("click", (e) => e.stopPropagation());
-  }
-
-  const openUsers = document.getElementById("openUsers");
-  const closeUsers = document.getElementById("closeUsers");
-  if (openUsers && usersModal) openUsers.addEventListener("click", () => usersModal.hidden = false);
-  if (closeUsers && usersModal) closeUsers.addEventListener("click", () => usersModal.hidden = true);
-  if (usersModal) {
-    usersModal.addEventListener("click", (e) => {
-      if (e.target === usersModal) usersModal.hidden = true;
-    });
-  }
-
-  const memberSearchBtn = document.getElementById("memberSearchBtn");
-  if (memberSearchBtn) {
-    memberSearchBtn.addEventListener("click", () => {
-      const input = document.getElementById("memberNickFilter");
-      const q = (input?.value || "").trim().toLocaleLowerCase("tr-TR");
-      let shown = 0;
-
-      document.querySelectorAll(".member-card").forEach((card) => {
-        const name = (card.dataset.name || "").toLocaleLowerCase("tr-TR");
-        const ok = !q || name.includes(q);
-        card.style.display = ok ? "grid" : "none";
-        if (ok) shown++;
-      });
-
-      setText("memberCount", q ? String(shown) : "26.233");
-    });
-  }
-
-  document.addEventListener("click", () => {
-    if (giftMenu) giftMenu.hidden = true;
-  });
-
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") {
-      if (profileModal) profileModal.hidden = true;
-      if (usersModal) usersModal.hidden = true;
-      if (giftMenu) giftMenu.hidden = true;
-      if (pop) pop.hidden = true;
-    }
-  });
+document.addEventListener('DOMContentLoaded',()=>{
+ setupLang();const lang=getLang(),pop=document.getElementById('userMenu'),pm=document.getElementById('profileModal'),um=document.getElementById('usersModal'),gm=document.getElementById('giftMenu');let u=users.alex,timer;
+ const st=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v};
+ function show(r){if(!pop)return;clearTimeout(timer);u=users[r.dataset.user]||users.alex;const q=r.getBoundingClientRect();st('menuName',u.name);st('menuPhoto',u.icon);pop.hidden=false;pop.style.left=Math.max(8,q.left-188)+'px';pop.style.top=Math.max(8,q.top-6)+'px'}
+ document.querySelectorAll('.user-row').forEach(r=>{r.onmouseenter=()=>show(r);r.onmouseleave=()=>timer=setTimeout(()=>pop.hidden=true,220);r.onclick=()=>show(r)});
+ const op=document.getElementById('openProfile');if(op)op.onclick=()=>{const d=u[lang]||u.tr;st('profileTitle',u.name+' - Sohbetix demo chat');st('profileName',u.name);st('profileAge',u.age);st('profileLocation',d[0]);st('profileStatus',d[1]);st('profileAbout',d[2]);st('profilePicture',u.icon);if(pm)pm.hidden=false;if(pop)pop.hidden=true};
+ const cp=document.getElementById('closeProfile');if(cp&&pm)cp.onclick=()=>pm.hidden=true;const ou=document.getElementById('openUsers'),cu=document.getElementById('closeUsers');if(ou&&um)ou.onclick=()=>um.hidden=false;if(cu&&um)cu.onclick=()=>um.hidden=true;
+ const gb=document.getElementById('giftBtn');if(gb&&gm)gb.onclick=e=>{e.stopPropagation();gm.hidden=!gm.hidden};
+ const sb=document.getElementById('memberSearchBtn');if(sb)sb.onclick=()=>{const q=(document.getElementById('memberNickFilter')?.value||'').toLowerCase();let c=0;document.querySelectorAll('.member-card').forEach(x=>{const ok=!q||(x.dataset.name||'').toLowerCase().includes(q);x.style.display=ok?'grid':'none';if(ok)c++});st('memberCount',q?c:'26.233')};
+ const amount=document.getElementById('coinAmount'),price=document.getElementById('coinPrice');function calc(){if(!amount||!price)return;let n=Math.max(1,Math.floor(+amount.value||1));amount.value=n;let v=n*.5;price.textContent=lang==='en'?v.toFixed(2)+' TRY':v.toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2})+' TL'}if(amount){amount.oninput=calc;calc()}
+ const ct=document.getElementById('cardTab'),mt=document.getElementById('morePayTab'),cpn=document.getElementById('cardPanel'),mpn=document.getElementById('morePayPanel');if(ct&&mt){ct.onclick=()=>{ct.classList.add('active');mt.classList.remove('active');cpn.hidden=false;mpn.hidden=true};mt.onclick=()=>{mt.classList.add('active');ct.classList.remove('active');mpn.hidden=false;cpn.hidden=true}}
+ const notice=document.getElementById('paymentNotice');document.querySelectorAll('#cardPayBtn,.alt-pay').forEach(b=>b.onclick=()=>{if(notice)notice.hidden=false});
 });

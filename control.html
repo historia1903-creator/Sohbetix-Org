@@ -1,73 +1,67 @@
-<!doctype html>
+<!DOCTYPE html>
+
 <html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Sohbetix Kontrol Paneli</title>
-  <link rel="stylesheet" href="styles.css">
-<meta name="theme-color" content="#ffffff">
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>Sohbetix Kontrol Paneli</title>
+<link href="styles.css" rel="stylesheet"/>
+<meta content="#ffffff" name="theme-color"/>
 </head>
 <body class="control-page">
 <header class="control-topbar">
-  <div class="control-wrap control-nav">
-    <a class="brand" href="index.html">Sohbet<span>ix</span></a>
-    <a class="control-tab active" href="control.html">SOHBET KONTROL PANELİ</a>
-    <button class="control-tab disabled" type="button" disabled>JETONLAR</button>
-  </div>
+<div class="control-wrap control-nav">
+<a class="brand" href="index.html">Sohbet<span>ix</span></a>
+<a class="control-tab active" href="control.html">SOHBET KONTROL PANELİ</a>
+<button class="control-tab disabled" disabled="" type="button">JETONLAR</button>
+</div>
 </header>
-
 <main class="control-main">
-  <section class="signin-card">
-    <h1>Sohbetix hesabınla giriş yap</h1>
-
-    <div class="fast-login-box">
-      <div class="fast-title">Hızlı giriş</div>
-      <div class="oauth-row">
-        <button class="oauth-btn" type="button" disabled title="Yakında aktif olacak">G</button>
-        <button class="oauth-btn fb-icon" type="button" disabled title="Yakında aktif olacak">f</button>
-        <button class="oauth-btn yx-icon" type="button" disabled title="Yakında aktif olacak">Я</button>
-      </div>
-      <small>Google, Facebook ve Yandex girişleri şimdilik pasif.</small>
-    </div>
-
-    <div class="auth-actions">
-      <button id="showRegister" class="auth-main-btn register" type="button">Kayıt Ol</button>
-      <button id="showLogin" class="auth-main-btn login" type="button">Giriş Yap</button>
-    </div>
-
-    <div id="registerPanel" class="auth-panel" hidden>
-      <h2>Kayıt Ol</h2>
-      <label>Kullanıcı adı</label>
-      <input type="text" maxlength="24" placeholder="Kullanıcı adını yaz">
-      <label>E-posta</label>
-      <input type="email" placeholder="E-posta adresini yaz">
-      <label>Şifre</label>
-      <input type="password" placeholder="Şifreni yaz">
-      <label>Şifre tekrar</label>
-      <input type="password" placeholder="Şifreni tekrar yaz">
-      <button id="registerSubmit" type="button" class="submit-auth">Hesap Oluştur</button>
-      <p class="demo-note">Bu sürüm demo arayüzüdür. Gerçek kayıt veritabanı sonraki aşamada bağlanacak.</p>
-    </div>
-
-    <div id="loginPanel" class="auth-panel" hidden>
-      <h2>Giriş Yap</h2>
-      <label>Kullanıcı adı veya e-posta</label>
-      <input type="text" placeholder="Kullanıcı adı veya e-posta">
-      <label>Şifre</label>
-      <input type="password" placeholder="Şifreni yaz">
-      <button id="loginSubmit" type="button" class="submit-auth">Giriş Yap</button>
-      <p class="demo-note">Bu sürüm demo arayüzüdür. Gerçek oturum sistemi sonraki aşamada bağlanacak.</p>
-    </div>
-  </section>
+<section class="signin-card">
+<h1>Sohbetix hesabınla giriş yap</h1>
+<div class="fast-login-box">
+<div class="fast-title">Hızlı giriş</div>
+<div class="oauth-row">
+<button class="oauth-btn" disabled="" title="Yakında aktif olacak" type="button">G</button>
+<button class="oauth-btn fb-icon" disabled="" title="Yakında aktif olacak" type="button">f</button>
+<button class="oauth-btn yx-icon" disabled="" title="Yakında aktif olacak" type="button">Я</button>
+</div>
+<small>Google, Facebook ve Yandex girişleri şimdilik pasif.</small>
+</div>
+<div class="auth-actions">
+<button class="auth-main-btn register" id="showRegister" type="button">Kayıt Ol</button>
+<button class="auth-main-btn login" id="showLogin" type="button">Giriş Yap</button>
+</div>
+<div class="auth-panel" hidden="" id="registerPanel">
+<h2>Kayıt Ol</h2>
+<label>Kullanıcı adı</label>
+<input maxlength="24" placeholder="Kullanıcı adını yaz" type="text"/>
+<label>E-posta</label>
+<input placeholder="E-posta adresini yaz" type="email"/>
+<label>Şifre</label>
+<input placeholder="Şifreni yaz" type="password"/>
+<label>Şifre tekrar</label>
+<input placeholder="Şifreni tekrar yaz" type="password"/>
+<button class="submit-auth" id="registerSubmit" type="button">Hesap Oluştur</button>
+<p class="demo-note">Bu sürüm demo arayüzüdür. Gerçek kayıt veritabanı sonraki aşamada bağlanacak.</p>
+</div>
+<div class="auth-panel" hidden="" id="loginPanel">
+<h2>Giriş Yap</h2>
+<label>Kullanıcı adı veya e-posta</label>
+<input placeholder="Kullanıcı adı veya e-posta" type="text"/>
+<label>Şifre</label>
+<input placeholder="Şifreni yaz" type="password"/>
+<button class="submit-auth" id="loginSubmit" type="button">Giriş Yap</button>
+<p class="demo-note">Bu sürüm demo arayüzüdür. Gerçek oturum sistemi sonraki aşamada bağlanacak.</p>
+</div>
+</section>
 </main>
-
 <footer class="control-footer">
-  <div class="control-wrap footer-inner">
-    <div>© 2026 Sohbetix</div>
-    <select><option>Türkçe</option><option>English</option></select>
-  </div>
+<div class="control-wrap footer-inner">
+<div>© 2026 Sohbetix</div>
+<select class="lang-switch"><option value="tr">Türkçe</option><option value="en">English</option></select>
+</div>
 </footer>
-
 <script>
 const regBtn=document.getElementById('showRegister');
 const logBtn=document.getElementById('showLogin');
@@ -92,5 +86,5 @@ document.getElementById('loginSubmit').addEventListener('click',()=>{
   location.href='dashboard.html';
 });
 </script>
-</body>
+<script src="app.js"></script></body>
 </html>
