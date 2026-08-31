@@ -1,74 +1,11 @@
 <!DOCTYPE html>
 
-<html lang="tr">
-<head>
-<meta charset="utf-8"/>
-<meta content="width=device-width,initial-scale=1" name="viewport"/>
-<title>Sohbetix Kontrol Paneli</title>
-<link href="styles.css" rel="stylesheet"/>
-<meta content="#ffffff" name="theme-color"/>
-</head>
+<html lang="tr"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><title>Sohbetix Kontrol Paneli</title><link href="styles.css" rel="stylesheet"/><meta content="#ffffff" name="theme-color"/></head>
 <body class="dashboard-page">
-<header class="dash-top">
-<div class="dash-wrap dash-nav">
-<a class="brand" href="index.html">Sohbet<span>ix</span></a>
-<a class="dash-tab active" href="dashboard.html">SOHBET KONTROL PANELİ</a>
-<button class="dash-tab coins-disabled" disabled="" type="button">JETONLAR — 🪙 0</button>
-<div class="dash-account">👤 Sohbetix Kullanıcısı ▾</div>
-</div>
-</header>
+<header class="dash-top"><div class="dash-wrap dash-nav"><a class="brand" href="index.html">Sohbet<span>ix</span></a><a class="dash-tab active" href="dashboard.html">SOHBET KONTROL PANELİ</a><button class="dash-tab coins-disabled" disabled="" type="button">JETONLAR — 🪙 0</button><div class="dash-account">👤 Sohbetix Kullanıcısı ▾</div></div></header>
 <main class="dash-wrap dash-main">
-<section class="dash-left">
-<div class="chat-select">
-<strong>Sohbetix</strong>
-<button aria-expanded="true" class="chat-select-toggle" id="dashboardMenuToggle" type="button">▾</button>
-<div class="plan-box">
-<span class="free">☆ ÜCRETSİZ</span>
-<span class="pro">PRO'ya geç</span>
-</div>
-</div>
-<div class="dash-grid" id="dashboardMenuArea">
-<aside class="dash-menu">
-<button onclick="location.href='settings.html'">🔧 Ayarlar</button>
-<button onclick="location.href='users-admin.html'">👤 Kullanıcılar</button>
-<button onclick="location.href='design.html'">🖼️ Tasarım ve ifadeler</button>
-<button type="button">📥 Mesaj geçmişi</button>
-<button class="widget-btn" type="button">↗ Site için sohbet kutusu al ▾</button>
-</aside>
-<section class="stats-card">
-<div class="stats-head">
-<span>Toplam kayıtlar</span>
-<span class="online-text">Çevrimiçi 0 / 24</span>
-</div>
-<div class="chart-box">
-<svg aria-label="Kayıt grafiği" preserveaspectratio="none" viewbox="0 0 600 180">
-<polyline fill="none" points="20,145 20,90 155,78 290,65 315,64 322,52 520,50 575,49" stroke="#4b9ed0" stroke-width="2"></polyline>
-<polygon fill="#d9edf8" points="20,145 20,90 155,78 290,65 315,64 322,52 520,50 575,49 575,145"></polygon>
-</svg>
-<div class="chart-y"><span>25</span><span>20</span><span>15</span><span>10</span><span>5</span><span>0</span></div>
-<div class="chart-x"><span>01.01</span><span>01.04</span><span>01.07</span><span>01.10</span><span>01.01</span><span>01.04</span><span>01.07</span><span>01.10</span></div>
-</div>
-</section>
-</div>
-<button class="create-chat-btn" id="dashboardCreateChat" type="button">Yeni sohbet oluştur</button>
-</section>
-<aside class="dash-right" id="dashboardSideArea">
-<div class="side-box">
-<a href="#">Durum sayfası</a>
-<a href="#">Yardım ve destek merkezi</a>
-<a href="#">Sohbet odaları kataloğu</a>
-</div>
-<div class="side-box social-box"><div class="side-title social-title-v14">Sohbetix Sosyal Medya Hesaplarımız ✨</div><a class="dash-social-btn x" href="https://x.com/sohbetix" rel="noopener noreferrer" target="_blank"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M18.8 2H22l-7 8 8.2 12H16.8l-5-7.3L5.4 22H2.2l8.1-9.2L2.4 2H9l4.5 6.6L18.8 2Zm-1.1 17.9h1.8L8 4H6.1l11.6 15.9Z"></path></svg><span>X / Twitter</span></a><a class="dash-social-btn tg" href="https://t.me/sohbetix" rel="noopener noreferrer" target="_blank"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M21.6 3.4 18.4 20c-.2 1.2-.9 1.5-1.9.9l-4.9-3.6-2.4 2.3c-.3.3-.5.5-1 .5l.4-5 9-8.1c.4-.3-.1-.5-.6-.2L5.8 13.9 1 12.4c-1-.3-1.1-1 .2-1.5L20 3.7c.9-.3 1.7.2 1.6-.3Z"></path></svg><span>Telegram</span></a><a class="dash-social-btn fb" href="https://facebook.com/sohbetix" rel="noopener noreferrer" target="_blank"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M14 8h3V4.2c-.5-.1-2-.2-3.5-.2C10.4 4 8.2 5.9 8.2 9.4V12H5v4h3.2v8H12v-8h3.3l.5-4H12V9.8C12 8.6 12.3 8 14 8Z"></path></svg><span>Facebook</span></a></div>
-<div class="side-box referral">
-      👍 Referans programı
-    </div>
-</aside>
-</main>
-<footer class="dash-footer">
-<div class="dash-wrap footer-inner">
-<div>© 2026 Sohbetix</div>
-<select class="lang-switch"><option value="tr">Türkçe</option><option value="en">English</option></select>
-</div>
-</footer>
-<script src="app.js"></script></body>
-</html>
+<section class="dash-left"><div class="chat-select v14-select"><strong>Sohbetix</strong><button aria-label="Menüyü aç" id="dashboardSelectBtn" type="button">▾</button><div class="plan-box"><span class="free">☆ ÜCRETSİZ</span><span class="pro">PRO'ya geç</span></div><div class="chat-select-menu" hidden="" id="dashboardSelectMenu"><a href="settings.html">🔧 Ayarlar</a><a href="users-admin.html">👤 Kullanıcılar</a><a href="design.html">🖼️ Tasarım ve ifadeler</a><a href="#">📥 Mesaj geçmişi</a><a href="#">↗ Site için sohbet kutusu al</a></div></div>
+<div class="dash-grid v14-dash-grid"><aside class="dash-menu" id="dashboardMenu"><button onclick="location.href='settings.html'">🔧 Ayarlar</button><button onclick="location.href='users-admin.html'">👤 Kullanıcılar</button><button onclick="location.href='design.html'">🖼️ Tasarım ve ifadeler</button><button type="button">📥 Mesaj geçmişi</button><button class="widget-btn" type="button">↗ Site için sohbet kutusu al ▾</button></aside>
+<section class="stats-card"><div class="stats-head"><span>Toplam kayıtlar</span><span class="online-text">Çevrimiçi 0 / 24</span></div><div class="chart-box"><svg aria-label="Kayıt grafiği" preserveaspectratio="none" viewbox="0 0 600 180"><polyline fill="none" points="20,145 20,90 155,78 290,65 315,64 322,52 520,50 575,49" stroke="#4b9ed0" stroke-width="2"></polyline><polygon fill="#d9edf8" points="20,145 20,90 155,78 290,65 315,64 322,52 520,50 575,49 575,145"></polygon></svg><div class="chart-y"><span>25</span><span>20</span><span>15</span><span>10</span><span>5</span><span>0</span></div><div class="chart-x"><span>01.01</span><span>01.04</span><span>01.07</span><span>01.10</span><span>01.01</span><span>01.04</span><span>01.07</span><span>01.10</span></div></div></section></div><button class="create-chat-btn" type="button">Yeni sohbet oluştur</button></section>
+<aside class="dash-right"><div class="side-box"><a href="#">Durum sayfası</a><a href="#">Yardım ve destek merkezi</a><a href="#">Sohbet odaları kataloğu</a></div><div class="side-box social-box v14-social-box"><div class="side-title">✨ Sohbetix Sosyal Medya Hesaplarımız</div><div class="social-action-list"><a aria-label="Twitter hesabı" class="social-action x" href="#"><svg aria-hidden="true" class="social-icon" viewbox="0 0 24 24"><path d="M18.8 2H22l-7 8 8.2 12H16.8l-5-7.3L5.4 22H2.2l8.1-9.2L2.4 2H9l4.5 6.6L18.8 2Zm-1.1 17.9h1.8L8 4H6.1l11.6 15.9Z"></path></svg><span>x.com/sohbetix</span></a><a aria-label="Telegram hesabı" class="social-action tg" href="#"><svg aria-hidden="true" class="social-icon" viewbox="0 0 24 24"><path d="M21.6 3.4 18.4 20c-.2 1.2-.9 1.5-1.9.9l-4.9-3.6-2.4 2.3c-.3.3-.5.5-1 .5l.4-5 9-8.1c.4-.3-.1-.5-.6-.2L5.8 13.9 1 12.4c-1-.3-1.1-1 .2-1.5L20 3.7c.9-.3 1.7.2 1.6-.3Z"></path></svg><span>t.me/sohbetix</span></a><a aria-label="Facebook hesabı" class="social-action fb" href="#"><svg aria-hidden="true" class="social-icon" viewbox="0 0 24 24"><path d="M14 8h3V4.2c-.5-.1-2-.2-3.5-.2C10.4 4 8.2 5.9 8.2 9.4V12H5v4h3.2v8H12v-8h3.3l.5-4H12V9.8C12 8.6 12.3 8 14 8Z"></path></svg><span>facebook.com/sohbetix</span></a></div></div><div class="side-box referral">👍 Referans programı</div></aside>
+</main><footer class="dash-footer"><div class="dash-wrap footer-inner"><div>© 2026 Sohbetix</div><select class="lang-switch"><option value="tr">Türkçe</option><option value="en">English</option></select></div></footer><script src="app.js"></script></body></html>

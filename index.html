@@ -49,8 +49,34 @@
 <div class="chatbox">
 <div class="chat-title">Sohbetix demo sohbet <span>▾</span></div>
 <div class="chat-layout">
+<aside class="users">
+<div class="online-count">5 çevrimiçi</div>
+<ul class="user-list">
+<li class="user-row" data-user="alex"><span class="mini-avatar gold">👨</span><b class="red user-nick">Mert</b><span class="crown">♛</span></li>
+<li class="user-row" data-user="bella"><span class="mini-avatar gold">👩</span><b class="user-nick">Elif</b><span class="crown">♛</span></li>
+<li class="user-row" data-user="chris"><span class="mini-avatar gold">🧑</span><b class="blue user-nick">Can</b><span class="crown">♛</span></li>
+<li class="user-row" data-user="dana"><span class="mini-avatar gold">👩‍🦰</span><b class="pink user-nick">Zeynep</b><span class="crown">♛</span></li>
+<li class="user-row" data-user="ethan"><span class="mini-avatar gold">🧔</span><b class="user-nick">Emre</b><span class="crown">♛</span></li>
+</ul>
+<div class="user-popover" hidden="" id="userMenu">
+<div class="popover-head">
+<span class="mini-avatar gold">👨</span>
+<b class="red" id="menuName">Mert</b>
+<span class="crown">♛</span>
+</div>
+<div class="popover-body">
+<div class="popover-photo" id="menuPhoto">👨</div>
+<div class="popover-actions">
+<button type="button">＠ Bahset</button>
+<button type="button">💬 Özel sohbet</button>
+<button id="openProfile" type="button">👤 Profil</button>
+<button type="button">🚫 Yoksay</button>
+</div>
+</div>
+</div>
+</aside>
 <div class="chat-main">
-<div class="tabs"><div class="online-count-left">5 çevrimiçi</div>
+<div class="tabs">
 <button class="tab active">Genel</button>
 </div>
 <div class="messages">
@@ -80,31 +106,6 @@
 <span>Mesaj alanı kilitli · yalnızca yöneticiler kullanabilir</span>
 </div>
 </div>
-<aside class="users">
-<ul class="user-list">
-<li class="user-row" data-user="alex"><span class="mini-avatar gold">👨</span><b class="red user-nick">Mert</b><span class="crown">♛</span></li>
-<li class="user-row" data-user="bella"><span class="mini-avatar gold">👩</span><b class="user-nick">Elif</b><span class="crown">♛</span></li>
-<li class="user-row" data-user="chris"><span class="mini-avatar gold">🧑</span><b class="blue user-nick">Can</b><span class="crown">♛</span></li>
-<li class="user-row" data-user="dana"><span class="mini-avatar gold">👩‍🦰</span><b class="pink user-nick">Zeynep</b><span class="crown">♛</span></li>
-<li class="user-row" data-user="ethan"><span class="mini-avatar gold">🧔</span><b class="user-nick">Emre</b><span class="crown">♛</span></li>
-</ul>
-<div class="user-popover" hidden="" id="userMenu">
-<div class="popover-head">
-<span class="mini-avatar gold">👨</span>
-<b class="red" id="menuName">Mert</b>
-<span class="crown">♛</span>
-</div>
-<div class="popover-body">
-<div class="popover-photo" id="menuPhoto">👨</div>
-<div class="popover-actions">
-<button type="button">＠ Bahset</button>
-<button type="button">💬 Özel sohbet</button>
-<button id="openProfile" type="button">👤 Profil</button>
-<button type="button">🚫 Yoksay</button>
-</div>
-</div>
-</div>
-</aside>
 </div>
 </div>
 </section>
@@ -131,12 +132,12 @@
 <span class="vip-badge">VIP</span>
 <span class="online-badge">ÇEVRİMİÇİ</span>
 </div>
-<div id="profileLocation">United States, Medford</div>
-<div id="profileStatus">It's Complicated</div>
+<div id="profileLocation">Türkiye, İstanbul</div>
+<div id="profileStatus">İlişkisi karışık</div>
 <div class="admin-text">Yönetici</div>
 <button class="open-private">Özel sohbet aç</button>
 <div class="about-title">Hakkımda:</div>
-<div id="profileAbout">Animal lover and amateur chef at heart. I find joy in little things, like my cat's daily antics and perfecting my lasagna recipe.</div>
+<div id="profileAbout">Hayvanları seven ve amatör aşçı olan biriyim. Kedimin günlük maceraları ve güzel bir lazanya yapmak beni mutlu eder.</div>
 <div class="gift-wrap">
 <button class="gift-btn" id="giftBtn" type="button">🎁 Hediye gönder ▾</button>
 <div class="gift-menu" hidden="" id="giftMenu">
@@ -220,17 +221,17 @@
 <div class="member-photo placeholder">📷</div>
 <a href="#">👤 Derya006</a>
 </div>
-<div class="member-card" data-name="Akın 1234">
+<div class="member-card" data-name="Akshay 1234">
 <div class="member-photo art">🎨</div>
-<a href="#">👤 Akın 1234</a>
+<a href="#">👤 Akshay 1234</a>
 </div>
 <div class="member-card" data-name="Ece">
 <div class="member-photo placeholder">📷</div>
 <a href="#">👤 Ece</a>
 </div>
-<div class="member-card" data-name="SohbetixUyesi">
+<div class="member-card" data-name="SohbetixÜyesi">
 <div class="member-photo">🙂</div>
-<a href="#">👤 SohbetixUyesi</a>
+<a href="#">👤 SohbetixÜyesi</a>
 </div>
 </div>
 </section>
