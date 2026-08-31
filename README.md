@@ -1,10 +1,9 @@
-# Sohbetix V13
-- Türkçe rumuzlar
-- Özel oda sekmesi kapalı
-- Tüm sayfalarda ortak Türkçe/English seçimi
-- SVG Twitter/X, Facebook, Telegram ikonları
-- Şeffaf Sohbetix coin görseli
-- 200 coin = 100 TL; miktara göre otomatik hesaplama
-- Havale/EFT ve BTC ödeme seçenekleri
-- Turuncu vurgu yerine kan kırmızısı (#8B0000)
-- Ödeme ekranı şu an demo; gerçek ödeme sağlayıcısı sonraki aşamada bağlanacak
+# Sohbetix V14
+V14 değişiklikleri:
+- Ana sayfadaki "5 çevrimiçi" alanı sağ kullanıcı sütunundan sol sohbet alanına taşındı.
+- Türkçe/English dili tüm sayfalarda ortak localStorage seçimiyle çalışır; eksik çeviriler genişletildi.
+- Kontrol panelindeki Sohbetix yanındaki ok aktif: menüleri küçültür/açar.
+- "Sohbetix internette" yerine "Sohbetix Sosyal Medya Hesaplarımız ✨" eklendi.
+- X/Twitter, Telegram ve Facebook gerçek SVG ikonlu butonlara çevrildi.
+- open-chat.html ana sayfadaki sohbet görünümüne göre tamamlandı.
+- V13 coin ve ödeme özellikleri korunmuştur.

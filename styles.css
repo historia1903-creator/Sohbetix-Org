@@ -638,3 +638,88 @@ footer,.admin-footer,.dash-footer,.control-footer{
 .btc-logo{width:45px;height:45px;border-radius:50%;display:grid;place-items:center;background:#f7931a;color:#fff;font-weight:800;font-size:30px}
 .payment-notice{margin-top:18px;border:1px solid #e5c4c8;background:#fff6f7;color:#5f1018;border-radius:10px;padding:12px}.info-blue{border-left:4px solid var(--blood)!important}
 @media(max-width:700px){.v13-coins{display:block!important}.coins-menu{width:auto!important;margin-bottom:20px}.coin-purchase-card{padding:18px;border-radius:14px}.coin-title-row img{width:58px;height:58px}.coin-title-row h1{font-size:24px}.payment-tabs{width:100%}.payment-tab{flex:1;justify-content:center}}
+
+/* ===== SOHBETIX V14 ===== */
+.online-count-left{
+  color:#6b7280;
+  font-size:12px;
+  font-weight:750;
+  display:inline-flex;
+  align-items:center;
+  justify-content:flex-start;
+  min-height:34px;
+  padding:0 10px 0 2px;
+  margin-right:auto;
+  white-space:nowrap;
+}
+.chat-main .tabs{align-items:center}
+.users .online-count{display:none!important}
+
+/* Dashboard Sohbetix aç/kapat */
+.chat-select-toggle{
+  width:40px;height:40px;border:1px solid #aeb7c2;border-radius:8px;background:#fff;
+  cursor:pointer;font-size:18px;display:inline-grid;place-items:center;
+}
+.dashboard-collapsed #dashboardMenuArea,
+.dashboard-collapsed #dashboardCreateChat,
+.dashboard-collapsed #dashboardSideArea{display:none!important}
+.dashboard-collapsed .chat-select{margin-bottom:0}
+.dashboard-collapsed .chat-select-toggle{transform:rotate(-90deg)}
+
+/* Dashboard social */
+.social-title-v14{
+  font-weight:800!important;
+  display:flex;align-items:center;gap:6px;
+}
+.dash-social-btn{
+  display:flex!important;align-items:center;gap:11px;
+  margin:9px 0;padding:11px 12px!important;
+  border:1px solid #e1e6ec!important;border-radius:11px!important;
+  background:#fff;color:#334155!important;text-decoration:none!important;
+  transition:.15s ease;
+}
+.dash-social-btn:hover{transform:translateY(-1px);box-shadow:0 5px 16px rgba(15,23,42,.08)}
+.dash-social-btn svg{width:23px;height:23px;fill:currentColor;flex:0 0 23px}
+.dash-social-btn.x{color:#111!important}
+.dash-social-btn.tg{color:#229ED9!important}
+.dash-social-btn.fb{color:#1877F2!important}
+
+/* Open chat now mirrors homepage chat */
+.openchat-v14{min-height:100vh;background:#f6f8fb;display:flex;flex-direction:column}
+.openchat-v14 .openchat-top{
+  background:var(--blood)!important;
+  min-height:54px;padding:14px 18px;font-size:18px;border-radius:0
+}
+.openchat-chatbox{
+  flex:1;background:#fff;display:flex;flex-direction:column;min-height:calc(100vh - 54px);
+}
+.openchat-toolbar{
+  min-height:56px;padding:8px 14px;
+  border-bottom:1px solid var(--line);
+  background:#f7f9fb;
+  display:flex;align-items:center;gap:8px
+}
+.openchat-toolbar .tab{margin-left:0}
+.openchat-layout{flex:1;grid-template-columns:minmax(0,1fr) 185px}
+.openchat-messages{height:auto;min-height:520px;max-height:none;flex:1}
+.openchat-v14 .chat-main{display:flex;flex-direction:column}
+.openchat-v14 .messages{flex:1}
+.openchat-users-v14{border-left:1px solid var(--line);background:#fbfcfd;border-radius:0}
+.openchat-users-v14 .user-list{list-style:none;margin:0;padding:10px}
+.openchat-users-v14 .user-list li{display:flex;align-items:center;gap:7px;padding:8px 4px}
+.openchat-users-v14 .openchat-search{margin-top:auto;border-top:1px solid var(--line)}
+.openchat-v14 .locked-composer{border-radius:0}
+
+/* Mobil */
+@media(max-width:760px){
+  .online-count-left{font-size:11px;padding-left:0}
+  .chat-layout{grid-template-columns:minmax(0,1fr) 31%!important}
+  .users{min-width:0}
+  .dash-social-btn{font-size:14px}
+  .openchat-layout{grid-template-columns:minmax(0,1fr) 31%!important}
+  .openchat-messages{min-height:calc(100vh - 170px);padding:10px}
+  .openchat-users-v14 .user-list{padding:7px 4px}
+  .openchat-users-v14 .user-list li{font-size:10px;gap:4px;padding:7px 2px}
+  .openchat-users-v14 .openchat-search{padding:6px}
+  .openchat-users-v14 .openchat-search input{font-size:11px}
+}

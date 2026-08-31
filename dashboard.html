@@ -21,13 +21,13 @@
 <section class="dash-left">
 <div class="chat-select">
 <strong>Sohbetix</strong>
-<button type="button">▾</button>
+<button aria-expanded="true" class="chat-select-toggle" id="dashboardMenuToggle" type="button">▾</button>
 <div class="plan-box">
 <span class="free">☆ ÜCRETSİZ</span>
 <span class="pro">PRO'ya geç</span>
 </div>
 </div>
-<div class="dash-grid">
+<div class="dash-grid" id="dashboardMenuArea">
 <aside class="dash-menu">
 <button onclick="location.href='settings.html'">🔧 Ayarlar</button>
 <button onclick="location.href='users-admin.html'">👤 Kullanıcılar</button>
@@ -50,20 +50,15 @@
 </div>
 </section>
 </div>
-<button class="create-chat-btn" type="button">Yeni sohbet oluştur</button>
+<button class="create-chat-btn" id="dashboardCreateChat" type="button">Yeni sohbet oluştur</button>
 </section>
-<aside class="dash-right">
+<aside class="dash-right" id="dashboardSideArea">
 <div class="side-box">
 <a href="#">Durum sayfası</a>
 <a href="#">Yardım ve destek merkezi</a>
 <a href="#">Sohbet odaları kataloğu</a>
 </div>
-<div class="side-box social-box">
-<div class="side-title">Sohbetix internette</div>
-<a href="#">🐦 x.com/sohbetix</a>
-<a href="#">✈ t.me/sohbetix</a>
-<a href="#">f facebook.com/sohbetix</a>
-</div>
+<div class="side-box social-box"><div class="side-title social-title-v14">Sohbetix Sosyal Medya Hesaplarımız ✨</div><a class="dash-social-btn x" href="https://x.com/sohbetix" rel="noopener noreferrer" target="_blank"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M18.8 2H22l-7 8 8.2 12H16.8l-5-7.3L5.4 22H2.2l8.1-9.2L2.4 2H9l4.5 6.6L18.8 2Zm-1.1 17.9h1.8L8 4H6.1l11.6 15.9Z"></path></svg><span>X / Twitter</span></a><a class="dash-social-btn tg" href="https://t.me/sohbetix" rel="noopener noreferrer" target="_blank"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M21.6 3.4 18.4 20c-.2 1.2-.9 1.5-1.9.9l-4.9-3.6-2.4 2.3c-.3.3-.5.5-1 .5l.4-5 9-8.1c.4-.3-.1-.5-.6-.2L5.8 13.9 1 12.4c-1-.3-1.1-1 .2-1.5L20 3.7c.9-.3 1.7.2 1.6-.3Z"></path></svg><span>Telegram</span></a><a class="dash-social-btn fb" href="https://facebook.com/sohbetix" rel="noopener noreferrer" target="_blank"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M14 8h3V4.2c-.5-.1-2-.2-3.5-.2C10.4 4 8.2 5.9 8.2 9.4V12H5v4h3.2v8H12v-8h3.3l.5-4H12V9.8C12 8.6 12.3 8 14 8Z"></path></svg><span>Facebook</span></a></div>
 <div class="side-box referral">
       👍 Referans programı
     </div>
