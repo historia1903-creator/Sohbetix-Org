@@ -707,3 +707,108 @@ html,body{max-width:100%;overflow-x:hidden}
   .live-message-v15{grid-template-columns:32px minmax(0,1fr);gap:7px}.live-avatar-v15{width:32px;height:32px}.live-message-meta-v15 b{font-size:12px}.live-message-body-v15 p{font-size:12px}
   .room-profile-hint-v15{font-size:9px}.room-send-v15{padding:7px 11px}.room-enter-v15{padding:7px 12px}
 }
+
+/* ===== SOHBETIX V16 CHAT TUNING ===== */
+/* Sol kullanıcı alanı V15'e göre yaklaşık %10 daha dar: 23% -> 21%. */
+.room-grid-v15{
+  grid-template-columns:minmax(116px,21%) minmax(0,79%) !important;
+}
+.room-users-v15{
+  overflow:hidden;
+}
+.room-user-list-v15 li{
+  align-items:flex-start !important;
+}
+.room-user-list-v15 b{
+  display:block;
+  min-width:0;
+  white-space:normal !important;
+  overflow:visible !important;
+  text-overflow:clip !important;
+  overflow-wrap:anywhere;
+  word-break:break-word;
+  line-height:1.15;
+}
+
+/* Girişten önce görünen Bismillah + 3'er Türk bayrağı. */
+.prejoin-blessing-v16{
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  flex-wrap:wrap;
+  gap:10px;
+  padding:16px 18px 12px;
+  border-bottom:1px solid #eceff2;
+  background:#fff;
+  color:#0b39d6;
+}
+.prejoin-blessing-v16[hidden]{display:none!important}
+.prejoin-blessing-v16 strong{
+  font-size:22px;
+  line-height:1.2;
+  font-weight:950;
+  letter-spacing:.1px;
+  color:#0b39d6;
+  text-shadow:0 0 .01px currentColor;
+}
+.flag-group-v16{
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  flex:0 0 auto;
+}
+.flag-group-v16 span{
+  display:inline-block;
+  font-size:34px;
+  line-height:1;
+  filter:saturate(1.1);
+}
+
+/* Katıldı / ayrıldı sistem mesajları net, kalın ve siyah. */
+.system-message-v15,
+.system-message-v15.leave{
+  color:#111 !important;
+  font-style:normal !important;
+  font-weight:900 !important;
+}
+.system-nick-v15{
+  color:#111 !important;
+  font-weight:950 !important;
+  font-size:inherit;
+}
+.system-message-v15 span{
+  color:#111 !important;
+  font-weight:900 !important;
+}
+.system-message-v15 small{
+  color:#6f7782 !important;
+  font-weight:700 !important;
+}
+
+@media(max-width:760px){
+  .room-grid-v15{
+    grid-template-columns:minmax(105px,21%) minmax(0,79%) !important;
+  }
+  .room-user-list-v15 b{
+    font-size:10px !important;
+    line-height:1.12 !important;
+  }
+  .prejoin-blessing-v16{
+    gap:6px;
+    padding:12px 10px 10px;
+  }
+  .prejoin-blessing-v16 strong{
+    font-size:15px;
+    overflow-wrap:anywhere;
+  }
+  .flag-group-v16{gap:2px}
+  .flag-group-v16 span{font-size:23px}
+}
+
+@media(max-width:430px){
+  .room-grid-v15{
+    grid-template-columns:minmax(96px,22%) minmax(0,78%) !important;
+  }
+  .prejoin-blessing-v16 strong{font-size:13px}
+  .flag-group-v16 span{font-size:20px}
+}

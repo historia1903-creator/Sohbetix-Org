@@ -1,9 +1,9 @@
 (() => {
   'use strict';
 
-  const STORAGE_MESSAGES = 'sohbetix-v15-room-messages';
-  const STORAGE_PRESENCE = 'sohbetix-v15-room-presence';
-  const SESSION_NICK = 'sohbetix-v15-current-nick';
+  const STORAGE_MESSAGES = 'sohbetix-v16-room-messages';
+  const STORAGE_PRESENCE = 'sohbetix-v16-room-presence';
+  const SESSION_NICK = 'sohbetix-v16-current-nick';
   const MAX_MESSAGES = 120;
   const PRESENCE_TTL = 16000;
   const HEARTBEAT_MS = 5000;
@@ -16,7 +16,7 @@
     nickCounter: $('nickCounter'), captchaToggle: $('captchaToggle'), captchaBox: $('captchaQuestionBox'),
     captchaQuestion: $('captchaQuestion'), captchaAnswer: $('captchaAnswer'), captchaVerify: $('captchaVerify'),
     captchaStatus: $('captchaStatus'), joinBtn: $('joinChatBtn'), roomAccount: $('roomAccount'), roomAccountNick: $('roomAccountNick'),
-    roomAccountBtn: $('roomAccountBtn'), roomAccountMenu: $('roomAccountMenu'), leaveBtn: $('leaveRoomBtn')
+    roomAccountBtn: $('roomAccountBtn'), roomAccountMenu: $('roomAccountMenu'), leaveBtn: $('leaveRoomBtn'), preJoinBlessing: $('preJoinBlessing')
   };
 
   const clientId = (crypto && crypto.randomUUID) ? crypto.randomUUID() : `client-${Date.now()}-${Math.random().toString(36).slice(2)}`;
@@ -119,6 +119,7 @@
     els.guestFooter.hidden = on;
     els.messageForm.hidden = !on;
     els.roomAccount.hidden = !on;
+    if (els.preJoinBlessing) els.preJoinBlessing.hidden = on;
     if (on) {
       els.roomAccountNick.textContent = currentNick;
       setTimeout(() => els.messageInput.focus(), 50);
