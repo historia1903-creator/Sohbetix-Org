@@ -1046,3 +1046,88 @@ body.room-page-v15{
 
 /* V18 functional settings */
 .domain-error-v18{margin:10px 0;color:#b00020;font-weight:800}.disabled-own-domain-v18{opacity:.62}.chat-disabled-v18{margin:18px;padding:16px;border:1px solid #efb4b4;background:#fff0f0;color:#8f0000;font-weight:900;border-radius:10px;text-align:center}.live-image-v18{max-width:min(520px,92%);max-height:420px;border-radius:10px;border:1px solid #dfe4ea;display:block;margin-top:7px}.settings-char-v18{font-size:11px;color:#7c8796}.private-toast-v18{position:fixed;right:16px;bottom:84px;background:#222;color:#fff;padding:10px 14px;border-radius:10px;z-index:99;font-size:12px;box-shadow:0 8px 30px #0002}
+
+
+/* ===== V18 MOBILE FIX: mesaj kutusu ve chat kabuğu mobilde sabit =====
+   Mobil klavye açıldığında visualViewport yüksekliği JS ile --room-viewport-height
+   değişkenine yazılır. Böylece sayfa uzamaz; yalnızca mesaj listesi küçülüp kayar. */
+html.room-fixed-viewport,
+html.room-fixed-viewport body.room-page-v15{
+  width:100% !important;
+  height:var(--room-viewport-height,100dvh) !important;
+  min-height:0 !important;
+  max-height:var(--room-viewport-height,100dvh) !important;
+  overflow:hidden !important;
+  overscroll-behavior:none !important;
+}
+html.room-fixed-viewport body.room-page-v15{
+  position:fixed !important;
+  top:var(--room-viewport-top,0px) !important;
+  left:0 !important;
+  right:0 !important;
+  bottom:auto !important;
+}
+html.room-fixed-viewport .room-shell-v15,
+html.room-fixed-viewport .room-card-v15{
+  width:100% !important;
+  height:100% !important;
+  min-height:0 !important;
+  max-height:100% !important;
+  overflow:hidden !important;
+}
+html.room-fixed-viewport .room-card-v15{
+  display:grid !important;
+  grid-template-rows:44px minmax(0,1fr) !important;
+}
+html.room-fixed-viewport .room-grid-v15{
+  height:100% !important;
+  min-height:0 !important;
+  max-height:100% !important;
+  overflow:hidden !important;
+}
+html.room-fixed-viewport .room-users-v15,
+html.room-fixed-viewport .room-chat-v15{
+  height:100% !important;
+  min-height:0 !important;
+  max-height:100% !important;
+  overflow:hidden !important;
+}
+html.room-fixed-viewport .room-chat-v15{
+  display:grid !important;
+  grid-template-rows:auto auto minmax(0,1fr) auto !important;
+}
+html.room-fixed-viewport .room-messages-v15{
+  min-height:0 !important;
+  height:100% !important;
+  max-height:100% !important;
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+  -webkit-overflow-scrolling:touch !important;
+  overscroll-behavior-y:contain !important;
+}
+html.room-fixed-viewport .room-composer-v15,
+html.room-fixed-viewport .room-guest-footer-v15{
+  position:relative !important;
+  flex:none !important;
+  margin:0 !important;
+  z-index:20 !important;
+}
+html.room-fixed-viewport .room-compose-box-v15 textarea{
+  resize:none !important;
+}
+@media(max-width:760px){
+  html.room-fixed-viewport .room-card-v15{
+    grid-template-rows:48px minmax(0,1fr) !important;
+  }
+  html.room-fixed-viewport .room-titlebar-v15{
+    height:48px !important;
+    min-height:48px !important;
+    max-height:48px !important;
+  }
+  html.room-fixed-viewport .room-grid-v15{
+    grid-template-columns:minmax(88px,19%) minmax(0,81%) !important;
+  }
+  html.room-fixed-viewport .room-composer-v15{
+    padding-bottom:max(5px,env(safe-area-inset-bottom)) !important;
+  }
+}

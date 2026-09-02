@@ -298,3 +298,37 @@
     setLoggedInState(false);
   }
 })();
+
+
+/* V18 mobile viewport fix: keeps header/users/composer fixed and lets only messages scroll. */
+(() => {
+  'use strict';
+  const root = document.documentElement;
+  root.classList.add('room-fixed-viewport');
+
+  let raf = 0;
+  function syncRoomViewport() {
+    cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(() => {
+      const vv = window.visualViewport;
+      const height = vv ? vv.height : window.innerHeight;
+      const top = vv ? vv.offsetTop : 0;
+      root.style.setProperty('--room-viewport-height', `${Math.max(320, Math.round(height))}px`);
+      root.style.setProperty('--room-viewport-top', `${Math.max(0, Math.round(top))}px`);
+    });
+  }
+
+  syncRoomViewport();
+  window.addEventListener('resize', syncRoomViewport, {passive:true});
+  window.addEventListener('orientationchange', syncRoomViewport, {passive:true});
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', syncRoomViewport, {passive:true});
+    window.visualViewport.addEventListener('scroll', syncRoomViewport, {passive:true});
+  }
+
+  const input = document.getElementById('messageInput');
+  if (input) {
+    input.addEventListener('focus', () => setTimeout(syncRoomViewport, 60));
+    input.addEventListener('blur', () => setTimeout(syncRoomViewport, 60));
+  }
+})();
