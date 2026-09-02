@@ -812,3 +812,131 @@ html,body{max-width:100%;overflow-x:hidden}
   .prejoin-blessing-v16 strong{font-size:13px}
   .flag-group-v16 span{font-size:20px}
 }
+
+/* ===== SOHBETIX V17: SABİT CHAT + 10.000 MESAJ BOT TEMİZLİĞİ ===== */
+/* Tarayıcı sayfası büyümez; sadece mesaj panelinin içi kayar. */
+html:has(body.room-page-v15),
+body.room-page-v15{
+  height:100%;
+  min-height:100%;
+  overflow:hidden !important;
+}
+body.room-page-v15{
+  width:100%;
+}
+.room-shell-v15,
+.room-card-v15{
+  height:100vh !important;
+  height:100dvh !important;
+  min-height:0 !important;
+  max-height:100vh !important;
+  max-height:100dvh !important;
+  overflow:hidden !important;
+}
+.room-grid-v15{
+  min-height:0 !important;
+  height:calc(100vh - 44px) !important;
+  height:calc(100dvh - 44px) !important;
+  overflow:hidden !important;
+  grid-template-columns:minmax(105px,19%) minmax(0,81%) !important;
+}
+.room-users-v15,
+.room-chat-v15{
+  min-height:0 !important;
+  height:100% !important;
+  overflow:hidden !important;
+}
+.room-user-list-v15{
+  flex:1 1 auto !important;
+  min-height:0 !important;
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+}
+.room-chat-v15{
+  display:grid !important;
+  grid-template-rows:auto auto minmax(0,1fr) auto !important;
+}
+.prejoin-blessing-v16[hidden]{display:none!important}
+.room-messages-v15{
+  min-height:0 !important;
+  height:auto !important;
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+  overscroll-behavior:contain;
+  scrollbar-gutter:stable;
+}
+.room-guest-footer-v15,
+.room-composer-v15{
+  flex:0 0 auto !important;
+  position:relative;
+  z-index:3;
+}
+.room-compose-box-v15 textarea{
+  resize:none !important;
+  height:48px !important;
+  min-height:48px !important;
+  max-height:48px !important;
+}
+
+/* Sohbetix Bot: neon pembe, kalın ve sabit kullanıcı listesinde. */
+.room-bot-user-v17 b,
+.bot-message-meta-v17 b{
+  color:#ff1493 !important;
+  font-weight:950 !important;
+  text-shadow:0 0 5px rgba(255,20,147,.48),0 0 12px rgba(255,20,147,.24);
+}
+.room-bot-avatar-v17,
+.bot-avatar-v17{
+  background:linear-gradient(135deg,#ff4db2,#ff1493) !important;
+  border-color:#ff1493 !important;
+  color:#fff !important;
+  font-weight:950 !important;
+  box-shadow:0 0 10px rgba(255,20,147,.35);
+}
+.bot-message-v17{
+  display:grid;
+  grid-template-columns:34px minmax(0,1fr);
+  gap:9px;
+  margin:10px 0;
+  padding:8px 10px;
+  border-left:3px solid #ff1493;
+  background:rgba(255,20,147,.055);
+  border-radius:6px;
+}
+.bot-avatar-v17{
+  width:34px;height:34px;border-radius:8px;display:grid;place-items:center;
+}
+.bot-message-meta-v17{display:flex;align-items:baseline;gap:7px}
+.bot-message-meta-v17 b{font-size:13px}
+.bot-message-meta-v17 small{font-size:10px;color:#969fa9}
+.bot-message-body-v17 p{
+  margin:3px 0 0;
+  color:#ff1493 !important;
+  font-weight:950 !important;
+  line-height:1.45;
+  overflow-wrap:anywhere;
+  text-shadow:0 0 4px rgba(255,20,147,.18);
+}
+
+/* Katıldı / ayrıldı bildirimleri kalın siyah. */
+.system-message-v15,
+.system-message-v15.leave,
+.system-message-v15 span{
+  color:#111 !important;
+  font-weight:900 !important;
+  font-style:normal !important;
+}
+.system-message-v15 .system-nick-v15{
+  font-weight:950 !important;
+}
+
+@media(max-width:760px){
+  .room-grid-v15{
+    height:calc(100vh - 48px) !important;
+    height:calc(100dvh - 48px) !important;
+    grid-template-columns:minmax(90px,19%) minmax(0,81%) !important;
+  }
+  .room-bot-user-v17 b{font-size:9px !important}
+  .bot-message-v17{grid-template-columns:30px minmax(0,1fr);gap:7px;padding:7px 8px}
+  .bot-avatar-v17{width:30px;height:30px}
+}

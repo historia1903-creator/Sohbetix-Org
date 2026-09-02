@@ -1,10 +1,12 @@
 (() => {
   'use strict';
 
-  const STORAGE_MESSAGES = 'sohbetix-v16-room-messages';
-  const STORAGE_PRESENCE = 'sohbetix-v16-room-presence';
-  const SESSION_NICK = 'sohbetix-v16-current-nick';
-  const MAX_MESSAGES = 120;
+  const STORAGE_MESSAGES = 'sohbetix-v17-room-messages';
+  const STORAGE_PRESENCE = 'sohbetix-v17-room-presence';
+  const SESSION_NICK = 'sohbetix-v17-current-nick';
+  const MAX_MESSAGES = 10000;
+  const BOT_NICK = 'Sohbetix Bot';
+  const BOT_PURGE_TEXT = 'Eski 10.000 tane mesaj kalıcı olarak silindi!';
   const PRESENCE_TTL = 16000;
   const HEARTBEAT_MS = 5000;
 
@@ -29,7 +31,7 @@
     try { return raw ? JSON.parse(raw) : fallback; } catch { return fallback; }
   }
   function readMessages() { return safeParse(localStorage.getItem(STORAGE_MESSAGES), []); }
-  function writeMessages(list) { localStorage.setItem(STORAGE_MESSAGES, JSON.stringify(list.slice(-MAX_MESSAGES))); }
+  function writeMessages(list) { localStorage.setItem(STORAGE_MESSAGES, JSON.stringify(list)); }
   function readPresence() { return safeParse(localStorage.getItem(STORAGE_PRESENCE), {}); }
   function writePresence(obj) { localStorage.setItem(STORAGE_PRESENCE, JSON.stringify(obj)); }
   function nowTime() { return new Date().toLocaleTimeString('tr-TR', {hour:'2-digit', minute:'2-digit'}); }
@@ -49,8 +51,23 @@
   }
 
   function addMessage(type, data = {}) {
-    const list = readMessages();
+    let list = readMessages();
     list.push({id:`m-${Date.now()}-${Math.random().toString(36).slice(2)}`, type, at:Date.now(), time:nowTime(), ...data});
+
+    // 10.000 normal sohbet mesajına ulaşıldığında eski geçmişi tamamen temizle.
+    // Katılma/ayrılma ve bot bildirimleri 10.000 sayacına dahil edilmez.
+    const normalMessageCount = list.reduce((count, item) => count + (item.type === 'chat' ? 1 : 0), 0);
+    if (normalMessageCount >= MAX_MESSAGES) {
+      list = [{
+        id:`m-${Date.now()}-sohbetix-bot-purge`,
+        type:'bot',
+        nick:BOT_NICK,
+        text:BOT_PURGE_TEXT,
+        at:Date.now(),
+        time:nowTime()
+      }];
+    }
+
     writeMessages(list);
     renderMessages();
   }
@@ -67,6 +84,9 @@
       }
       if (msg.type === 'leave') {
         return `<div class="system-message-v15 leave"><button class="system-nick-v15" type="button">@${escapeHtml(msg.nick)}</button> <span>bizi terk ediyor...</span> <small>${escapeHtml(msg.time || '')}</small></div>`;
+      }
+      if (msg.type === 'bot') {
+        return `<article class="bot-message-v17"><div class="bot-avatar-v17">S</div><div class="bot-message-body-v17"><div class="bot-message-meta-v17"><b>${escapeHtml(BOT_NICK)}</b><small>${escapeHtml(msg.time || '')}</small></div><p>${escapeHtml(msg.text || BOT_PURGE_TEXT)}</p></div></article>`;
       }
       return `<article class="live-message-v15"><div class="live-avatar-v15" style="--user-color:${makeColor(msg.nick || '')}">${escapeHtml(makeAvatar(msg.nick || ''))}</div><div class="live-message-body-v15"><div class="live-message-meta-v15"><b style="color:${makeColor(msg.nick || '')}">${escapeHtml(msg.nick || '')}</b><small>${escapeHtml(msg.time || '')}</small></div><p>${escapeHtml(msg.text || '')}</p></div></article>`;
     }).join('');
@@ -88,7 +108,9 @@
     const users = Object.values(presence).sort((a,b) => String(a.nick).localeCompare(String(b.nick), 'tr'));
     els.onlineCount.textContent = `${users.length} çevrimiçi`;
     const filtered = users.filter(u => !q || String(u.nick).toLocaleLowerCase('tr-TR').includes(q));
-    els.userList.innerHTML = filtered.map(u => `<li><span class="room-mini-avatar-v15" style="--user-color:${makeColor(u.nick)}">${escapeHtml(makeAvatar(u.nick))}</span><b style="color:${makeColor(u.nick)}">${escapeHtml(u.nick)}</b></li>`).join('');
+    const botMatches = !q || BOT_NICK.toLocaleLowerCase('tr-TR').includes(q);
+    const botRow = botMatches ? `<li class="room-bot-user-v17"><span class="room-mini-avatar-v15 room-bot-avatar-v17">S</span><b>${escapeHtml(BOT_NICK)}</b></li>` : '';
+    els.userList.innerHTML = botRow + filtered.map(u => `<li><span class="room-mini-avatar-v15" style="--user-color:${makeColor(u.nick)}">${escapeHtml(makeAvatar(u.nick))}</span><b style="color:${makeColor(u.nick)}">${escapeHtml(u.nick)}</b></li>`).join('');
   }
 
   function heartbeatPresence() {
