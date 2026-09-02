@@ -1,4 +1,89 @@
 <!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"/>
+  <title>Sohbetix Sohbet</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <meta name="theme-color" content="#980000"/>
+</head>
+<body class="room-page-v15">
+  <main class="room-shell-v15" aria-label="Sohbetix sohbet odası">
+    <section class="room-card-v15">
+      <header class="room-titlebar-v15">
+        <button class="room-title-btn-v15" id="roomTitleBtn" type="button">Sohbetix <span>▾</span></button>
+        <div class="room-account-v15" id="roomAccount" hidden>
+          <button id="roomAccountBtn" type="button"><span class="room-account-icon">👤</span><span id="roomAccountNick"></span><span>▾</span></button>
+          <div class="room-account-menu-v15" id="roomAccountMenu" hidden>
+            <button id="leaveRoomBtn" type="button">Sohbetten çık</button>
+          </div>
+        </div>
+      </header>
 
-<html lang="tr"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><title>Sohbetix Sohbet</title><link href="styles.css" rel="stylesheet"/><meta content="#ffffff" name="theme-color"/></head>
-<body class="openchat-page v14-openchat-page"><div class="wrap openchat-shell"><div class="chatbox standalone-chat"><div class="chat-title">Sohbetix demo sohbet <span>▾</span></div><div class="chat-layout openchat-layout-v14"><section class="chat-main"><div class="tabs"><button class="tab active">Ana sayfa</button></div><div class="messages openchat-messages"><div class="message"><div class="avatar gold"><div class="avatar-inner">👨</div></div><div><div><b class="red">Mert</b> <small>23:00</small></div><p><b>Herkese merhaba! Sohbetix'e hoş geldiniz 😺</b></p></div></div><div class="message"><div class="avatar gold"><div class="avatar-inner">👩</div></div><div><div><b>Elif</b> <small>23:00</small></div><p>Bugün sohbet odası baya hareketli görünüyor 😄</p></div></div><div class="message"><div class="avatar gold"><div class="avatar-inner">🧑</div></div><div><div><b class="blue">Can</b> <small>23:00</small></div><p>Yeni tasarım çok temiz olmuş. Mobil sürümü de deneyelim 📱</p></div></div><div class="message"><div class="avatar gold"><div class="avatar-inner">👩‍🦰</div></div><div><div><b class="pink">Zeynep</b> <small>23:00</small></div><p>VIP rozetleri ve özel odalar da gelirse çok iyi olur ✨</p></div></div><div class="message"><div class="avatar gold"><div class="avatar-inner">🧔</div></div><div><div><b>Emre</b> <small>23:00</small></div><p><b>Hazırım! Sohbetix V2 başladı 🚀</b></p></div></div></div><div class="locked-composer"><span class="lock">🔒</span><span>Mesaj alanı kilitli · yalnızca yöneticiler kullanabilir</span></div></section><aside class="users openchat-users-panel"><div class="online-count">5 çevrimiçi</div><div class="openchat-search-v14"><input placeholder="Rumuz arama" type="text"/></div><ul class="user-list"><li class="user-row" data-user="alex"><span class="mini-avatar gold">👨</span><b class="red user-nick">Mert</b><span class="crown">♛</span></li><li class="user-row" data-user="bella"><span class="mini-avatar gold">👩</span><b class="user-nick">Elif</b><span class="crown">♛</span></li><li class="user-row" data-user="chris"><span class="mini-avatar gold">🧑</span><b class="blue user-nick">Can</b><span class="crown">♛</span></li><li class="user-row" data-user="dana"><span class="mini-avatar gold">👩‍🦰</span><b class="pink user-nick">Zeynep</b><span class="crown">♛</span></li><li class="user-row" data-user="ethan"><span class="mini-avatar gold">🧔</span><b class="user-nick">Emre</b><span class="crown">♛</span></li></ul></aside></div></div></div><script src="app.js"></script></body></html>
+      <div class="room-grid-v15">
+        <aside class="room-users-v15">
+          <div class="room-online-v15"><span id="onlineCount">0 çevrimiçi</span></div>
+          <div class="room-search-v15">
+            <input id="nickSearch" type="search" placeholder="Rumuz ara" maxlength="24" autocomplete="off"/>
+          </div>
+          <ul class="room-user-list-v15" id="roomUserList" aria-live="polite"></ul>
+        </aside>
+
+        <section class="room-chat-v15">
+          <div class="room-tabs-v15"><button class="active" type="button">Ana sayfa</button></div>
+          <div class="room-messages-v15" id="roomMessages" aria-live="polite"></div>
+
+          <div class="room-guest-footer-v15" id="guestFooter">
+            <button class="room-enter-v15" id="openJoinModal" type="button">Sohbete gir</button>
+          </div>
+
+          <form class="room-composer-v15" id="messageForm" hidden>
+            <div class="room-compose-box-v15">
+              <textarea id="messageInput" maxlength="512" rows="2" placeholder="Mesajını yaz..."></textarea>
+              <button class="room-smiley-v15" type="button" aria-label="İfade">☺</button>
+            </div>
+            <div class="room-compose-actions-v15">
+              <span class="room-profile-hint-v15">👤 Profilini kaydet</span>
+              <button class="room-send-v15" type="submit">Gönder</button>
+            </div>
+          </form>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <div class="join-overlay-v15" id="joinOverlay" hidden>
+    <section class="join-modal-v15" role="dialog" aria-modal="true" aria-labelledby="joinTitle">
+      <header class="join-modal-title-v15"><span id="joinTitle">Sohbete gir</span><button id="closeJoinModal" type="button" aria-label="Kapat">×</button></header>
+      <div class="join-modal-body-v15">
+        <h2>Hesap ile giriş</h2>
+        <div class="join-oauth-v15">
+          <button class="disabled-auth-v15" type="button" disabled aria-label="E-posta ile giriş pasif">@</button>
+          <button class="disabled-auth-v15 google-v15" type="button" disabled aria-label="Google ile giriş pasif"><span>G</span></button>
+        </div>
+        <div class="join-or-v15"><span></span><b>veya</b><span></span></div>
+        <h2>Misafir girişi</h2>
+        <input class="join-nick-v15" id="guestNick" type="text" maxlength="24" autocomplete="nickname" placeholder="Misafir rumuzu"/>
+        <div class="nick-help-v15"><span id="nickCounter">0/24</span> · Şekilli rumuz kullanılabilir</div>
+
+        <div class="captcha-v15" id="captchaBox">
+          <label class="captcha-check-v15"><input id="captchaToggle" type="checkbox"/> <span>Ben robot değilim</span></label>
+          <div class="captcha-question-v15" id="captchaQuestionBox" hidden>
+            <div class="captcha-question-text-v15" id="captchaQuestion"></div>
+            <div class="captcha-answer-row-v15">
+              <input id="captchaAnswer" type="text" inputmode="text" autocomplete="off" placeholder="Cevap"/>
+              <button id="captchaVerify" type="button">Onayla</button>
+            </div>
+            <div class="captcha-status-v15" id="captchaStatus"></div>
+          </div>
+        </div>
+
+        <button class="join-submit-v15" id="joinChatBtn" type="button" disabled>Sohbete gir</button>
+        <p class="join-legal-v15">Bu platformu kullanarak <a href="privacy.html" target="_blank" rel="noopener">Gizlilik Politikası</a> ve <a href="terms.html" target="_blank" rel="noopener">Kullanım Şartları</a>'nı kabul etmiş olursun.</p>
+      </div>
+    </section>
+  </div>
+
+  <script src="chat.js"></script>
+</body>
+</html>
