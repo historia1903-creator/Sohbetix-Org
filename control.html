@@ -80,9 +80,13 @@ logBtn.addEventListener('click',()=>{
 });
 
 document.getElementById('registerSubmit').addEventListener('click',()=>{
+  const name=(document.querySelector('#registerPanel input[type=text]')?.value||'Kayıtlı Kullanıcı').trim().slice(0,24);
+  localStorage.setItem('sohbetix-auth-type','registered'); localStorage.setItem('sohbetix-auth-nick',name||'Kayıtlı Kullanıcı');
   location.href='dashboard.html';
 });
 document.getElementById('loginSubmit').addEventListener('click',()=>{
+  const name=(document.querySelector('#loginPanel input[type=text]')?.value||'Kayıtlı Kullanıcı').trim().slice(0,24);
+  localStorage.setItem('sohbetix-auth-type','registered'); localStorage.setItem('sohbetix-auth-nick',name||'Kayıtlı Kullanıcı');
   location.href='dashboard.html';
 });
 </script>

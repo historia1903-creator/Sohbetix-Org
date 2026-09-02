@@ -88,6 +88,7 @@
 </div>
 </footer>
 <script>
+const cfgV18=(()=>{try{return JSON.parse(localStorage.getItem('sohbetix-v18-chat-config')||'{}')}catch{return {}}})();
 const rooms=[
  {name:"Sohbetix Genel",desc:"Genel sohbet ve yeni insanlarla tanışma odası.",online:24,lang:"Türkçe",cat:"Arkadaşlık"},
  {name:"Müzik Sohbet",desc:"Müzik, şarkılar ve radyo üzerine sohbet.",online:12,lang:"Türkçe",cat:"Radyo"},
@@ -96,6 +97,7 @@ const rooms=[
  {name:"Sanat Atölyesi",desc:"Çizim, tasarım ve sanat sohbetleri.",online:4,lang:"Türkçe",cat:"Sanat"},
  {name:"Aile Sohbeti",desc:"Aile ve günlük yaşam üzerine sohbet.",online:3,lang:"Türkçe",cat:"Ev ve aile"}
 ];
+if(cfgV18.catalogVisible!==false && cfgV18.title){ rooms.unshift({name:cfgV18.title,desc:(cfgV18.description||'').slice(0,300),online:0,lang:cfgV18.language==='en'?'English':'Türkçe',cat:cfgV18.category||'Arkadaşlık',slug:cfgV18.slug||'sohbetix'}); }
 
 let selectedCategory="all";
 let onlyTurkish=false;
@@ -160,7 +162,7 @@ function renderResults(userAction){
    </div>
    ${filtered.map(r=>`
      <div class="catalog-row">
-       <div><a href="open-chat.html">${escapeHtml(r.name)}</a><p>${escapeHtml(r.desc)}</p></div>
+       <div><a href="open-chat.html?room=${encodeURIComponent(r.slug||'sohbetix')}">${escapeHtml(r.name)}</a><p>${escapeHtml(r.desc)}</p></div>
        <div class="catalog-count">${r.online}</div>
        <div class="catalog-language">${r.lang}</div>
      </div>`).join("")}

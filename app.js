@@ -150,3 +150,29 @@ function initCoins(){
   document.querySelectorAll('#cardPayBtn,.alt-pay').forEach(btn=>btn.addEventListener('click', ()=>{ if (notice) notice.hidden = false; }));
 }
 document.addEventListener('DOMContentLoaded', ()=>{ initMenus(); applyLanguage(); initDemoUsers(); initMembersFilter(); initCoins(); });
+
+
+// ===== V18 chat-owner settings =====
+const V18_CONFIG_KEY='sohbetix-v18-chat-config';
+const V18_DEFAULT_CONFIG={title:'Sohbetix',language:'tr',registeredCaptcha:false,disabled:false,imageShare:false,privateMode:'entered',catalogVisible:true,description:'',category:'Arkadaşlık',slug:'sohbetix'};
+function getV18Config(){try{return {...V18_DEFAULT_CONFIG,...JSON.parse(localStorage.getItem(V18_CONFIG_KEY)||'{}')}}catch{return {...V18_DEFAULT_CONFIG}}}
+function setV18Config(cfg){localStorage.setItem(V18_CONFIG_KEY,JSON.stringify({...getV18Config(),...cfg}));}
+function initV18Settings(){
+  const save=document.getElementById('saveChatSettings'); if(!save)return;
+  const cfg=getV18Config();
+  const el=id=>document.getElementById(id);
+  el('cfgTitle').value=cfg.title; el('cfgLanguage').value=cfg.language; el('cfgRegisteredCaptcha').checked=!!cfg.registeredCaptcha; el('cfgDisabled').checked=!!cfg.disabled; el('cfgImageShare').checked=!!cfg.imageShare; el('cfgPrivate').value=cfg.privateMode; el('cfgCatalogVisible').checked=cfg.catalogVisible!==false; el('cfgDescription').value=cfg.description||''; el('cfgCategory').value=cfg.category||'Arkadaşlık';
+  const desc=el('cfgDescription'); const note=document.createElement('div'); note.className='settings-char-v18'; desc.insertAdjacentElement('afterend',note); const update=()=>note.textContent=`${desc.value.length}/300`; desc.addEventListener('input',update); update();
+  save.addEventListener('click',()=>{const next={title:el('cfgTitle').value.trim().slice(0,60)||'Sohbetix',language:el('cfgLanguage').value==='en'?'en':'tr',registeredCaptcha:el('cfgRegisteredCaptcha').checked,disabled:el('cfgDisabled').checked,imageShare:el('cfgImageShare').checked,privateMode:el('cfgPrivate').value,catalogVisible:el('cfgCatalogVisible').checked,description:desc.value.trim().slice(0,300),category:el('cfgCategory').value};setV18Config(next);localStorage.setItem('sohbetix-lang',next.language);const m=el('settingsSaved');m.hidden=false;setTimeout(()=>m.hidden=true,2600);});
+}
+function normalizeSlugV18(v){return String(v||'').toLocaleLowerCase('tr-TR').replace(/ç/g,'c').replace(/ğ/g,'g').replace(/ı/g,'i').replace(/ö/g,'o').replace(/ş/g,'s').replace(/ü/g,'u').replace(/[^a-z0-9-]/g,'').replace(/^-+|-+$/g,'').slice(0,40)}
+function initV18Domain(){
+ const input=document.getElementById('chatSlug'); const save=document.getElementById('saveChatSlug'); if(!input||!save)return; const cfg=getV18Config(); input.value=cfg.slug||'sohbetix'; const err=document.getElementById('slugError');
+ save.addEventListener('click',()=>{const slug=normalizeSlugV18(input.value); input.value=slug; if(slug.length<2){err.hidden=false;err.textContent='Sohbet adresi en az 2 karakter olmalı.';return;} const registry=JSON.parse(localStorage.getItem('sohbetix-v18-slug-registry')||'{}'); const owner=localStorage.getItem('sohbetix-v18-owner-id')||(()=>{const x='owner-'+Date.now()+'-'+Math.random().toString(36).slice(2);localStorage.setItem('sohbetix-v18-owner-id',x);return x})(); if(registry[slug]&&registry[slug]!==owner){err.hidden=false;err.textContent=`${slug}.sohbetix.com kullanımda. Başka bir sohbet adı seç.`;return;} const old=cfg.slug;if(old&&registry[old]===owner)delete registry[old];registry[slug]=owner;localStorage.setItem('sohbetix-v18-slug-registry',JSON.stringify(registry));setV18Config({slug});err.hidden=false;err.style.color='#087a39';err.textContent=`Kaydedildi: https://${slug}.sohbetix.com`;});
+}
+function initV18Dashboard(){
+ if(!document.body.classList.contains('dashboard-page'))return; const cfg=getV18Config(); document.querySelectorAll('.chat-select strong').forEach(e=>e.textContent=cfg.title||'Sohbetix'); const online=document.querySelector('.online-text'); if(online)online.textContent=currentLang()==='en'?'Online 0 / 0':'Çevrimiçi 0 / 0';
+}
+function updateV18OpenChatLinks(){const cfg=getV18Config();document.querySelectorAll('#settingsOpenChat,#domainOpenChat,.admin-open-chat').forEach(a=>{a.href=`open-chat.html?room=${encodeURIComponent(cfg.slug||'sohbetix')}`;});}
+
+document.addEventListener('DOMContentLoaded',()=>{initV18Settings();initV18Domain();initV18Dashboard();updateV18OpenChatLinks();});

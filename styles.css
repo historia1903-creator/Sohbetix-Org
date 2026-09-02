@@ -1043,3 +1043,6 @@ body.room-page-v15{
     max-height:42px !important;
   }
 }
+
+/* V18 functional settings */
+.domain-error-v18{margin:10px 0;color:#b00020;font-weight:800}.disabled-own-domain-v18{opacity:.62}.chat-disabled-v18{margin:18px;padding:16px;border:1px solid #efb4b4;background:#fff0f0;color:#8f0000;font-weight:900;border-radius:10px;text-align:center}.live-image-v18{max-width:min(520px,92%);max-height:420px;border-radius:10px;border:1px solid #dfe4ea;display:block;margin-top:7px}.settings-char-v18{font-size:11px;color:#7c8796}.private-toast-v18{position:fixed;right:16px;bottom:84px;background:#222;color:#fff;padding:10px 14px;border-radius:10px;z-index:99;font-size:12px;box-shadow:0 8px 30px #0002}

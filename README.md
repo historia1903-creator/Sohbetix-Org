@@ -1,16 +1,15 @@
-# Sohbetix V16
+# Sohbetix V18 Tam Sürüm
 
-GitHub Pages uyumlu statik demo sürümü.
+V18 demo/front-end sürümü. Yönetici ayarları localStorage ile sohbet ekranına uygulanır.
 
-- open-chat.html bağımsız sohbet sayfasıdır.
-- Misafir rumuzu en fazla 24 karakterdir.
-- Özel güvenlik sorusu doğrulaması vardır.
-- Google ve @ giriş seçenekleri görsel olarak pasiftir.
-- Aynı tarayıcıdaki farklı sekmeler localStorage ile mesaj ve çevrimiçi kullanıcı durumunu senkronlar.
-- Gerçek farklı cihaz/kullanıcı desteği için sonraki aşamada sunucu/WebSocket/veritabanı gerekir.
+## V18
+- Kontrol paneli toplam/çevrimiçi başlangıcı 0 / 0 ve grafik tabanı 0.
+- Sohbet başlığı, Türkçe/English varsayılan dil, kayıtlı kullanıcı Captcha seçeneği.
+- Sohbeti geçici devre dışı bırakma.
+- Resim paylaşımı açıkken panodan görsel yapıştırma (Ctrl+V).
+- Özel görüşme izin tercihi.
+- Katalog açıklaması 300 karakter ve kategori seçimi.
+- Sohbet adresi adı kaydı ve aynı tarayıcıda çakışma kontrolü.
+- Kendi özel domain bölümü şimdilik pasif.
 
-## V17
-- Sohbet odası viewport içinde sabittir; yalnızca mesaj listesi yukarı kayar.
-- Kullanıcı paneli %19, sohbet alanı %81 olarak ayarlanmıştır.
-- Sohbetix Bot kullanıcı listesinde sabit görünür.
-- 10.000 normal sohbet mesajına ulaşıldığında geçmiş temizlenir ve neon pembe Sohbetix Bot bildirimi eklenir.
+Not: GitHub Pages wildcard alt alan adı (`*.sohbetix.com`) üretmez. Gerçek `cancazim.sohbetix.com` adresleri için sonraki aşamada wildcard DNS + gerçek web sunucusu/router + veritabanı gerekir. Bu paket arayüz ve davranışları hazırlar.

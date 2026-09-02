@@ -9,6 +9,11 @@
   const BOT_PURGE_TEXT = 'Eski 10.000 tane mesaj kalıcı olarak silindi!';
   const PRESENCE_TTL = 16000;
   const HEARTBEAT_MS = 5000;
+  const CONFIG_KEY='sohbetix-v18-chat-config';
+  const DEFAULT_CONFIG={title:'Sohbetix',language:'tr',registeredCaptcha:false,disabled:false,imageShare:false,privateMode:'entered',catalogVisible:true,description:'',category:'Arkadaşlık',slug:'sohbetix'};
+  function readConfig(){try{return {...DEFAULT_CONFIG,...JSON.parse(localStorage.getItem(CONFIG_KEY)||'{}')}}catch{return {...DEFAULT_CONFIG}}}
+  const cfg=readConfig();
+  const isRegistered=localStorage.getItem('sohbetix-auth-type')==='registered';
 
   const $ = (id) => document.getElementById(id);
   const els = {
@@ -18,7 +23,7 @@
     nickCounter: $('nickCounter'), captchaToggle: $('captchaToggle'), captchaBox: $('captchaQuestionBox'),
     captchaQuestion: $('captchaQuestion'), captchaAnswer: $('captchaAnswer'), captchaVerify: $('captchaVerify'),
     captchaStatus: $('captchaStatus'), joinBtn: $('joinChatBtn'), roomAccount: $('roomAccount'), roomAccountNick: $('roomAccountNick'),
-    roomAccountBtn: $('roomAccountBtn'), roomAccountMenu: $('roomAccountMenu'), leaveBtn: $('leaveRoomBtn'), preJoinBlessing: $('preJoinBlessing')
+    roomAccountBtn: $('roomAccountBtn'), roomAccountMenu: $('roomAccountMenu'), leaveBtn: $('leaveRoomBtn'), preJoinBlessing: $('preJoinBlessing'), disabledNotice:$('chatDisabledNotice')
   };
 
   const clientId = (crypto && crypto.randomUUID) ? crypto.randomUUID() : `client-${Date.now()}-${Math.random().toString(36).slice(2)}`;
@@ -34,7 +39,7 @@
   function writeMessages(list) { localStorage.setItem(STORAGE_MESSAGES, JSON.stringify(list)); }
   function readPresence() { return safeParse(localStorage.getItem(STORAGE_PRESENCE), {}); }
   function writePresence(obj) { localStorage.setItem(STORAGE_PRESENCE, JSON.stringify(obj)); }
-  function nowTime() { return new Date().toLocaleTimeString('tr-TR', {hour:'2-digit', minute:'2-digit'}); }
+  function nowTime() { return new Date().toLocaleTimeString(cfg.language==='en'?'en-GB':'tr-TR', {hour:'2-digit', minute:'2-digit'}); }
   function escapeHtml(value) {
     return String(value).replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
   }
@@ -80,14 +85,15 @@
     }
     els.messages.innerHTML = list.map(msg => {
       if (msg.type === 'join') {
-        return `<div class="system-message-v15"><button class="system-nick-v15" type="button">@${escapeHtml(msg.nick)}</button> <span>bize katılıyor...</span> <small>${escapeHtml(msg.time || '')}</small></div>`;
+        return `<div class="system-message-v15"><button class="system-nick-v15" type="button">@${escapeHtml(msg.nick)}</button> <span>${cfg.language==='en'?'joined us...':'bize katılıyor...'}</span> <small>${escapeHtml(msg.time || '')}</small></div>`;
       }
       if (msg.type === 'leave') {
-        return `<div class="system-message-v15 leave"><button class="system-nick-v15" type="button">@${escapeHtml(msg.nick)}</button> <span>bizi terk ediyor...</span> <small>${escapeHtml(msg.time || '')}</small></div>`;
+        return `<div class="system-message-v15 leave"><button class="system-nick-v15" type="button">@${escapeHtml(msg.nick)}</button> <span>${cfg.language==='en'?'left us...':'bizi terk ediyor...'}</span> <small>${escapeHtml(msg.time || '')}</small></div>`;
       }
       if (msg.type === 'bot') {
         return `<article class="bot-message-v17"><div class="bot-avatar-v17">S</div><div class="bot-message-body-v17"><div class="bot-message-meta-v17"><b>${escapeHtml(BOT_NICK)}</b><small>${escapeHtml(msg.time || '')}</small></div><p>${escapeHtml(msg.text || BOT_PURGE_TEXT)}</p></div></article>`;
       }
+      if(msg.type==='image') return `<article class="live-message-v15"><div class="live-avatar-v15" style="--user-color:${makeColor(msg.nick||'')}">${escapeHtml(makeAvatar(msg.nick||''))}</div><div class="live-message-body-v15"><div class="live-message-meta-v15"><b style="color:${makeColor(msg.nick||'')}">${escapeHtml(msg.nick||'')}</b><small>${escapeHtml(msg.time||'')}</small></div><img class="live-image-v18" src="${escapeHtml(msg.data||'')}" alt="Paylaşılan resim"></div></article>`;
       return `<article class="live-message-v15"><div class="live-avatar-v15" style="--user-color:${makeColor(msg.nick || '')}">${escapeHtml(makeAvatar(msg.nick || ''))}</div><div class="live-message-body-v15"><div class="live-message-meta-v15"><b style="color:${makeColor(msg.nick || '')}">${escapeHtml(msg.nick || '')}</b><small>${escapeHtml(msg.time || '')}</small></div><p>${escapeHtml(msg.text || '')}</p></div></article>`;
     }).join('');
     els.messages.scrollTop = els.messages.scrollHeight;
@@ -106,7 +112,7 @@
     writePresence(presence);
     const q = (els.search.value || '').toLocaleLowerCase('tr-TR').trim();
     const users = Object.values(presence).sort((a,b) => String(a.nick).localeCompare(String(b.nick), 'tr'));
-    els.onlineCount.textContent = `${users.length} çevrimiçi`;
+    els.onlineCount.textContent = cfg.language==='en'?`${users.length} online`:`${users.length} çevrimiçi`;
     const filtered = users.filter(u => !q || String(u.nick).toLocaleLowerCase('tr-TR').includes(q));
     const botMatches = !q || BOT_NICK.toLocaleLowerCase('tr-TR').includes(q);
     const botRow = botMatches ? `<li class="room-bot-user-v17"><span class="room-mini-avatar-v15 room-bot-avatar-v17">S</span><b>${escapeHtml(BOT_NICK)}</b></li>` : '';
@@ -149,13 +155,16 @@
   }
 
   function openJoinModal() {
+    if(cfg.disabled)return;
     els.overlay.hidden = false;
-    captchaPassed = false;
-    els.captchaToggle.checked = false;
+    captchaPassed = isRegistered && !cfg.registeredCaptcha;
+    els.captchaToggle.checked = captchaPassed;
     els.captchaBox.hidden = true;
     els.captchaStatus.textContent = '';
     els.captchaAnswer.value = '';
     els.joinBtn.disabled = true;
+    if(isRegistered){const saved=localStorage.getItem('sohbetix-auth-nick')||'';els.guestNick.value=saved.slice(0,24);els.guestNick.placeholder=cfg.language==='en'?'Nickname':'Rumuz';}
+    if(captchaPassed){els.captchaToggle.disabled=true;els.captchaStatus.textContent=cfg.language==='en'?'Captcha not required for registered users.':'Kayıtlı kullanıcı için Captcha gerekli değil.';updateJoinEnabled();}else{els.captchaToggle.disabled=false;}
     setTimeout(() => els.guestNick.focus(), 50);
   }
   function closeJoinModal() { els.overlay.hidden = true; }
@@ -200,7 +209,7 @@
 
   function joinRoom() {
     const nick = cleanNick(els.guestNick.value);
-    if (!nick || !captchaPassed) return;
+    if (!nick || !captchaPassed || cfg.disabled) return;
     currentNick = nick;
     sessionStorage.setItem(SESSION_NICK, currentNick);
     closeJoinModal();
@@ -251,6 +260,12 @@
   els.messageInput.addEventListener('keydown', e => {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); els.messageForm.requestSubmit(); }
   });
+  els.messageInput.addEventListener('paste', e => {
+    const items=[...(e.clipboardData?.items||[])]; const image=items.find(i=>i.type&&i.type.startsWith('image/')); if(!image)return;
+    e.preventDefault(); if(!cfg.imageShare){alert(cfg.language==='en'?'Image sharing is disabled in this chat.':'Bu sohbette resim paylaşımı kapalı.');return;}
+    const file=image.getAsFile(); if(!file)return; if(file.size>900000){alert(cfg.language==='en'?'Image is too large. Maximum 900 KB in this demo.':'Resim çok büyük. Bu demo sürümünde en fazla 900 KB.');return;}
+    const reader=new FileReader(); reader.onload=()=>{try{addMessage('image',{nick:currentNick,data:String(reader.result||'')});}catch{alert('Resim kaydedilemedi.');}}; reader.readAsDataURL(file);
+  });
   els.roomAccountBtn.addEventListener('click', e => { e.stopPropagation(); els.roomAccountMenu.hidden = !els.roomAccountMenu.hidden; });
   els.leaveBtn.addEventListener('click', leaveRoom);
   document.addEventListener('click', () => { els.roomAccountMenu.hidden = true; });
@@ -268,6 +283,12 @@
     writeMessages(list);
   });
 
+  document.title=(cfg.title||'Sohbetix')+(cfg.language==='en'?' Chat':' Sohbet');
+  const titleBtn=document.getElementById('roomTitleBtn'); if(titleBtn) titleBtn.firstChild.nodeValue=(cfg.title||'Sohbetix')+' ';
+  const tab=document.querySelector('.room-tabs-v15 button'); if(tab)tab.textContent=cfg.language==='en'?'Home':'Ana sayfa';
+  els.search.placeholder=cfg.language==='en'?'Nickname search':'Rumuz ara'; els.openJoin.textContent=cfg.language==='en'?'Enter chat':'Sohbete gir'; els.joinBtn.textContent=cfg.language==='en'?'Enter chat':'Sohbete gir'; els.messageInput.placeholder=cfg.language==='en'?'Write a message...':'Mesajını yaz...';
+  if(cfg.disabled){if(els.disabledNotice){els.disabledNotice.hidden=false;els.disabledNotice.textContent=cfg.language==='en'?'This chat is temporarily disabled.':'Bu sohbet geçici olarak devre dışı bırakıldı.';}els.guestFooter.hidden=true;els.messageForm.hidden=true;}
+  els.userList.addEventListener('click',e=>{const li=e.target.closest('li');if(!li||li.classList.contains('room-bot-user-v17'))return; const allowed=cfg.privateMode==='entered'||isRegistered; const old=document.querySelector('.private-toast-v18');if(old)old.remove();const t=document.createElement('div');t.className='private-toast-v18';t.textContent=allowed?(cfg.language==='en'?'Private chat is available for this user.':'Bu kullanıcıyla özel sohbet açılabilir.'):(cfg.language==='en'?'Only registered users can use private chat.':'Özel sohbeti yalnızca kayıtlı kullanıcılar kullanabilir.');document.body.appendChild(t);setTimeout(()=>t.remove(),2200);});
   renderMessages();
   renderPresence();
   if (currentNick) {
