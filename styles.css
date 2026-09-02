@@ -940,3 +940,106 @@ body.room-page-v15{
   .bot-message-v17{grid-template-columns:30px minmax(0,1fr);gap:7px;padding:7px 8px}
   .bot-avatar-v17{width:30px;height:30px}
 }
+
+/* ===== V17 FIX: sadece mesaj bölümü sabit chat görünümü =====
+   Amaç: sayfanın kendisi aşağı kaymaz; üst bar, sol kullanıcı listesi ve mesaj yazma alanı sabit kalır.
+   Yalnızca mesaj listesi kendi içinde dikey kayar. */
+html:has(body.room-page-v15),
+html:has(body.room-page-v15) body{
+  width:100% !important;
+  height:100% !important;
+  min-height:0 !important;
+  max-height:100% !important;
+  overflow:hidden !important;
+}
+body.room-page-v15{
+  position:fixed !important;
+  inset:0 !important;
+  margin:0 !important;
+}
+.room-shell-v15{
+  position:absolute !important;
+  inset:0 !important;
+  width:100% !important;
+  height:100% !important;
+  min-height:0 !important;
+  max-height:none !important;
+  overflow:hidden !important;
+}
+.room-card-v15{
+  width:100% !important;
+  height:100% !important;
+  min-height:0 !important;
+  max-height:none !important;
+  overflow:hidden !important;
+  display:grid !important;
+  grid-template-rows:44px minmax(0,1fr) !important;
+}
+.room-titlebar-v15{
+  height:44px !important;
+  min-height:44px !important;
+  max-height:44px !important;
+}
+.room-grid-v15{
+  height:auto !important;
+  min-height:0 !important;
+  max-height:none !important;
+  overflow:hidden !important;
+}
+.room-users-v15,
+.room-chat-v15{
+  height:auto !important;
+  min-height:0 !important;
+  max-height:none !important;
+  overflow:hidden !important;
+}
+.room-chat-v15{
+  display:grid !important;
+  grid-template-rows:auto auto minmax(0,1fr) auto !important;
+}
+.room-messages-v15{
+  height:auto !important;
+  min-height:0 !important;
+  max-height:none !important;
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+  overscroll-behavior:contain !important;
+  -webkit-overflow-scrolling:touch;
+}
+.room-composer-v15,
+.room-guest-footer-v15{
+  position:relative !important;
+  inset:auto !important;
+  flex:none !important;
+  min-height:0 !important;
+  margin:0 !important;
+  z-index:5 !important;
+}
+.room-composer-v15{
+  padding:4px 5px 5px !important;
+}
+.room-compose-box-v15 textarea{
+  height:44px !important;
+  min-height:44px !important;
+  max-height:44px !important;
+  resize:none !important;
+}
+.room-compose-actions-v15{
+  min-height:25px !important;
+  padding-top:4px !important;
+}
+@media(max-width:760px){
+  .room-card-v15{
+    grid-template-rows:48px minmax(0,1fr) !important;
+  }
+  .room-titlebar-v15{
+    height:48px !important;
+    min-height:48px !important;
+    max-height:48px !important;
+  }
+  .room-compose-box-v15 textarea{
+    height:42px !important;
+    min-height:42px !important;
+    max-height:42px !important;
+  }
+}
