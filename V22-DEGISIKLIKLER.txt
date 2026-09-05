@@ -1,0 +1,8 @@
+SOHBETIX V22
+
+- Kayıt/giriş sistemleri yerel tarayıcı verisiyle çalışmaya devam eder.
+- Kontrol paneli kayıt ekranındaki e-posta doğrulama hatası düzeltildi.
+- Geçerli e-posta adresleri artık yanlışlıkla reddedilmez.
+- Chat hesabı ve kontrol paneli hesabı ayrı tutulur.
+- Kullanıcıya görünen deneme/test ifadeleri kaldırıldı.
+- V21 özellikleri korunmuştur.

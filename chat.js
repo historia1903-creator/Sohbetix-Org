@@ -365,7 +365,7 @@
 
   if (els.accountAuthBtn) els.accountAuthBtn.addEventListener('click', () => {
     const ret = 'open-chat.html' + (location.search || '');
-    sessionStorage.setItem('sohbetix-auth-entry-v21', String(Date.now()));
+    sessionStorage.setItem('sohbetix-auth-entry-v22', String(Date.now()));
     location.href = 'auth.html?return=' + encodeURIComponent(ret);
   });
   els.openJoin.addEventListener('click', openJoinModal);
