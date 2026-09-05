@@ -1,0 +1,8 @@
+Sohbetix V21 TAM FIX
+
+- Kontrol panelindeki Kayıt Ol / Giriş Yap sistemi sohbet içindeki @ hesap sisteminden ayrıldı.
+- Kontrol paneli kendi localStorage anahtarlarını kullanır: sohbetix-control-*.
+- Sohbet içindeki @ butonu yalnızca auth.html sohbet hesabını açar.
+- Kontrol paneli kayıt/giriş işlemleri auth.html sayfasına yönlendirmez.
+- Kontrol panelindeki şifre göster/gizle göz ikonları korunur.
+- V21 logo, captcha, chat ve diğer düzeltmeler korunur.

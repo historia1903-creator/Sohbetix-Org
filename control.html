@@ -19,7 +19,7 @@
 </header>
 <main class="control-main">
 <section class="signin-card">
-<h1>Sohbetix hesabınla giriş yap</h1>
+<h1>Sohbet Kontrol Paneline giriş yap</h1>
 <div class="fast-login-box">
 <div class="fast-title">Hızlı giriş</div>
 <div class="oauth-row">
@@ -36,22 +36,22 @@
 <div class="auth-panel" hidden="" id="registerPanel">
 <h2>Kayıt Ol</h2>
 <label>Kullanıcı adı</label>
-<input maxlength="24" placeholder="Kullanıcı adını yaz" type="text"/>
+<input id="controlRegUser" maxlength="24" placeholder="Kullanıcı adını yaz" type="text" autocomplete="username"/>
 <label>E-posta</label>
-<input placeholder="E-posta adresini yaz" type="email"/>
+<input id="controlRegEmail" placeholder="E-posta adresini yaz" type="email" autocomplete="email"/>
 <label>Şifre</label>
-<input placeholder="Şifreni yaz" type="password"/>
+<input id="controlRegPass" placeholder="Şifreni yaz" type="password" autocomplete="new-password"/>
 <label>Şifre tekrar</label>
-<input placeholder="Şifreni tekrar yaz" type="password"/>
+<input id="controlRegPass2" placeholder="Şifreni tekrar yaz" type="password" autocomplete="new-password"/>
 <button class="submit-auth" id="registerSubmit" type="button">Hesap Oluştur</button>
 
 </div>
 <div class="auth-panel" hidden="" id="loginPanel">
 <h2>Giriş Yap</h2>
 <label>Kullanıcı adı veya e-posta</label>
-<input placeholder="Kullanıcı adı veya e-posta" type="text"/>
+<input id="controlLoginId" placeholder="Kullanıcı adı veya e-posta" type="text" autocomplete="username"/>
 <label>Şifre</label>
-<input placeholder="Şifreni yaz" type="password"/>
+<input id="controlLoginPass" placeholder="Şifreni yaz" type="password" autocomplete="current-password"/>
 <button class="submit-auth" id="loginSubmit" type="button">Giriş Yap</button>
 
 </div>
@@ -80,8 +80,48 @@ logBtn.addEventListener('click',()=>{
   log.scrollIntoView({behavior:'smooth',block:'center'});
 });
 
-document.getElementById('registerSubmit').addEventListener('click',()=>{ alert('Sohbet hesabı kayıt sayfası yalnızca sohbet girişindeki @ butonundan açılır.'); });
-document.getElementById('loginSubmit').addEventListener('click',()=>{ alert('Sohbet hesabı giriş sayfası yalnızca sohbet girişindeki @ butonundan açılır.'); });
+/* V21 FULL FIX: Kontrol paneli hesabı, sohbet içindeki @ hesabından tamamen ayrıdır. */
+const CONTROL_USERS_KEY='sohbetix-control-users-v21';
+const CONTROL_SESSION_KEY='sohbetix-control-session-v21';
+const normalizeControl=v=>String(v||'').trim().toLocaleLowerCase('tr-TR');
+const readControlUsers=()=>{try{return JSON.parse(localStorage.getItem(CONTROL_USERS_KEY)||'[]')}catch{return[]}};
+const writeControlUsers=list=>localStorage.setItem(CONTROL_USERS_KEY,JSON.stringify(list));
+async function controlHash(value){
+  const data=new TextEncoder().encode(String(value||''));
+  const buf=await crypto.subtle.digest('SHA-256',data);
+  return [...new Uint8Array(buf)].map(x=>x.toString(16).padStart(2,'0')).join('');
+}
+function saveControlSession(user){
+  localStorage.setItem(CONTROL_SESSION_KEY,JSON.stringify({id:user.id,username:user.username,email:user.email,at:Date.now()}));
+}
+
+document.getElementById('registerSubmit').addEventListener('click',async()=>{
+  const username=document.getElementById('controlRegUser').value.trim();
+  const email=normalizeControl(document.getElementById('controlRegEmail').value);
+  const pass=document.getElementById('controlRegPass').value;
+  const pass2=document.getElementById('controlRegPass2').value;
+  if(username.length<3||username.length>24){alert('Kullanıcı adı 3-24 karakter olmalı.');return;}
+  if(!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email)){alert('Geçerli bir e-posta adresi yaz.');return;}
+  if(pass.length<8){alert('Şifre en az 8 karakter olmalı.');return;}
+  if(pass!==pass2){alert('Şifreler aynı değil.');return;}
+  const users=readControlUsers();
+  if(users.some(u=>normalizeControl(u.username)===normalizeControl(username))){alert('Bu kullanıcı adı zaten kayıtlı.');return;}
+  if(users.some(u=>normalizeControl(u.email)===email)){alert('Bu e-posta zaten kayıtlı.');return;}
+  const user={id:(crypto.randomUUID?crypto.randomUUID():'cp-'+Date.now()),username,email,passwordHash:await controlHash(pass),createdAt:Date.now()};
+  users.push(user); writeControlUsers(users); saveControlSession(user);
+  location.href='dashboard.html';
+});
+
+document.getElementById('loginSubmit').addEventListener('click',async()=>{
+  const login=normalizeControl(document.getElementById('controlLoginId').value);
+  const pass=document.getElementById('controlLoginPass').value;
+  if(!login||!pass){alert('Kullanıcı adı/e-posta ve şifreni gir.');return;}
+  const users=readControlUsers();
+  const user=users.find(u=>normalizeControl(u.username)===login||normalizeControl(u.email)===login);
+  if(!user||user.passwordHash!==await controlHash(pass)){alert('Kullanıcı adı/e-posta veya şifre hatalı.');return;}
+  saveControlSession(user);
+  location.href='dashboard.html';
+});
 </script>
 <script src="app.js"></script></body>
 </html>
