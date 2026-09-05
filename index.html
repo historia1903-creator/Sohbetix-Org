@@ -5,13 +5,14 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Sohbetix - Sohbetini Oluştur</title>
-<link href="styles.css" rel="stylesheet"/>
+<link href="styles.css?v=V19" rel="stylesheet"/>
 <meta content="#ffffff" name="theme-color"/>
+<link rel="icon" type="image/jpeg" href="sohbetix-logo.jpg"/>
 </head>
 <body>
 <header class="topbar">
 <div class="wrap nav">
-<a class="brand" href="#">Sohbet<span>ix</span></a>
+<a class="brand brand-logo-v21" href="#" aria-label="Sohbetix"><img src="sohbetix-logo.jpg" alt="Sohbetix"/></a>
 <nav>
 <a href="chats.html">SOHBET ODALARI</a>
 <a href="about.html">HAKKINDA</a>
@@ -47,7 +48,7 @@
 </section>
 <section class="wrap demo-wrap" id="demo">
 <div class="chatbox">
-<div class="chat-title">Sohbetix demo sohbet <span>▾</span></div>
+<div class="chat-title">Sohbetix Sohbet <span>▾</span></div>
 <div class="chat-layout">
 <div class="chat-main">
 <div class="tabs">
@@ -112,11 +113,11 @@
 <div class="profile-modal" hidden="" id="profileModal">
 <div class="profile-window">
 <div class="profile-window-top">
-<span id="profileTitle">Mert - Sohbetix demo chat</span>
+<span id="profileTitle">Mert - Sohbetix Sohbet</span>
 <button aria-label="Kapat" id="closeProfile" type="button">×</button>
 </div>
 <div class="profile-address">chat.sohbetix.local/user/profile</div>
-<div class="profile-bluebar">Sohbetix demo chat</div>
+<div class="profile-bluebar">Sohbetix Sohbet</div>
 <div class="profile-content">
 <aside class="profile-sidebar">
 <button class="enter-chat-btn">Sohbete gir</button>
@@ -181,11 +182,11 @@
 <div class="users-modal" hidden="" id="usersModal">
 <div class="users-window">
 <div class="profile-window-top">
-<span>Üyeler - Sohbetix demo chat</span>
+<span>Üyeler - Sohbetix Sohbet</span>
 <button aria-label="Kapat" id="closeUsers" type="button">×</button>
 </div>
 <div class="profile-address">chat.sohbetix.local/users/</div>
-<div class="profile-bluebar">Sohbetix demo chat</div>
+<div class="profile-bluebar">Sohbetix Sohbet</div>
 <div class="users-content">
 <aside class="users-sidebar-panel">
 <button class="enter-chat-btn">Sohbete gir</button>
@@ -242,18 +243,5 @@
 </div>
 </div>
 </div>
-<script src="app.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded',function(){
- const b=document.getElementById('moreBtn'),m=document.getElementById('moreMenu');
- if(b&&m){b.onclick=function(e){e.stopPropagation();m.hidden=!m.hidden};m.onclick=function(e){e.stopPropagation()};document.addEventListener('click',function(){m.hidden=true});}
-});
-</script><script>
-document.addEventListener('DOMContentLoaded',function(){
- const b=document.querySelector('.mobile-menu-btn'),p=document.querySelector('.mobile-nav-panel');
- const mb=document.querySelector('.mobile-more-toggle'),mm=document.querySelector('.mobile-more-menu');
- if(b&&p)b.addEventListener('click',function(e){e.stopPropagation();p.hidden=!p.hidden;if(p.hidden&&mm)mm.hidden=true;});
- if(mb&&mm)mb.addEventListener('click',function(e){e.stopPropagation();mm.hidden=!mm.hidden;});
-});
-</script></body>
+<script src="app.js?v=V19"></script></body>
 </html>

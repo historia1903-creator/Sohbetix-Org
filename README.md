@@ -13,3 +13,6 @@ V18 demo/front-end sürümü. Yönetici ayarları localStorage ile sohbet ekran�
 - Kendi özel domain bölümü şimdilik pasif.
 
 Not: GitHub Pages wildcard alt alan adı (`*.sohbetix.com`) üretmez. Gerçek `cancazim.sohbetix.com` adresleri için sonraki aşamada wildcard DNS + gerçek web sunucusu/router + veritabanı gerekir. Bu paket arayüz ve davranışları hazırlar.
+
+
+V21: Misafir kullanıcı menüsü yalnızca Bahset/Gizli; kayıtlı kullanıcıda Profil/Yoksay. Giriş öncesi mesaj/kullanıcı listesi gizli. auth.html kayıt/giriş sayfası, iki aşamalı chat captcha ve şifre göster/gizle eklendi.

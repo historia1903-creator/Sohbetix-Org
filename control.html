@@ -7,11 +7,12 @@
 <title>Sohbetix Kontrol Paneli</title>
 <link href="styles.css" rel="stylesheet"/>
 <meta content="#ffffff" name="theme-color"/>
+<link rel="icon" type="image/jpeg" href="sohbetix-logo.jpg"/>
 </head>
 <body class="control-page">
 <header class="control-topbar">
 <div class="control-wrap control-nav">
-<a class="brand" href="index.html">Sohbet<span>ix</span></a>
+<a class="brand brand-logo-v21" href="index.html" aria-label="Sohbetix"><img src="sohbetix-logo.jpg" alt="Sohbetix"/></a>
 <a class="control-tab active" href="control.html">SOHBET KONTROL PANELİ</a>
 <button class="control-tab disabled" disabled="" type="button">JETONLAR</button>
 </div>
@@ -43,7 +44,7 @@
 <label>Şifre tekrar</label>
 <input placeholder="Şifreni tekrar yaz" type="password"/>
 <button class="submit-auth" id="registerSubmit" type="button">Hesap Oluştur</button>
-<p class="demo-note">Bu sürüm demo arayüzüdür. Gerçek kayıt veritabanı sonraki aşamada bağlanacak.</p>
+
 </div>
 <div class="auth-panel" hidden="" id="loginPanel">
 <h2>Giriş Yap</h2>
@@ -52,7 +53,7 @@
 <label>Şifre</label>
 <input placeholder="Şifreni yaz" type="password"/>
 <button class="submit-auth" id="loginSubmit" type="button">Giriş Yap</button>
-<p class="demo-note">Bu sürüm demo arayüzüdür. Gerçek oturum sistemi sonraki aşamada bağlanacak.</p>
+
 </div>
 </section>
 </main>
@@ -79,16 +80,8 @@ logBtn.addEventListener('click',()=>{
   log.scrollIntoView({behavior:'smooth',block:'center'});
 });
 
-document.getElementById('registerSubmit').addEventListener('click',()=>{
-  const name=(document.querySelector('#registerPanel input[type=text]')?.value||'Kayıtlı Kullanıcı').trim().slice(0,24);
-  localStorage.setItem('sohbetix-auth-type','registered'); localStorage.setItem('sohbetix-auth-nick',name||'Kayıtlı Kullanıcı');
-  location.href='dashboard.html';
-});
-document.getElementById('loginSubmit').addEventListener('click',()=>{
-  const name=(document.querySelector('#loginPanel input[type=text]')?.value||'Kayıtlı Kullanıcı').trim().slice(0,24);
-  localStorage.setItem('sohbetix-auth-type','registered'); localStorage.setItem('sohbetix-auth-nick',name||'Kayıtlı Kullanıcı');
-  location.href='dashboard.html';
-});
+document.getElementById('registerSubmit').addEventListener('click',()=>{ alert('Sohbet hesabı kayıt sayfası yalnızca sohbet girişindeki @ butonundan açılır.'); });
+document.getElementById('loginSubmit').addEventListener('click',()=>{ alert('Sohbet hesabı giriş sayfası yalnızca sohbet girişindeki @ butonundan açılır.'); });
 </script>
 <script src="app.js"></script></body>
 </html>

@@ -1,0 +1,21 @@
+SOHBETIX V19
+
+1) Chat mesaj alanı düzeltildi:
+- Mesaj yazma alanı chatin altında sabit kalır.
+- Sayfa yerine yalnızca mesaj listesi kendi içinde kayar.
+- Mobil klavye açıldığında chat kabuğu viewport içinde kalacak şekilde V18 visualViewport sistemi korunur.
+
+2) Chat / kullanıcı sütunları düzeltildi:
+- Chat ana alanı solda ve geniş.
+- Çevrimiçi, Rumuz ara ve kullanıcı listesi sağda ve dar.
+- Mobilde de aynı yön korunur.
+
+3) Ana sayfa 3 çizgi mobil menü düzeltildi:
+- index.html içindeki çift tıklama dinleyicileri kaldırıldı.
+- Tek menü dinleyicisi app.js üzerinden çalışır.
+- Mobil menü ve Daha Fazla alt menüsü tekrar açılır/kapanır.
+
+4) Cache:
+- index.html ve open-chat.html için V19 query sürümü eklendi.
+
+V19.1: Mesaj composer grid row 4'e sabitlendi; mesajlar row 3 icinde kayar.

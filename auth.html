@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Sohbetix Hesap</title>
+<link rel="stylesheet" href="styles.css?v=V21-FIX-LOGO-AUTH"/>
+<meta name="theme-color" content="#980000"/>
+<link rel="icon" type="image/jpeg" href="sohbetix-logo.jpg"/>
+</head>
+<body class="auth-page-v21">
+<header class="auth-top-v21"><a href="index.html" class="auth-brand-v21 brand-logo-v21" aria-label="Sohbetix"><img src="sohbetix-logo.jpg" alt="Sohbetix"/></a><a href="open-chat.html" class="auth-back-v21">Sohbete dön</a></header>
+<main class="auth-shell-v21">
+<section class="auth-card-v21">
+<div class="auth-icon-v21"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M16 8v6a2 2 0 0 0 4 0v-2a8 8 0 1 0-2.3 5.7"/><circle cx="12" cy="12" r="3"/></svg></div>
+<h1>Sohbetix Hesabı</h1><p class="auth-lead-v21">Kayıt ol veya mevcut hesabınla giriş yap.</p>
+<div class="auth-tabs-v21"><button id="tabRegister" class="active" type="button">Kayıt Ol</button><button id="tabLogin" type="button">Giriş Yap</button></div>
+
+<form id="registerForm" class="auth-form-v21" novalidate>
+<label>Kullanıcı adı<input id="regUser" type="text" maxlength="24" autocomplete="username" required placeholder="3-24 karakter"/></label>
+<label>E-posta<input id="regEmail" type="email" autocomplete="email" required placeholder="ornek@eposta.com"/></label>
+<label>Şifre<div class="password-wrap-v21"><input id="regPass" type="password" minlength="8" autocomplete="new-password" required placeholder="En az 8 karakter"/><button class="password-toggle-v21" type="button" aria-label="Şifreyi göster"></button></div></label>
+<label>Şifre tekrar<div class="password-wrap-v21"><input id="regPass2" type="password" minlength="8" autocomplete="new-password" required placeholder="Şifreyi tekrar yaz"/><button class="password-toggle-v21" type="button" aria-label="Şifreyi göster"></button></div></label>
+<div class="auth-captcha-v21"><div class="auth-captcha-head-v21"><svg viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6l7-3z"/></svg><b>Güvenlik doğrulaması</b></div><div id="regCaptchaQ" class="auth-captcha-q-v21"></div><div class="auth-captcha-row-v21"><input id="regCaptchaA" type="text" autocomplete="off" placeholder="Cevap"/><button id="regCaptchaCheck" type="button">Onayla</button></div><small id="regCaptchaStatus"></small></div>
+<button class="auth-submit-v21" id="registerSubmitV21" type="submit" disabled>Kayıt Ol</button>
+<div class="auth-status-v21" id="regStatus"></div>
+</form>
+
+<form id="loginForm" class="auth-form-v21" hidden novalidate>
+<label>Kullanıcı adı veya e-posta<input id="loginId" type="text" autocomplete="username" required placeholder="Kullanıcı adı veya e-posta"/></label>
+<label>Şifre<div class="password-wrap-v21"><input id="loginPass" type="password" autocomplete="current-password" required placeholder="Şifreni yaz"/><button class="password-toggle-v21" type="button" aria-label="Şifreyi göster"></button></div></label>
+<button class="auth-submit-v21" type="submit">Giriş Yap</button>
+<div class="auth-status-v21" id="loginStatus"></div>
+</form>
+
+</section>
+</main>
+<script src="auth.js?v=V21-FIX-AUTH"></script>
+<script src="app.js?v=V21-FIX-AUTH"></script>
+</body></html>

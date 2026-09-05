@@ -1131,3 +1131,237 @@ html.room-fixed-viewport .room-compose-box-v15 textarea{
     padding-bottom:max(5px,env(safe-area-inset-bottom)) !important;
   }
 }
+
+
+/* ==========================================================
+   SOHBETIX V19 — CHAT LAYOUT + FIXED COMPOSER + MOBILE MENU
+   1) Mesaj yazma alanı chatin ALTINDA sabit kalır.
+   2) Yalnızca mesaj listesi kendi içinde yukarı/aşağı kayar.
+   3) Chat solda/geniş, çevrimiçi + arama + kullanıcılar sağda/dar.
+   ========================================================== */
+
+/* Oda kabuğu viewport dışına taşmasın. */
+html.room-fixed-viewport .room-card-v15,
+body.room-page-v15 .room-card-v15{
+  grid-template-rows:44px minmax(0,1fr) !important;
+}
+
+/* SOL = CHAT, SAĞ = KULLANICI LİSTESİ */
+html.room-fixed-viewport .room-grid-v15,
+body.room-page-v15 .room-grid-v15{
+  grid-template-columns:minmax(0,79%) minmax(116px,21%) !important;
+  min-height:0 !important;
+  overflow:hidden !important;
+}
+html.room-fixed-viewport .room-chat-v15,
+body.room-page-v15 .room-chat-v15{
+  grid-column:1 !important;
+  grid-row:1 !important;
+  min-width:0 !important;
+  min-height:0 !important;
+  overflow:hidden !important;
+  border-right:1px solid #d8dee5 !important;
+  display:grid !important;
+  grid-template-rows:auto auto minmax(0,1fr) auto !important;
+}
+html.room-fixed-viewport .room-users-v15,
+body.room-page-v15 .room-users-v15{
+  grid-column:2 !important;
+  grid-row:1 !important;
+  min-width:0 !important;
+  min-height:0 !important;
+  overflow:hidden !important;
+  border-right:0 !important;
+  border-left:0 !important;
+}
+
+/* Sağ sütunun sadece kullanıcı listesi kayar. Online ve arama sabit. */
+.room-users-v15{
+  display:grid !important;
+  grid-template-rows:auto auto minmax(0,1fr) !important;
+}
+.room-online-v15,
+.room-search-v15{
+  flex:none !important;
+}
+.room-user-list-v15{
+  min-height:0 !important;
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+  -webkit-overflow-scrolling:touch !important;
+}
+
+/* Chatin yalnızca MESAJ bölümü kayar; alt yazma alanı kesinlikle sabittir. */
+html.room-fixed-viewport .room-messages-v15,
+body.room-page-v15 .room-messages-v15{
+  min-height:0 !important;
+  height:auto !important;
+  max-height:none !important;
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+  overscroll-behavior-y:contain !important;
+  -webkit-overflow-scrolling:touch !important;
+}
+html.room-fixed-viewport .room-composer-v15,
+body.room-page-v15 .room-composer-v15,
+html.room-fixed-viewport .room-guest-footer-v15,
+body.room-page-v15 .room-guest-footer-v15{
+  position:relative !important;
+  left:auto !important;
+  right:auto !important;
+  bottom:auto !important;
+  flex:none !important;
+  width:100% !important;
+  margin:0 !important;
+  z-index:25 !important;
+  background:#f4f6f8 !important;
+}
+.room-compose-box-v15 textarea{
+  resize:none !important;
+}
+
+/* Mobilde oranı resimdeki gibi chat ağırlıklı tut. */
+@media(max-width:760px){
+  html.room-fixed-viewport .room-card-v15,
+  body.room-page-v15 .room-card-v15{
+    grid-template-rows:48px minmax(0,1fr) !important;
+  }
+  html.room-fixed-viewport .room-grid-v15,
+  body.room-page-v15 .room-grid-v15{
+    grid-template-columns:minmax(0,76%) minmax(96px,24%) !important;
+  }
+  .room-chat-v15{border-right:1px solid #d8dee5 !important}
+  .room-online-v15{padding:0 7px !important;font-size:11px !important}
+  .room-search-v15{padding:5px !important}
+  .room-search-v15 input{height:38px !important;font-size:12px !important}
+  .room-user-list-v15{padding:6px 3px !important}
+  .room-user-list-v15 li{padding:6px 2px !important;gap:4px !important}
+  .room-user-list-v15 b{font-size:10px !important}
+  .room-messages-v15{padding:8px 10px !important}
+  .room-composer-v15{padding:5px !important;padding-bottom:max(5px,env(safe-area-inset-bottom)) !important}
+  .room-compose-box-v15 textarea{height:48px !important;min-height:48px !important;max-height:48px !important}
+}
+
+/* Çok dar telefonlarda sağ liste hâlâ kullanılabilir kalsın. */
+@media(max-width:420px){
+  html.room-fixed-viewport .room-grid-v15,
+  body.room-page-v15 .room-grid-v15{
+    grid-template-columns:minmax(0,74%) minmax(88px,26%) !important;
+  }
+}
+
+/* Ana sayfa hamburger paneli: hidden kesin kapanır, açıldığında üstte görünür. */
+.mobile-nav-panel[hidden],
+.mobile-more-menu[hidden]{display:none !important}
+@media(max-width:760px){
+  .mobile-menu-btn{cursor:pointer;touch-action:manipulation;position:relative;z-index:101}
+  .mobile-nav-panel:not([hidden]){display:block !important;z-index:100 !important}
+}
+
+/* ==========================================================
+   SOHBETIX V19.1 — MESAJ ALANI KESIN ALT SABITLEME
+   Grid cocuklari acik/gizli degisse bile mesaj kutusu row 4'te kalir.
+   ========================================================== */
+html.room-fixed-viewport .room-grid-v15,
+body.room-page-v15 .room-grid-v15{
+  grid-template-rows:minmax(0,1fr) !important;
+  align-items:stretch !important;
+}
+html.room-fixed-viewport .room-chat-v15,
+body.room-page-v15 .room-chat-v15{
+  height:100% !important;
+  align-self:stretch !important;
+  grid-template-rows:auto auto minmax(0,1fr) auto !important;
+}
+html.room-fixed-viewport .room-tabs-v15,
+body.room-page-v15 .room-tabs-v15{
+  grid-row:1 !important;
+}
+html.room-fixed-viewport .prejoin-blessing-v16,
+body.room-page-v15 .prejoin-blessing-v16,
+html.room-fixed-viewport .chat-disabled-v18,
+body.room-page-v15 .chat-disabled-v18{
+  grid-row:2 !important;
+}
+html.room-fixed-viewport .room-messages-v15,
+body.room-page-v15 .room-messages-v15{
+  grid-row:3 !important;
+  height:auto !important;
+  min-height:0 !important;
+  align-self:stretch !important;
+  overflow-y:auto !important;
+}
+html.room-fixed-viewport .room-guest-footer-v15,
+body.room-page-v15 .room-guest-footer-v15,
+html.room-fixed-viewport .room-composer-v15,
+body.room-page-v15 .room-composer-v15{
+  grid-row:4 !important;
+  align-self:end !important;
+  position:relative !important;
+  bottom:auto !important;
+  width:100% !important;
+}
+
+/* ==========================================================
+   SOHBETIX V20 — KULLANICI MENUSU + SON MESAJLAR
+   ========================================================== */
+.user-target-v20{cursor:pointer}
+.sohbetix-user-menu-v20{
+  position:fixed;z-index:9999;background:#fff;border:1px solid #d8dde4;border-radius:10px;
+  box-shadow:0 12px 34px rgba(0,0,0,.20);overflow:hidden;padding:7px;
+  font-family:inherit;color:#171717;
+}
+.sohbetix-user-menu-head-v20{display:flex;align-items:center;gap:9px;padding:7px 8px 10px;border-bottom:1px solid #edf0f3;margin-bottom:4px}
+.sohbetix-user-menu-avatar-v20{width:34px;height:34px;display:grid;place-items:center;border-radius:7px;background:#ffd642;border:2px solid #e8bd24;font-weight:900;color:var(--user-color,#222)}
+.sohbetix-user-menu-head-v20 strong{font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sohbetix-user-menu-v20 button{width:100%;border:0;background:#fff;display:flex;align-items:center;gap:10px;padding:9px 8px;border-radius:7px;font:700 14px/1.2 inherit;text-align:left;cursor:pointer;color:#151515}
+.sohbetix-user-menu-v20 button:hover,.sohbetix-user-menu-v20 button:focus{background:#f1f4f7;outline:none}
+.sohbetix-user-menu-v20 svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:0 0 22px}
+
+.room-chat-v15{position:relative!important}
+.latest-messages-v20{
+  position:absolute;right:12px;bottom:132px;z-index:40;display:inline-flex;align-items:center;gap:5px;
+  border:1px solid #c8cdd3;background:#fff;color:#202020;border-radius:8px;padding:5px 8px;
+  font:700 11px/1 inherit;box-shadow:0 2px 8px rgba(0,0,0,.12);cursor:pointer
+}
+.latest-messages-v20[hidden]{display:none!important}
+.latest-messages-v20 svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+@media(max-width:760px){
+  .latest-messages-v20{right:8px;bottom:126px;font-size:10px;padding:5px 7px}
+  .sohbetix-user-menu-v20{max-width:220px}
+}
+
+
+/* ==========================================================
+   SOHBETIX V21 — GİRİŞ KİLİDİ + HESAP SAYFASI + ŞİFRE GÖSTER
+   ========================================================== */
+.room-not-joined-v21 #roomMessages,
+.room-not-joined-v21 #roomUserList,
+.room-not-joined-v21 #nickSearch,
+.room-not-joined-v21 #onlineCount,
+.room-not-joined-v21 #latestMessagesBtn{visibility:hidden!important;pointer-events:none!important}
+.room-not-joined-v21 .room-users-v15{background:#f7f8fa}
+.room-not-joined-v21 #roomMessages::after{content:''}
+.account-auth-v21{width:38px;height:38px;border:1px solid #d4d9de;background:#fff;border-radius:8px;display:grid;place-items:center;cursor:pointer;color:#980000}
+.account-auth-v21 svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.account-auth-v21:hover{background:#fff1f1;border-color:#b90000}
+.room-profile-hint-v15[hidden]{display:none!important}
+
+.auth-page-v21{margin:0;background:#f3f5f8;color:#171717;font-family:Arial,Helvetica,sans-serif;min-height:100vh}
+.auth-top-v21{height:62px;background:linear-gradient(135deg,#8b0000,#b10000);display:flex;align-items:center;justify-content:space-between;padding:0 18px;box-shadow:0 2px 10px rgba(0,0,0,.14)}
+.auth-brand-v21{color:#fff;text-decoration:none;font-size:25px;font-weight:900}.auth-brand-v21 span{color:#ffd24a}.auth-back-v21{color:#fff;text-decoration:none;font-size:13px;font-weight:700;border:1px solid rgba(255,255,255,.45);padding:8px 11px;border-radius:8px}
+.auth-shell-v21{max-width:520px;margin:0 auto;padding:26px 14px 50px}.auth-card-v21{background:#fff;border:1px solid #dde2e7;border-radius:16px;padding:22px;box-shadow:0 12px 36px rgba(20,25,35,.09)}
+.auth-icon-v21{width:48px;height:48px;border-radius:12px;background:#fff1f1;color:#980000;display:grid;place-items:center;margin:0 auto 9px}.auth-icon-v21 svg{width:29px;height:29px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.auth-card-v21 h1{text-align:center;margin:4px 0 5px;font-size:24px}.auth-lead-v21{text-align:center;color:#6f7883;margin:0 0 18px;font-size:13px}
+.auth-tabs-v21{display:grid;grid-template-columns:1fr 1fr;background:#f1f3f5;border-radius:10px;padding:4px;margin-bottom:18px}.auth-tabs-v21 button{border:0;background:transparent;padding:10px;border-radius:8px;font-weight:800;cursor:pointer}.auth-tabs-v21 button.active{background:#980000;color:#fff;box-shadow:0 2px 7px rgba(152,0,0,.22)}
+.auth-form-v21{display:grid;gap:12px}.auth-form-v21[hidden]{display:none!important}.auth-form-v21 label{display:grid;gap:6px;font-size:12px;font-weight:800;color:#4b5563}.auth-form-v21 input{width:100%;box-sizing:border-box;height:43px;border:1px solid #cfd6dd;border-radius:8px;padding:0 11px;font:inherit;outline:none;background:#fff}.auth-form-v21 input:focus{border-color:#980000;box-shadow:0 0 0 3px rgba(152,0,0,.08)}
+.password-wrap-v21{position:relative;display:block;width:100%}.password-wrap-v21 input{padding-right:45px!important}.password-toggle-v21{position:absolute;right:5px;top:50%;transform:translateY(-50%);width:34px;height:34px;border:0;background:transparent;color:#68737e;border-radius:7px;display:grid;place-items:center;cursor:pointer}.password-toggle-v21:hover{background:#f1f3f5}.password-toggle-v21 svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.auth-captcha-v21{border:1px solid #dce2e7;border-radius:10px;background:#fafbfc;padding:12px}.auth-captcha-head-v21{display:flex;align-items:center;gap:7px;color:#333;margin-bottom:10px;font-size:13px}.auth-captcha-head-v21 svg{width:20px;height:20px;fill:none;stroke:#980000;stroke-width:1.8}.auth-captcha-q-v21{font-size:13px;font-weight:800;margin-bottom:8px}.auth-captcha-row-v21{display:grid;grid-template-columns:1fr auto;gap:7px}.auth-captcha-row-v21 button{border:0;background:#980000;color:#fff;border-radius:8px;padding:0 13px;font-weight:800;cursor:pointer}.auth-captcha-v21 small{display:block;margin-top:7px;font-size:11px}.auth-captcha-v21 small.ok{color:#137534}.auth-captcha-v21 small.error{color:#9f1111}
+.auth-submit-v21{height:44px;border:0;background:#980000;color:#fff;border-radius:9px;font-size:15px;font-weight:900;cursor:pointer}.auth-submit-v21:disabled{opacity:.45;cursor:not-allowed}.auth-status-v21{min-height:18px;font-size:12px;color:#a11111}.auth-status-v21.ok{color:#117335}.auth-demo-v21{font-size:10px;color:#7b8490;text-align:center;margin:16px 0 0;line-height:1.4}
+@media(max-width:520px){.auth-card-v21{padding:17px 13px;border-radius:12px}.auth-shell-v21{padding-top:14px}.auth-top-v21{height:56px;padding:0 12px}.auth-brand-v21{font-size:22px}}
+
+/* ===== V21 FIX: official Sohbetix logo ===== */
+.brand-logo-v21{display:inline-flex!important;align-items:center!important;flex:0 0 auto;text-decoration:none!important;overflow:hidden}
+.brand-logo-v21 img{display:block;width:auto;height:48px;max-width:170px;object-fit:contain}
+.auth-brand-v21.brand-logo-v21 img{height:50px;max-width:175px;border-radius:7px}
+@media(max-width:760px){.brand-logo-v21 img{height:42px;max-width:145px}.auth-brand-v21.brand-logo-v21 img{height:44px;max-width:150px}}

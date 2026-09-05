@@ -1,0 +1,9 @@
+SOHBETIX V20
+- Kullanici listesi ve chat mesajlarinda kullaniciya dokununca menu acilir.
+- Tum kullanicilarda: Bahset, Gizli, Profil.
+- Yalnizca kayitli hedef kullanicida: Yoksay.
+- Menu ikonlari inline SVG gercek ikonlardir.
+- Mesajlar yukari kaydirildiginda yazma alaninin ustunde Son mesajlar butonu belirir.
+- Son mesajlar butonu chatin en yeni mesajina yumusak kaydirir.
+- Kullanici eski mesajlari okurken yeni mesaj gelirse ekran zorla alta atlamaz.
+- V19.1 sabit mesaj alani ve sag kullanici listesi korunmustur.

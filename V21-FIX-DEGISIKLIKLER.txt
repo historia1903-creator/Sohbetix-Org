@@ -1,0 +1,6 @@
+SOHBETIX V21 FIX
+- Hesap kayıt/giriş sayfası sadece sohbet girişindeki @ butonuyla açılır.
+- Doğrudan auth.html açılırsa sohbete geri döner.
+- Kayıt veya giriş başarılı olunca kullanıcı kayıtlı hesabıyla doğrudan sohbete girer.
+- Resmi Sohbetix logosu tüm site üst logo alanlarında kullanılır.
+- Görünen demo ibareleri kaldırıldı.

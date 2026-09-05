@@ -1,0 +1,4 @@
+Sohbetix V20.1 FIX
+- Son Mesajlar butonu chat icinde daha yukariya alindi.
+- Misafir/kayitsiz hedef kullanicilarda Yoksay butonu kesinlikle gosterilmez.
+- Kayitli durum degeri strict normalize edildi (false/0 stringleri kayitli sayilmaz).
