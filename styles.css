@@ -1365,3 +1365,47 @@ body.room-page-v15 .room-composer-v15{
 .brand-logo-v21 img{display:block;width:auto;height:48px;max-width:170px;object-fit:contain}
 .auth-brand-v21.brand-logo-v21 img{height:50px;max-width:175px;border-radius:7px}
 @media(max-width:760px){.brand-logo-v21 img{height:42px;max-width:145px}.auth-brand-v21.brand-logo-v21 img{height:44px;max-width:150px}}
+
+
+/* ==========================================================
+   SOHBETIX V23 — composer / emoji GIF / @mention / presence
+   ========================================================== */
+.room-compose-actions-v15 .room-send-v15{
+  margin-left:auto !important;
+  flex:0 0 auto !important;
+}
+.room-compose-box-v15{overflow:visible!important}
+.emoji-panel-v23{
+  position:absolute;right:0;bottom:calc(100% + 7px);z-index:85;
+  width:min(360px,calc(100vw - 34px));max-height:330px;overflow:auto;
+  background:#fff;border:1px solid #cfd6dd;border-radius:10px;
+  box-shadow:0 10px 30px rgba(0,0,0,.20);padding:9px;
+}
+.emoji-panel-v23[hidden],.mention-suggest-v23[hidden]{display:none!important}
+.emoji-tabs-v23{display:flex;justify-content:space-between;align-items:center;padding:2px 3px 8px;border-bottom:1px solid #edf0f3;font-size:11px;color:#68737e}
+.emoji-tabs-v23 strong{color:#222}
+.emoji-grid-v23{display:grid;grid-template-columns:repeat(9,1fr);gap:3px;padding:8px 0}
+.emoji-grid-v23 button{border:0;background:transparent;border-radius:6px;font-size:22px;line-height:1;padding:5px 2px;cursor:pointer}
+.emoji-grid-v23 button:hover{background:#f0f2f5}
+.gif-grid-v23{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding-top:6px;border-top:1px solid #edf0f3}
+.gif-grid-v23 button{border:1px solid #edf0f3;background:#fff;border-radius:8px;padding:3px;cursor:pointer;overflow:hidden}
+.gif-grid-v23 img{display:block;width:100%;aspect-ratio:1;object-fit:contain}
+.chat-gif-v23{display:block;max-width:150px;max-height:150px;border-radius:10px;margin-top:5px}
+.mention-suggest-v23{
+  position:absolute;left:0;right:0;bottom:calc(100% + 7px);z-index:86;
+  max-height:230px;overflow:auto;background:#fff;border:1px solid #cfd6dd;
+  border-radius:9px;box-shadow:0 10px 28px rgba(0,0,0,.18);padding:5px;
+}
+.mention-suggest-v23 button{
+  width:100%;border:0;background:#fff;display:flex;align-items:center;gap:8px;
+  padding:7px;border-radius:7px;cursor:pointer;text-align:left;
+}
+.mention-suggest-v23 button:hover,.mention-suggest-v23 button:focus{background:#f0f3f6;outline:0}
+.mention-suggest-v23 b{font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mention-tag-v23{color:#1678a8;font-weight:800}
+@media(max-width:600px){
+  .emoji-panel-v23{right:-2px;width:min(320px,calc(100vw - 22px));max-height:300px}
+  .emoji-grid-v23{grid-template-columns:repeat(8,1fr)}
+  .gif-grid-v23{grid-template-columns:repeat(4,1fr)}
+  .chat-gif-v23{max-width:125px;max-height:125px}
+}

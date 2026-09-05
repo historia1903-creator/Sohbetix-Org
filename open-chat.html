@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,interactive-widget=resizes-content"/>
   <title>Sohbetix Sohbet</title>
-  <link rel="stylesheet" href="styles.css?v=V22-LOCAL-FIX"/>
+  <link rel="stylesheet" href="styles.css?v=V23-TAM-SISTEM"/>
   <meta name="theme-color" content="#980000"/>
 <link rel="icon" type="image/jpeg" href="sohbetix-logo.jpg"/>
 </head>
@@ -52,7 +52,18 @@
           <form class="room-composer-v15" id="messageForm" hidden>
             <div class="room-compose-box-v15">
               <textarea id="messageInput" maxlength="512" rows="2" placeholder="Mesajını yaz..."></textarea>
-              <button class="room-smiley-v15" type="button" aria-label="İfade">☺</button>
+              <button class="room-smiley-v15" id="smileyBtn" type="button" aria-label="Emoji ve GIF aç">☺</button>
+
+              <div class="mention-suggest-v23" id="mentionSuggest" hidden aria-label="Kullanıcı etiketleme listesi"></div>
+
+              <div class="emoji-panel-v23" id="emojiPanel" hidden aria-label="Emoji ve hareketli GIF paneli">
+                <div class="emoji-tabs-v23">
+                  <strong>Emoji</strong>
+                  <span>Üzgün GIF</span>
+                </div>
+                <div class="emoji-grid-v23" id="emojiGrid"></div>
+                <div class="gif-grid-v23" id="gifGrid"></div>
+              </div>
             </div>
             <div class="room-compose-actions-v15">
               <span class="room-profile-hint-v15" id="profileSaveHint">👤 Profilini kaydet</span>
@@ -98,6 +109,6 @@
     </section>
   </div>
 
-  <script src="chat.js?v=V22-LOCAL-FIX"></script>
+  <script src="chat.js?v=V23-TAM-SISTEM"></script>
 </body>
 </html>

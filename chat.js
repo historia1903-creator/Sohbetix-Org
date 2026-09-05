@@ -8,7 +8,9 @@
   const BOT_NICK = 'Sohbetix Bot';
   const BOT_PURGE_TEXT = 'Eski 10.000 tane mesaj kalıcı olarak silindi!';
   const PRESENCE_TTL = 16000;
-  const HEARTBEAT_MS = 5000;
+  const HEARTBEAT_MS = 4000;
+  const STORAGE_LEAVE_SEEN = 'sohbetix-v23-leave-seen';
+  const SESSION_JOIN_FLAG = 'sohbetix-v23-join-announced';
   const CONFIG_KEY='sohbetix-v18-chat-config';
   const DEFAULT_CONFIG={title:'Sohbetix',language:'tr',registeredCaptcha:false,disabled:false,imageShare:false,privateMode:'entered',catalogVisible:true,description:'',category:'Arkadaşlık',slug:'sohbetix'};
   function readConfig(){try{return {...DEFAULT_CONFIG,...JSON.parse(localStorage.getItem(CONFIG_KEY)||'{}')}}catch{return {...DEFAULT_CONFIG}}}
@@ -23,7 +25,8 @@
     nickCounter: $('nickCounter'), captchaToggle: $('captchaToggle'), captchaBox: $('captchaQuestionBox'),
     captchaQuestion: $('captchaQuestion'), captchaAnswer: $('captchaAnswer'), captchaVerify: $('captchaVerify'),
     captchaStatus: $('captchaStatus'), joinBtn: $('joinChatBtn'), roomAccount: $('roomAccount'), roomAccountNick: $('roomAccountNick'),
-    roomAccountBtn: $('roomAccountBtn'), roomAccountMenu: $('roomAccountMenu'), leaveBtn: $('leaveRoomBtn'), preJoinBlessing: $('preJoinBlessing'), disabledNotice:$('chatDisabledNotice'), latestMessagesBtn:$('latestMessagesBtn'), profileSaveHint:$('profileSaveHint'), accountAuthBtn:$('accountAuthBtn')
+    roomAccountBtn: $('roomAccountBtn'), roomAccountMenu: $('roomAccountMenu'), leaveBtn: $('leaveRoomBtn'), preJoinBlessing: $('preJoinBlessing'), disabledNotice:$('chatDisabledNotice'), latestMessagesBtn:$('latestMessagesBtn'), profileSaveHint:$('profileSaveHint'), accountAuthBtn:$('accountAuthBtn'),
+    smileyBtn:$('smileyBtn'), emojiPanel:$('emojiPanel'), emojiGrid:$('emojiGrid'), gifGrid:$('gifGrid'), mentionSuggest:$('mentionSuggest')
   };
 
   const clientId = (crypto && crypto.randomUUID) ? crypto.randomUUID() : `client-${Date.now()}-${Math.random().toString(36).slice(2)}`;
@@ -156,6 +159,119 @@
     });
   }
 
+
+  function renderChatText(text) {
+    const safe = escapeHtml(text || '');
+    return safe.replace(/(^|\s)@([^\s<]{1,24})/g, '$1<span class="mention-tag-v23">@$2</span>');
+  }
+
+  function leaveSeenMap() { return safeParse(localStorage.getItem(STORAGE_LEAVE_SEEN), {}); }
+  function announceDroppedPresence(id, item) {
+    if (!item || !item.nick) return;
+    const seen = leaveSeenMap();
+    const key = `${id}|${Number(item.lastSeen||0)}`;
+    if (seen[key]) return;
+    const now = Date.now();
+    for (const [k,v] of Object.entries(seen)) if (now - Number(v||0) > 10*60*1000) delete seen[k];
+    seen[key] = now;
+    localStorage.setItem(STORAGE_LEAVE_SEEN, JSON.stringify(seen));
+    addMessage('leave', {nick:item.nick, registered:normalizeRegisteredFlag(item.registered)});
+  }
+
+  function sweepExpiredPresence(presence) {
+    const now = Date.now();
+    let changed = false;
+    for (const [id, item] of Object.entries(presence)) {
+      if (!item || now - Number(item.lastSeen || 0) > PRESENCE_TTL) {
+        if (item && item.nick) announceDroppedPresence(id, item);
+        delete presence[id];
+        changed = true;
+      }
+    }
+    if (changed) writePresence(presence);
+    return presence;
+  }
+
+  function closeComposerPopups(except='') {
+    if (els.emojiPanel && except !== 'emoji') els.emojiPanel.hidden = true;
+    if (els.mentionSuggest && except !== 'mention') els.mentionSuggest.hidden = true;
+  }
+
+  function insertAtCaret(text) {
+    const input = els.messageInput;
+    const start = input.selectionStart ?? input.value.length;
+    const end = input.selectionEnd ?? input.value.length;
+    input.value = input.value.slice(0,start) + text + input.value.slice(end);
+    const pos = start + text.length;
+    input.setSelectionRange(pos,pos);
+    input.focus();
+    input.dispatchEvent(new Event('input',{bubbles:true}));
+  }
+
+  function initEmojiPanelV23() {
+    if (!els.emojiGrid || !els.gifGrid || !els.smileyBtn) return;
+    const emojis = ['😀','😃','😄','😁','😂','🤣','😊','😍','🥰','😘','😢','😭','😞','😔','☹️','🙁','😥','😓','😩','😫','🥺','😡','🤬','😎','🤗','🤔','👍','👎','❤️','💔','🔥','🎉','🌹','⭐','🙏','👏'];
+    els.emojiGrid.innerHTML = emojis.map(x=>`<button type="button" data-emoji="${x}" aria-label="${x}">${x}</button>`).join('');
+    const gifs = Array.from({length:16},(_,i)=>`emoji-gif/sad-${String(i+1).padStart(2,'0')}.gif`);
+    els.gifGrid.innerHTML = gifs.map((src,i)=>`<button type="button" data-gif="${src}" aria-label="Hareketli üzgün GIF ${i+1}"><img src="${src}" alt="Üzgün GIF ${i+1}" loading="lazy"></button>`).join('');
+    els.smileyBtn.addEventListener('click', e=>{
+      e.stopPropagation();
+      const willOpen = els.emojiPanel.hidden;
+      closeComposerPopups('emoji');
+      els.emojiPanel.hidden = !willOpen;
+    });
+    els.emojiGrid.addEventListener('click',e=>{
+      const b=e.target.closest('[data-emoji]'); if(!b)return;
+      insertAtCaret(b.dataset.emoji);
+    });
+    els.gifGrid.addEventListener('click',e=>{
+      const b=e.target.closest('[data-gif]'); if(!b)return;
+      if(!currentNick){openJoinModal();return;}
+      addMessage('gif',{nick:currentNick,data:b.dataset.gif});
+      els.emojiPanel.hidden=true;
+    });
+  }
+
+  function currentMentionQuery() {
+    const input=els.messageInput;
+    const pos=input.selectionStart ?? input.value.length;
+    const before=input.value.slice(0,pos);
+    const m=before.match(/(?:^|\s)@([^\s@]*)$/);
+    if(!m)return null;
+    return {query:m[1], start:pos-m[1].length-1, end:pos};
+  }
+
+  function renderMentionSuggestions() {
+    if(!els.mentionSuggest || !currentNick){ if(els.mentionSuggest)els.mentionSuggest.hidden=true; return; }
+    const m=currentMentionQuery();
+    if(!m){els.mentionSuggest.hidden=true;return;}
+    closeComposerPopups('mention');
+    const q=m.query.toLocaleLowerCase('tr-TR');
+    const seen=new Set();
+    const users=Object.values(prunePresence(readPresence()))
+      .filter(u=>u&&u.nick)
+      .filter(u=>{
+        const k=String(u.nick).toLocaleLowerCase('tr-TR');
+        if(seen.has(k))return false; seen.add(k); return true;
+      })
+      .filter(u=>!q||String(u.nick).toLocaleLowerCase('tr-TR').includes(q))
+      .slice(0,40);
+    if(!users.length){els.mentionSuggest.hidden=true;return;}
+    els.mentionSuggest.innerHTML=users.map(u=>`<button type="button" data-mention="${escapeHtml(u.nick)}"><span class="room-mini-avatar-v15" style="--user-color:${makeColor(u.nick)}">${escapeHtml(makeAvatar(u.nick))}</span><b>${escapeHtml(u.nick)}</b></button>`).join('');
+    els.mentionSuggest.hidden=false;
+  }
+
+  function chooseMention(nick) {
+    const m=currentMentionQuery();
+    if(!m)return;
+    const input=els.messageInput;
+    input.value=input.value.slice(0,m.start)+'@'+nick+' '+input.value.slice(m.end);
+    const pos=m.start+nick.length+2;
+    input.setSelectionRange(pos,pos);
+    input.focus();
+    els.mentionSuggest.hidden=true;
+  }
+
   function addMessage(type, data = {}) {
     let list = readMessages();
     if (data.nick && data.registered === undefined && data.nick === currentNick) data.registered = isRegistered;
@@ -199,7 +315,8 @@
         return `<article class="bot-message-v17"><div class="bot-avatar-v17">S</div><div class="bot-message-body-v17"><div class="bot-message-meta-v17"><b>${escapeHtml(BOT_NICK)}</b><small>${escapeHtml(msg.time || '')}</small></div><p>${escapeHtml(msg.text || BOT_PURGE_TEXT)}</p></div></article>`;
       }
       if(msg.type==='image') return `<article class="live-message-v15 user-target-v20" data-user-nick="${escapeHtml(msg.nick||'')}" data-user-registered="${registered?'1':'0'}"><div class="live-avatar-v15" style="--user-color:${makeColor(msg.nick||'')}">${escapeHtml(makeAvatar(msg.nick||''))}</div><div class="live-message-body-v15"><div class="live-message-meta-v15"><b style="color:${makeColor(msg.nick||'')}">${escapeHtml(msg.nick||'')}</b><small>${escapeHtml(msg.time||'')}</small></div><img class="live-image-v18" src="${escapeHtml(msg.data||'')}" alt="Paylaşılan resim"></div></article>`;
-      return `<article class="live-message-v15 user-target-v20" data-user-nick="${escapeHtml(msg.nick||'')}" data-user-registered="${registered?'1':'0'}"><div class="live-avatar-v15" style="--user-color:${makeColor(msg.nick || '')}">${escapeHtml(makeAvatar(msg.nick || ''))}</div><div class="live-message-body-v15"><div class="live-message-meta-v15"><b style="color:${makeColor(msg.nick || '')}">${escapeHtml(msg.nick || '')}</b><small>${escapeHtml(msg.time || '')}</small></div><p>${escapeHtml(msg.text || '')}</p></div></article>`;
+      if(msg.type==='gif') return `<article class="live-message-v15 user-target-v20" data-user-nick="${escapeHtml(msg.nick||'')}" data-user-registered="${registered?'1':'0'}"><div class="live-avatar-v15" style="--user-color:${makeColor(msg.nick||'')}">${escapeHtml(makeAvatar(msg.nick||''))}</div><div class="live-message-body-v15"><div class="live-message-meta-v15"><b style="color:${makeColor(msg.nick||'')}">${escapeHtml(msg.nick||'')}</b><small>${escapeHtml(msg.time||'')}</small></div><img class="chat-gif-v23" src="${escapeHtml(msg.data||'')}" alt="Hareketli emoji"></div></article>`;
+      return `<article class="live-message-v15 user-target-v20" data-user-nick="${escapeHtml(msg.nick||'')}" data-user-registered="${registered?'1':'0'}"><div class="live-avatar-v15" style="--user-color:${makeColor(msg.nick || '')}">${escapeHtml(makeAvatar(msg.nick || ''))}</div><div class="live-message-body-v15"><div class="live-message-meta-v15"><b style="color:${makeColor(msg.nick || '')}">${escapeHtml(msg.nick || '')}</b><small>${escapeHtml(msg.time || '')}</small></div><p>${renderChatText(msg.text || '')}</p></div></article>`;
     }).join('');
     if (forceBottom || wasNearBottom) els.messages.scrollTop = els.messages.scrollHeight;
     else els.messages.scrollTop = previousScrollTop;
@@ -215,7 +332,7 @@
   }
 
   function renderPresence() {
-    let presence = prunePresence(readPresence());
+    let presence = sweepExpiredPresence(readPresence());
     writePresence(presence);
     const q = (els.search.value || '').toLocaleLowerCase('tr-TR').trim();
     const users = Object.values(presence).sort((a,b) => String(a.nick).localeCompare(String(b.nick), 'tr'));
@@ -223,7 +340,7 @@
     const filtered = users.filter(u => !q || String(u.nick).toLocaleLowerCase('tr-TR').includes(q));
     const botMatches = !q || BOT_NICK.toLocaleLowerCase('tr-TR').includes(q);
     const botRow = botMatches ? `<li class="room-bot-user-v17"><span class="room-mini-avatar-v15 room-bot-avatar-v17">S</span><b>${escapeHtml(BOT_NICK)}</b></li>` : '';
-    els.userList.innerHTML = botRow + filtered.map(u => `<li class="user-target-v20" data-user-nick="${escapeHtml(u.nick||'')}" data-user-registered="${u.registered?'1':'0'}"><span class="room-mini-avatar-v15" style="--user-color:${makeColor(u.nick)}">${escapeHtml(makeAvatar(u.nick))}</span><b style="color:${makeColor(u.nick)}">${escapeHtml(u.nick)}</b></li>`).join('');
+    els.userList.innerHTML = botRow + filtered.map(u => `<li class="user-target-v20" data-user-nick="${escapeHtml(u.nick||'')}" data-user-registered="${normalizeRegisteredFlag(u.registered)?'1':'0'}"><span class="room-mini-avatar-v15" style="--user-color:${makeColor(u.nick)}">${escapeHtml(makeAvatar(u.nick))}</span><b style="color:${makeColor(u.nick)}">${escapeHtml(u.nick)}</b></li>`).join('');
   }
 
   function heartbeatPresence() {
@@ -279,28 +396,29 @@
   }
   function closeJoinModal() { els.overlay.hidden = true; }
 
-  const captchaQuestions = [
-    () => { const a=4+Math.floor(Math.random()*18), b=3+Math.floor(Math.random()*17); return {q:`${a} + ${b} kaç eder?`, a:String(a+b)}; },
-    () => { const a=20+Math.floor(Math.random()*30), b=2+Math.floor(Math.random()*15); return {q:`${a} - ${b} kaç eder?`, a:String(a-b)}; },
-    () => { const a=2+Math.floor(Math.random()*8), b=2+Math.floor(Math.random()*8); return {q:`${a} × ${b} kaç eder?`, a:String(a*b)}; },
-    () => { const a=2+Math.floor(Math.random()*5); return {q:`${a} sayısının karesi kaçtır?`, a:String(a*a)}; },
-    () => ({q:'Türkiye’nin başkenti nedir?', a:'ankara'}),
-    () => ({q:'İstanbul hangi ülkededir?', a:'türkiye'}),
-    () => ({q:'“Sohbetix” kelimesinin ilk harfi nedir?', a:'s'}),
-    () => ({q:'“güvenlik” kelimesinde kaç harf vardır?', a:'8'}),
-    () => ({q:'Pazartesiden sonra hangi gün gelir?', a:'salı'}),
-    () => ({q:'Bir haftada kaç gün vardır?', a:'7'}),
-    () => ({q:'10, 20, 30, ? dizisinde sıradaki sayı nedir?', a:'40'}),
-    () => ({q:'KIRMIZI kelimesini küçük harfle yaz.', a:'kırmızı'}),
-    () => ({q:'3 elma + 2 elma toplam kaç elma eder?', a:'5'}),
-    () => ({q:'Saat 12’den 3 saat sonra saat kaç olur?', a:'15'}),
-    () => ({q:'2, 4, 6, 8, ? dizisini tamamla.', a:'10'}),
-    () => ({q:'“robot” kelimesini tersten yaz.', a:'tobor'})
-  ];
+  const captchaQuestions = (() => {
+    const bank = [];
+    // 1,500 unique addition questions
+    for (let a=11;a<=60;a++) for (let b=2;b<=31;b++) bank.push({q:`${a} + ${b} kaç eder?`,a:String(a+b)});
+    // 1,200 unique subtraction questions
+    for (let a=41;a<=80;a++) for (let b=2;b<=31;b++) bank.push({q:`${a} - ${b} kaç eder?`,a:String(a-b)});
+    // 720 unique multiplication questions
+    for (let a=2;a<=25;a++) for (let b=2;b<=31;b++) bank.push({q:`${a} × ${b} kaç eder?`,a:String(a*b)});
+    // Extra logic/general questions
+    bank.push(
+      {q:'Türkiye’nin başkenti nedir?',a:'ankara'},
+      {q:'Bir haftada kaç gün vardır?',a:'7'},
+      {q:'“robot” kelimesini tersten yaz.',a:'tobor'},
+      {q:'Pazartesiden sonra hangi gün gelir?',a:'salı'},
+      {q:'2, 4, 6, 8, ? dizisini tamamla.',a:'10'},
+      {q:'KIRMIZI kelimesini küçük harfle yaz.',a:'kırmızı'}
+    );
+    return bank;
+  })();
   let captchaStage = 0;
-  const CAPTCHA_REQUIRED_STAGES = 2;
+  const CAPTCHA_REQUIRED_STAGES = 3;
   function newCaptcha() {
-    captcha = captchaQuestions[Math.floor(Math.random()*captchaQuestions.length)]();
+    captcha = captchaQuestions[Math.floor(Math.random()*captchaQuestions.length)];
     els.captchaQuestion.textContent = captcha.q;
     els.captchaAnswer.value = '';
   }
@@ -325,7 +443,7 @@
         els.captchaBox.hidden = true;
       } else {
         captchaPassed = false;
-        els.captchaStatus.textContent = `✓ 1/${CAPTCHA_REQUIRED_STAGES} doğru. Son bir soru daha.`;
+        els.captchaStatus.textContent = `${captchaStage}/${CAPTCHA_REQUIRED_STAGES} doğru. Devam etmek için sıradaki soruyu çöz.`;
         els.captchaStatus.className = 'captcha-status-v15 ok';
         newCaptcha();
         setTimeout(() => els.captchaAnswer.focus(), 20);
@@ -333,7 +451,7 @@
     } else {
       captchaPassed = false;
       captchaStage = 0;
-      els.captchaStatus.textContent = 'Cevap yanlış. Doğrulama sıfırlandı; iki yeni soruyu doğru cevapla.';
+      els.captchaStatus.textContent = 'Cevap yanlış. Doğrulama sıfırlandı; üç yeni soruyu arka arkaya doğru cevapla.';
       els.captchaStatus.className = 'captcha-status-v15 error';
       newCaptcha();
     }
@@ -348,7 +466,8 @@
     closeJoinModal();
     setLoggedInState(true);
     startHeartbeat();
-    addMessage('join', {nick:currentNick});
+    sessionStorage.setItem(SESSION_JOIN_FLAG, currentNick);
+    addMessage('join', {nick:currentNick, registered:isRegistered});
     renderPresence();
   }
 
@@ -357,6 +476,7 @@
     clearInterval(heartbeat);
     removePresence(true);
     sessionStorage.removeItem(SESSION_NICK);
+    sessionStorage.removeItem(SESSION_JOIN_FLAG);
     currentNick = '';
     setLoggedInState(false);
     els.roomAccountMenu.hidden = true;
@@ -365,7 +485,7 @@
 
   if (els.accountAuthBtn) els.accountAuthBtn.addEventListener('click', () => {
     const ret = 'open-chat.html' + (location.search || '');
-    sessionStorage.setItem('sohbetix-auth-entry-v22', String(Date.now()));
+    sessionStorage.setItem('sohbetix-auth-entry-v23', String(Date.now()));
     location.href = 'auth.html?return=' + encodeURIComponent(ret);
   });
   els.openJoin.addEventListener('click', openJoinModal);
@@ -395,8 +515,16 @@
     els.messageInput.value = '';
     els.messageInput.focus();
   });
+  els.messageInput.addEventListener('input', renderMentionSuggestions);
+  els.messageInput.addEventListener('click', renderMentionSuggestions);
+  els.messageInput.addEventListener('keyup', e => { if(e.key==='@' || e.key==='ArrowLeft' || e.key==='ArrowRight') renderMentionSuggestions(); });
+  if(els.mentionSuggest) els.mentionSuggest.addEventListener('click',e=>{
+    const b=e.target.closest('[data-mention]'); if(!b)return;
+    e.preventDefault(); chooseMention(b.dataset.mention);
+  });
   els.messageInput.addEventListener('keydown', e => {
-    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); els.messageForm.requestSubmit(); }
+    if (e.key === 'Escape') closeComposerPopups();
+    if (e.key === 'Enter' && !e.shiftKey && (!els.mentionSuggest || els.mentionSuggest.hidden)) { e.preventDefault(); els.messageForm.requestSubmit(); }
   });
   els.messageInput.addEventListener('paste', e => {
     const items=[...(e.clipboardData?.items||[])]; const image=items.find(i=>i.type&&i.type.startsWith('image/')); if(!image)return;
@@ -411,14 +539,29 @@
     if (e.key === STORAGE_MESSAGES) renderMessages();
     if (e.key === STORAGE_PRESENCE) renderPresence();
   });
+  window.addEventListener('pagehide', () => {
+    if (!currentNick) return;
+    const presence = readPresence();
+    const item = presence[clientId];
+    delete presence[clientId];
+    writePresence(presence);
+    if (item && sessionStorage.getItem(SESSION_JOIN_FLAG) === currentNick) {
+      sessionStorage.removeItem(SESSION_JOIN_FLAG);
+      addMessage('leave', {nick:currentNick, registered:isRegistered});
+    }
+  });
+
   window.addEventListener('beforeunload', () => {
     if (!currentNick) return;
     const presence = readPresence();
     delete presence[clientId];
     writePresence(presence);
-    const list = readMessages();
-    list.push({id:`m-${Date.now()}-leave`, type:'leave', nick:currentNick, at:Date.now(), time:nowTime()});
-    writeMessages(list);
+    if (sessionStorage.getItem(SESSION_JOIN_FLAG) === currentNick) {
+      sessionStorage.removeItem(SESSION_JOIN_FLAG);
+      const list = readMessages();
+      list.push({id:`m-${Date.now()}-leave`, type:'leave', nick:currentNick, registered:isRegistered, at:Date.now(), time:nowTime()});
+      writeMessages(list);
+    }
   });
 
   document.title=(cfg.title||'Sohbetix')+(cfg.language==='en'?' Chat':' Sohbet');
@@ -430,12 +573,25 @@
   els.messages.addEventListener('click',e=>{const row=e.target.closest('.user-target-v20');if(!row)return;e.stopPropagation();showUserMenu(row.dataset.userNick,row.dataset.userRegistered==='1',row);});
   els.messages.addEventListener('scroll',updateLatestMessagesButton,{passive:true});
   if(els.latestMessagesBtn) els.latestMessagesBtn.addEventListener('click',()=>scrollToLatestMessages(true));
-  document.addEventListener('click',e=>{if(!e.target.closest('.sohbetix-user-menu-v20'))closeUserMenu();});
+  document.addEventListener('click',e=>{
+    if(!e.target.closest('.sohbetix-user-menu-v20'))closeUserMenu();
+    if(!e.target.closest('.emoji-panel-v23') && !e.target.closest('#smileyBtn')) {
+      if(els.emojiPanel) els.emojiPanel.hidden=true;
+    }
+    if(!e.target.closest('.mention-suggest-v23') && !e.target.closest('#messageInput')) {
+      if(els.mentionSuggest) els.mentionSuggest.hidden=true;
+    }
+  });
+  initEmojiPanelV23();
   renderMessages();
   renderPresence();
   if (currentNick) {
     setLoggedInState(true);
     startHeartbeat();
+    if (sessionStorage.getItem(SESSION_JOIN_FLAG) !== currentNick) {
+      sessionStorage.setItem(SESSION_JOIN_FLAG, currentNick);
+      addMessage('join', {nick:currentNick, registered:isRegistered});
+    }
   } else {
     setLoggedInState(false);
   }

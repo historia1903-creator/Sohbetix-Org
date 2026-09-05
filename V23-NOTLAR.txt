@@ -1,0 +1,11 @@
+SOHBETIX V23 TAM SISTEM
+
+- Gönder butonu mesaj kutusunun sağ altında sabit kalır.
+- Emoji paneline standart emoji ve 16 çalışan hareketli üzgün GIF eklendi.
+- Kayıtlı veya misafir kullanıcı giriş/çıkış bildirimleri aktif.
+- Kullanıcı listeden zaman aşımıyla düştüğünde ayrılma bildirimi oluşturulur.
+- Mesaj alanına @ yazınca çevrimiçi kullanıcılar listelenir ve seçimle etiketlenir.
+- Chat giriş güvenliğinde 3,400+ farklı soru havuzu ve 3 ardışık doğru cevap şartı vardır.
+- Kayıt güvenliğinde de aynı 3,400+ soru havuzu ve 3 ardışık doğru cevap şartı vardır.
+- Eski sürüm notları ve gereksiz eski dosyalar pakete dahil edilmemiştir.
+- Sistem halen yerel tarayıcı verisiyle çalışır; gerçek sunucu/veritabanı bağlantısı sonraki aşamaya bırakılmıştır.
