@@ -1387,10 +1387,10 @@ body.room-page-v15 .room-composer-v15{
 .emoji-grid-v23{display:grid;grid-template-columns:repeat(9,1fr);gap:3px;padding:8px 0}
 .emoji-grid-v23 button{border:0;background:transparent;border-radius:6px;font-size:22px;line-height:1;padding:5px 2px;cursor:pointer}
 .emoji-grid-v23 button:hover{background:#f0f2f5}
-.gif-grid-v23{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding-top:6px;border-top:1px solid #edf0f3}
-.gif-grid-v23 button{border:1px solid #edf0f3;background:#fff;border-radius:8px;padding:3px;cursor:pointer;overflow:hidden}
-.gif-grid-v23 img{display:block;width:100%;aspect-ratio:1;object-fit:contain}
-.chat-gif-v23{display:block;max-width:150px;max-height:150px;border-radius:10px;margin-top:5px}
+
+
+
+
 .mention-suggest-v23{
   position:absolute;left:0;right:0;bottom:calc(100% + 7px);z-index:86;
   max-height:230px;overflow:auto;background:#fff;border:1px solid #cfd6dd;
@@ -1406,8 +1406,8 @@ body.room-page-v15 .room-composer-v15{
 @media(max-width:600px){
   .emoji-panel-v23{right:-2px;width:min(320px,calc(100vw - 22px));max-height:300px}
   .emoji-grid-v23{grid-template-columns:repeat(8,1fr)}
-  .gif-grid-v23{grid-template-columns:repeat(4,1fr)}
-  .chat-gif-v23{max-width:125px;max-height:125px}
+  
+  
 }
 
 
@@ -1453,4 +1453,151 @@ body.room-page-v15 .room-composer-v15{
   .live-message-body-v15 p{font-size:11.5px!important;line-height:1.32!important}
   .system-message-v15,.system-message-v15.leave{font-size:10.5px!important}
   .flood-warning-v24{font-size:11px;padding:8px 10px}
+}
+
+
+/* ==========================================================
+   SOHBETIX V25 - KAYITLI CHAT PROFIL SISTEMI
+   ========================================================== */
+
+/* Chat solda geniş, çevrimiçi panel sağda daha dar */
+.room-grid-v15{
+  grid-template-columns:minmax(0,86%) minmax(150px,14%) !important;
+}
+.room-chat-v15{
+  grid-column:1 !important;
+  grid-row:1 !important;
+  border-right:1px solid #d8dee5 !important;
+}
+.room-users-v15{
+  grid-column:2 !important;
+  grid-row:1 !important;
+  border-right:0 !important;
+  border-left:0 !important;
+}
+.room-online-v15{padding:0 7px!important;font-size:11px!important}
+.room-search-v15{padding:5px!important}
+.room-search-v15 input{padding:0 6px!important;font-size:11px!important}
+.room-user-list-v15{padding:6px 3px!important}
+.room-user-list-v15 li{gap:4px!important;padding:5px 2px!important}
+.room-user-list-v15 b{font-size:11px!important}
+.room-mini-avatar-v15{width:20px!important;height:20px!important;flex-basis:20px!important;font-size:10px!important}
+
+/* Profil modülü */
+.join-modal-v25{
+  width:min(360px,calc(100vw - 24px))!important;
+  border-radius:5px!important;
+}
+.join-modal-body-v25{padding:12px 14px 13px!important}
+.profile-brand-v25{
+  display:flex;justify-content:center;align-items:center;
+  min-height:62px;margin:-2px 0 2px;
+}
+.profile-brand-v25 img{
+  display:block;width:112px;max-height:64px;object-fit:contain;
+}
+.profile-account-v25{
+  text-align:center;font-size:12px;line-height:1.25;margin-bottom:14px;color:#20252a;
+}
+.profile-account-v25 strong{
+  display:block;color:#1674a7;font-size:13px;margin:2px 0 3px;
+  overflow-wrap:anywhere;
+}
+.profile-account-v25 button{
+  border:0;background:transparent;color:#1674a7;
+  font-weight:700;font-size:11px;cursor:pointer;padding:1px 4px;
+}
+.profile-select-head-v25{
+  display:flex;align-items:center;justify-content:space-between;
+  margin:3px 0 5px;font-size:12px;
+}
+.profile-select-head-v25>button{
+  width:28px;height:28px;border:0;background:transparent;color:#8b949e;
+  display:grid;place-items:center;cursor:pointer;border-radius:5px;
+}
+.profile-select-head-v25 svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.saved-profiles-v25{display:grid;gap:4px}
+.saved-profile-row-v25{
+  position:relative;display:flex;align-items:center;min-height:38px;
+  border:1px solid #cdd5dc;border-radius:5px;background:#fff;
+}
+.saved-profile-choice-v25{
+  flex:1;display:flex;align-items:center;gap:8px;min-width:0;
+  padding:7px 8px;cursor:pointer;font-size:12px;
+}
+.saved-profile-choice-v25 span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.saved-profile-choice-v25 input{accent-color:#0b9dbb}
+.profile-more-v25{
+  width:36px;height:34px;display:grid;place-items:center;
+  border:0;background:transparent;color:#8f979e;cursor:pointer;
+}
+.profile-more-v25 svg,.profile-menu-v25 svg,.new-profile-btn-v25 svg{
+  width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;
+}
+.profile-menu-v25{
+  position:absolute;right:5px;top:34px;z-index:110;
+  width:132px;padding:4px;background:#fff;border:1px solid #cfd5da;
+  border-radius:5px;box-shadow:0 7px 18px rgba(0,0,0,.18);
+}
+.profile-menu-v25[hidden]{display:none!important}
+.profile-menu-v25 button{
+  width:100%;display:flex;align-items:center;gap:8px;
+  border:0;background:#fff;color:#222;padding:8px 9px;
+  border-radius:4px;font-size:11px;cursor:pointer;text-align:left;
+}
+.profile-menu-v25 button:hover{background:#f1f4f6}
+.new-profile-btn-v25{
+  width:100%;margin-top:5px;min-height:36px;
+  display:flex;align-items:center;gap:8px;
+  border:1px dashed #cbd3da;background:#fff;color:#1590c8;
+  padding:7px 8px;border-radius:5px;font-size:11px;cursor:pointer;text-align:left;
+}
+.profile-editor-v25{margin-top:9px;position:relative}
+.profile-editor-v25[hidden]{display:none!important}
+.profile-editor-v25 label{display:block;font-size:12px;font-weight:800;margin-bottom:6px}
+.profile-editor-v25 input{
+  width:100%;height:38px;border:1px solid #20252a;border-radius:5px;
+  padding:0 42px 0 10px;text-align:center;font-size:12px;outline:none;
+}
+.profile-editor-v25 input:focus{border-color:#158bb7;box-shadow:0 0 0 2px rgba(21,139,183,.12)}
+.profile-counter-v25{
+  position:absolute;right:7px;bottom:11px;color:#8c959d;font-size:9px;
+}
+.profile-limit-v25{
+  margin-top:10px;border:1px solid #1b8fc5;background:#f8fdff;
+  border-radius:4px;padding:8px;text-align:center;font-size:10px;color:#222;
+}
+.profile-limit-v25[hidden]{display:none!important}
+.profile-limit-v25 strong{display:block;margin-bottom:4px}
+.profile-limit-v25>div{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap}
+.profile-limit-v25 button{
+  border:0;border-radius:4px;background:#43a7d5;color:#fff;
+  font-size:10px;font-weight:800;padding:6px 9px;cursor:pointer;
+}
+.captcha-v25{margin-top:11px!important}
+.registered-profile-panel-v25[hidden],.guest-join-panel-v25[hidden]{display:none!important}
+
+/* Sadece emoji; GIF alanı yok */
+.emoji-panel-v23{max-height:250px!important}
+.emoji-grid-v23{grid-template-columns:repeat(10,1fr)!important}
+
+/* Mobil */
+@media(max-width:760px){
+  .room-grid-v15{
+    grid-template-columns:minmax(0,78%) minmax(88px,22%) !important;
+  }
+  .room-user-list-v15 b{font-size:10.5px!important}
+  .room-search-v15 input{font-size:10px!important}
+  .room-online-v15{font-size:10px!important;padding:0 5px!important}
+}
+@media(max-width:430px){
+  .join-modal-v25{width:min(330px,calc(100vw - 18px))!important}
+  .join-modal-body-v25{padding:10px 12px 12px!important}
+  .profile-brand-v25 img{width:96px}
+  .room-grid-v15{
+    grid-template-columns:minmax(0,79%) minmax(82px,21%) !important;
+  }
+  .room-mini-avatar-v15{width:18px!important;height:18px!important;flex-basis:18px!important}
+  .room-user-list-v15 li{gap:3px!important}
+  .emoji-grid-v23{grid-template-columns:repeat(8,1fr)!important}
 }

@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,interactive-widget=resizes-content"/>
   <title>Sohbetix Sohbet</title>
-  <link rel="stylesheet" href="styles.css?v=V24-FLOOD-FIX"/>
+  <link rel="stylesheet" href="styles.css?v=V25-PROFIL-SISTEMI"/>
   <meta name="theme-color" content="#980000"/>
 <link rel="icon" type="image/jpeg" href="sohbetix-logo.jpg"/>
 </head>
@@ -60,19 +60,18 @@
         <form class="room-composer-v15" id="messageForm" hidden>
             <div class="room-compose-box-v15">
               <textarea id="messageInput" maxlength="512" rows="2" placeholder="Mesajını yaz..."></textarea>
-              <button class="room-smiley-v15" id="smileyBtn" type="button" aria-label="Emoji ve GIF aç">☺</button>
+              <button class="room-smiley-v15" id="smileyBtn" type="button" aria-label="Emoji aç">☺</button>
 
               <div class="mention-suggest-v23" id="mentionSuggest" hidden aria-label="Kullanıcı etiketleme listesi"></div>
 
-              <div class="emoji-panel-v23" id="emojiPanel" hidden aria-label="Emoji ve hareketli GIF paneli">
+              <div class="emoji-panel-v23" id="emojiPanel" hidden aria-label="Emoji paneli">
                 <div class="emoji-tabs-v23">
                   <strong>Emoji</strong>
-                  <span>Üzgün GIF</span>
                 </div>
                 <div class="emoji-grid-v23" id="emojiGrid"></div>
-                <div class="gif-grid-v23" id="gifGrid"></div>
               </div>
             </div>
+            <div class="room-compose-actions-v15">
             <div class="room-compose-actions-v15">
               <span class="room-profile-hint-v15" id="profileSaveHint">👤 Profilini kaydet</span>
               <button class="room-send-v15" type="submit">Gönder</button>
@@ -84,23 +83,74 @@
   </main>
 
   <div class="join-overlay-v15" id="joinOverlay" hidden>
-    <section class="join-modal-v15" role="dialog" aria-modal="true" aria-labelledby="joinTitle">
-      <header class="join-modal-title-v15"><span id="joinTitle">Sohbete gir</span><button id="closeJoinModal" type="button" aria-label="Kapat">×</button></header>
-      <div class="join-modal-body-v15">
-        <h2>Hesap ile giriş</h2>
-        <div class="join-oauth-v15">
-          <button class="account-auth-v21" id="accountAuthBtn" type="button" aria-label="Sohbetix hesabına giriş">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M16 8v6a2 2 0 0 0 4 0v-2a8 8 0 1 0-2.3 5.7"/><circle cx="12" cy="12" r="3"/></svg>
-          </button>
-          <button class="disabled-auth-v15 google-v15" type="button" disabled aria-label="Google ile giriş pasif"><span>G</span></button>
-        </div>
-        <div class="join-or-v15"><span></span><b>veya</b><span></span></div>
-        <h2>Misafir girişi</h2>
-        <input class="join-nick-v15" id="guestNick" type="text" maxlength="24" autocomplete="nickname" placeholder="Misafir rumuzu"/>
-        <div class="nick-help-v15"><span id="nickCounter">0/24</span> · Şekilli rumuz kullanılabilir</div>
+    <section class="join-modal-v15 join-modal-v25" role="dialog" aria-modal="true" aria-labelledby="joinTitle">
+      <header class="join-modal-title-v15">
+        <span id="joinTitle">Chate giriş</span>
+        <button id="closeJoinModal" type="button" aria-label="Kapat">×</button>
+      </header>
 
-        <div class="captcha-v15" id="captchaBox">
-          <label class="captcha-check-v15"><input id="captchaToggle" type="checkbox"/> <span>Ben robot değilim</span></label>
+      <div class="join-modal-body-v15 join-modal-body-v25">
+
+        <section class="registered-profile-panel-v25" id="registeredProfilePanel" hidden>
+          <div class="profile-brand-v25">
+            <img src="sohbetix-logo.jpg" alt="Sohbetix"/>
+          </div>
+
+          <div class="profile-account-v25">
+            <div>Merhaba</div>
+            <strong id="registeredAccountEmail"></strong>
+            <button id="registeredLogoutBtn" type="button">Çıkış yapın</button>
+          </div>
+
+          <div class="profile-select-head-v25">
+            <strong>Profil seçin</strong>
+            <button id="profileRefreshBtn" type="button" aria-label="Profilleri yenile">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0 2 5"/><path d="M20 4v7h-7"/></svg>
+            </button>
+          </div>
+
+          <div class="saved-profiles-v25" id="savedProfilesV25"></div>
+
+          <button class="new-profile-btn-v25" id="newProfileBtnV25" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+            <span>Yeni profil oluştur</span>
+          </button>
+
+          <div class="profile-editor-v25" id="profileEditorV25" hidden>
+            <label for="profileNickV25" id="profileEditorLabelV25">Yeni profil oluştur</label>
+            <input id="profileNickV25" maxlength="24" autocomplete="nickname" placeholder="yeni adınız"/>
+            <div class="profile-counter-v25"><span id="profileNickCounterV25">0</span>/24</div>
+          </div>
+
+          <div class="profile-limit-v25" id="profileLimitV25" hidden>
+            <strong>Profil sınırına ulaşıldı.</strong>
+            <div>
+              <button id="profileVipBtnV25" type="button">VIP'e yükseltin</button>
+              <span>10 profile kadar için.</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="guest-join-panel-v25" id="guestJoinPanel">
+          <h2>Hesap ile giriş</h2>
+          <div class="join-oauth-v15">
+            <button class="account-auth-v21" id="accountAuthBtn" type="button" aria-label="Sohbetix hesabına giriş">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M16 8v6a2 2 0 0 0 4 0v-2a8 8 0 1 0-2.3 5.7"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+            <button class="disabled-auth-v15 google-v15" type="button" disabled aria-label="Google ile giriş pasif"><span>G</span></button>
+          </div>
+
+          <div class="join-or-v15"><span></span><b>veya</b><span></span></div>
+          <h2>Misafir girişi</h2>
+          <input class="join-nick-v15" id="guestNick" type="text" maxlength="24" autocomplete="nickname" placeholder="Misafir rumuzu"/>
+          <div class="nick-help-v15"><span id="nickCounter">0/24</span> · Şekilli rumuz kullanılabilir</div>
+        </section>
+
+        <div class="captcha-v15 captcha-v25" id="captchaRootV25">
+          <label class="captcha-check-v15">
+            <input id="captchaToggle" type="checkbox"/>
+            <span>Ben robot değilim</span>
+          </label>
           <div class="captcha-question-v15" id="captchaQuestionBox" hidden>
             <div class="captcha-question-text-v15" id="captchaQuestion"></div>
             <div class="captcha-answer-row-v15">
@@ -111,12 +161,18 @@
           </div>
         </div>
 
-        <button class="join-submit-v15" id="joinChatBtn" type="button" disabled>Sohbete gir</button>
-        <p class="join-legal-v15">Bu platformu kullanarak <a href="privacy.html" target="_blank" rel="noopener">Gizlilik Politikası</a> ve <a href="terms.html" target="_blank" rel="noopener">Kullanım Şartları</a>'nı kabul etmiş olursun.</p>
+        <button class="join-submit-v15" id="joinChatBtn" type="button" disabled>Chate girin</button>
+
+        <p class="join-legal-v15">
+          Bu platformu kullanarak
+          <a href="privacy.html" target="_blank" rel="noopener">Gizlilik Politikası</a>
+          ve
+          <a href="terms.html" target="_blank" rel="noopener">Kullanım Şartları</a>'nı kabul etmiş olursun.
+        </p>
       </div>
     </section>
   </div>
 
-  <script src="chat.js?v=V24-FLOOD-FIX"></script>
+  <script src="chat.js?v=V25-PROFIL-SISTEMI"></script>
 </body>
 </html>
