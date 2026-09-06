@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,interactive-widget=resizes-content"/>
   <title>Sohbetix Sohbet</title>
-  <link rel="stylesheet" href="styles.css?v=V23-TAM-SISTEM"/>
+  <link rel="stylesheet" href="styles.css?v=V24-FLOOD-FIX"/>
   <meta name="theme-color" content="#980000"/>
 <link rel="icon" type="image/jpeg" href="sohbetix-logo.jpg"/>
 </head>
@@ -49,7 +49,15 @@
             <button class="room-enter-v15" id="openJoinModal" type="button">Sohbete gir</button>
           </div>
 
-          <form class="room-composer-v15" id="messageForm" hidden>
+          <div class="flood-warning-v24" id="floodWarning" hidden role="alert">
+          <div class="flood-warning-text-v24">
+            Mesajın gönderilmedi. Flood/spam algılandı. 10 saniye bekle ve mesajını değiştir veya
+            <button class="flood-vip-link-v24" id="floodVipBtn" type="button">VIP statüsü</button>
+            seçeneğini kullan.
+          </div>
+          <div class="flood-countdown-v24" id="floodCountdown"></div>
+        </div>
+        <form class="room-composer-v15" id="messageForm" hidden>
             <div class="room-compose-box-v15">
               <textarea id="messageInput" maxlength="512" rows="2" placeholder="Mesajını yaz..."></textarea>
               <button class="room-smiley-v15" id="smileyBtn" type="button" aria-label="Emoji ve GIF aç">☺</button>
@@ -109,6 +117,6 @@
     </section>
   </div>
 
-  <script src="chat.js?v=V23-TAM-SISTEM"></script>
+  <script src="chat.js?v=V24-FLOOD-FIX"></script>
 </body>
 </html>

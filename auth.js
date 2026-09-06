@@ -1,12 +1,12 @@
 (() => {
   'use strict';
-  const gateTime=Number(sessionStorage.getItem('sohbetix-auth-entry-v23')||0);
+  const gateTime=Number(sessionStorage.getItem('sohbetix-auth-entry-v24')||0);
   if(!gateTime || Date.now()-gateTime>10*60*1000){ location.replace('open-chat.html'); return; }
   const $=id=>document.getElementById(id);
   const regForm=$('registerForm'), loginForm=$('loginForm');
   const tabReg=$('tabRegister'), tabLogin=$('tabLogin');
-  const storeKey='sohbetix-local-users-v23';
-  const oldStoreKey='sohbetix-local-users-v22';
+  const storeKey='sohbetix-local-users-v24';
+  const oldStoreKey='sohbetix-local-users-v23';
   if(!localStorage.getItem(storeKey) && localStorage.getItem(oldStoreKey)){
     localStorage.setItem(storeKey, localStorage.getItem(oldStoreKey));
   }
@@ -34,7 +34,7 @@
     );
     return bank;
   })();
-  let challenge=null, passed=false, captchaStage=0; const CAPTCHA_REQUIRED_STAGES=3;
+  let challenge=null, passed=false, captchaStage=0; const CAPTCHA_REQUIRED_STAGES=1;
   function newChallenge(){challenge=questions[Math.floor(Math.random()*questions.length)];$('regCaptchaQ').textContent=challenge.q;$('regCaptchaA').value='';}
   newChallenge();
   $('regCaptchaCheck').addEventListener('click',()=>{
@@ -48,14 +48,14 @@
         $('registerSubmitV21').disabled=false;
       }else{
         passed=false;
-        $('regCaptchaStatus').textContent=`✓ ${captchaStage}/${CAPTCHA_REQUIRED_STAGES} doğru. Sıradaki soruyu çöz.`;
+        $('regCaptchaStatus').textContent='✓ Güvenlik doğrulaması tamamlandı.';
         $('regCaptchaStatus').className='ok';
         $('registerSubmitV21').disabled=true;
         newChallenge();
       }
     }else{
       passed=false; captchaStage=0;
-      $('regCaptchaStatus').textContent='Yanlış cevap. Doğrulama sıfırlandı; üç yeni soruyu arka arkaya çöz.';
+      $('regCaptchaStatus').textContent='Yanlış cevap. Yeni bir güvenlik sorusu oluşturuldu.';
       $('regCaptchaStatus').className='error';
       $('registerSubmitV21').disabled=true;
       newChallenge();
@@ -71,11 +71,11 @@
     if(p.length<8){st.textContent='Şifre en az 8 karakter olmalı.';return;}
     if(p!==p2){st.textContent='Şifreler aynı değil.';return;}
     const list=users(); if(list.some(x=>norm(x.username)===norm(u))){st.textContent='Bu kullanıcı adı zaten kayıtlı.';return;} if(list.some(x=>norm(x.email)===email)){st.textContent='Bu e-posta zaten kayıtlı.';return;}
-    const user={id:(crypto.randomUUID?crypto.randomUUID():'u-'+Date.now()),username:u,email,passwordHash:await hash(p),createdAt:Date.now()}; list.push(user);saveUsers(list);setAuth(user);st.textContent='✓ Hesap oluşturuldu. Sohbete yönlendiriliyorsun...';st.classList.add('ok');setTimeout(()=>{sessionStorage.removeItem('sohbetix-auth-entry-v23');location.href=ret();},350);
+    const user={id:(crypto.randomUUID?crypto.randomUUID():'u-'+Date.now()),username:u,email,passwordHash:await hash(p),createdAt:Date.now()}; list.push(user);saveUsers(list);setAuth(user);st.textContent='✓ Hesap oluşturuldu. Sohbete yönlendiriliyorsun...';st.classList.add('ok');setTimeout(()=>{sessionStorage.removeItem('sohbetix-auth-entry-v24');location.href=ret();},350);
   });
 
   loginForm.addEventListener('submit',async e=>{
     e.preventDefault(); const id=norm($('loginId').value), p=$('loginPass').value, st=$('loginStatus');
-    const user=users().find(x=>norm(x.username)===id||norm(x.email)===id); if(!user||user.passwordHash!==await hash(p)){st.textContent='Kullanıcı adı/e-posta veya şifre hatalı.';return;} setAuth(user);st.textContent='✓ Giriş başarılı. Sohbete yönlendiriliyorsun...';st.classList.add('ok');setTimeout(()=>{sessionStorage.removeItem('sohbetix-auth-entry-v23');location.href=ret();},300);
+    const user=users().find(x=>norm(x.username)===id||norm(x.email)===id); if(!user||user.passwordHash!==await hash(p)){st.textContent='Kullanıcı adı/e-posta veya şifre hatalı.';return;} setAuth(user);st.textContent='✓ Giriş başarılı. Sohbete yönlendiriliyorsun...';st.classList.add('ok');setTimeout(()=>{sessionStorage.removeItem('sohbetix-auth-entry-v24');location.href=ret();},300);
   });
 })();

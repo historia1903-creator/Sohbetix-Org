@@ -1409,3 +1409,48 @@ body.room-page-v15 .room-composer-v15{
   .gif-grid-v23{grid-template-columns:repeat(4,1fr)}
   .chat-gif-v23{max-width:125px;max-height:125px}
 }
+
+
+/* SOHBETIX V24 - Flood/spam koruması ve daha kompakt chat */
+.live-message-meta-v15 b{font-size:12px!important}
+.live-message-meta-v15 small{font-size:9px!important}
+.live-message-body-v15 p{font-size:12px!important;line-height:1.35!important}
+.system-message-v15,.system-message-v15.leave{font-size:11px!important}
+
+.flood-warning-v24{
+  flex:0 0 auto;
+  padding:10px 12px;
+  background:#fff;
+  border-top:1px solid #e3e7eb;
+  color:#a00000;
+  font-size:12px;
+  line-height:1.38;
+}
+.flood-warning-v24[hidden]{display:none!important}
+.flood-warning-text-v24{max-width:440px}
+.flood-vip-link-v24{
+  display:inline;
+  border:0;
+  background:transparent;
+  color:#1578b8;
+  padding:0 2px;
+  margin:0;
+  font:inherit;
+  font-weight:800;
+  text-decoration:underline;
+  text-underline-offset:2px;
+  cursor:pointer;
+}
+.flood-vip-link-v24:hover{color:#0b5f96}
+.flood-countdown-v24{
+  margin-top:3px;
+  color:#737d87;
+  font-size:10px;
+  font-weight:700;
+}
+@media(max-width:640px){
+  .live-message-meta-v15 b{font-size:11.5px!important}
+  .live-message-body-v15 p{font-size:11.5px!important;line-height:1.32!important}
+  .system-message-v15,.system-message-v15.leave{font-size:10.5px!important}
+  .flood-warning-v24{font-size:11px;padding:8px 10px}
+}

@@ -1,0 +1,12 @@
+SOHBETIX V24
+
+- CAPTCHA: chate girişte ve hesap kaydında 1 doğru soru yeterlidir.
+- 3.400+ farklı güvenlik sorusu havuzu korunur.
+- Tekrarlı/çok benzer mesajlar ve hızlı mesaj yağmuru engellenir.
+- Flood/spam engel süresi 10 saniyedir.
+- Flood uyarısı sadece mesajı atan kullanıcının ekranında görünür.
+- Uyarı tamamen Türkçedir.
+- VIP statüsü mavi, altı çizili butondur.
+- Chat mesaj yazıları biraz küçültülmüştür.
+- V23 emoji/GIF, @etiket ve giriş/çıkış sistemleri korunur.
+- Eski sürüm not dosyaları pakete dahil edilmemiştir.

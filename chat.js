@@ -9,8 +9,8 @@
   const BOT_PURGE_TEXT = 'Eski 10.000 tane mesaj kalıcı olarak silindi!';
   const PRESENCE_TTL = 16000;
   const HEARTBEAT_MS = 4000;
-  const STORAGE_LEAVE_SEEN = 'sohbetix-v23-leave-seen';
-  const SESSION_JOIN_FLAG = 'sohbetix-v23-join-announced';
+  const STORAGE_LEAVE_SEEN = 'sohbetix-v24-leave-seen';
+  const SESSION_JOIN_FLAG = 'sohbetix-v24-join-announced';
   const CONFIG_KEY='sohbetix-v18-chat-config';
   const DEFAULT_CONFIG={title:'Sohbetix',language:'tr',registeredCaptcha:false,disabled:false,imageShare:false,privateMode:'entered',catalogVisible:true,description:'',category:'Arkadaşlık',slug:'sohbetix'};
   function readConfig(){try{return {...DEFAULT_CONFIG,...JSON.parse(localStorage.getItem(CONFIG_KEY)||'{}')}}catch{return {...DEFAULT_CONFIG}}}
@@ -26,7 +26,7 @@
     captchaQuestion: $('captchaQuestion'), captchaAnswer: $('captchaAnswer'), captchaVerify: $('captchaVerify'),
     captchaStatus: $('captchaStatus'), joinBtn: $('joinChatBtn'), roomAccount: $('roomAccount'), roomAccountNick: $('roomAccountNick'),
     roomAccountBtn: $('roomAccountBtn'), roomAccountMenu: $('roomAccountMenu'), leaveBtn: $('leaveRoomBtn'), preJoinBlessing: $('preJoinBlessing'), disabledNotice:$('chatDisabledNotice'), latestMessagesBtn:$('latestMessagesBtn'), profileSaveHint:$('profileSaveHint'), accountAuthBtn:$('accountAuthBtn'),
-    smileyBtn:$('smileyBtn'), emojiPanel:$('emojiPanel'), emojiGrid:$('emojiGrid'), gifGrid:$('gifGrid'), mentionSuggest:$('mentionSuggest')
+    smileyBtn:$('smileyBtn'), emojiPanel:$('emojiPanel'), emojiGrid:$('emojiGrid'), gifGrid:$('gifGrid'), mentionSuggest:$('mentionSuggest'), floodWarning:$('floodWarning'), floodCountdown:$('floodCountdown'), floodVipBtn:$('floodVipBtn')
   };
 
   const clientId = (crypto && crypto.randomUUID) ? crypto.randomUUID() : `client-${Date.now()}-${Math.random().toString(36).slice(2)}`;
@@ -416,7 +416,7 @@
     return bank;
   })();
   let captchaStage = 0;
-  const CAPTCHA_REQUIRED_STAGES = 3;
+  const CAPTCHA_REQUIRED_STAGES = 1;
   function newCaptcha() {
     captcha = captchaQuestions[Math.floor(Math.random()*captchaQuestions.length)];
     els.captchaQuestion.textContent = captcha.q;
@@ -443,7 +443,7 @@
         els.captchaBox.hidden = true;
       } else {
         captchaPassed = false;
-        els.captchaStatus.textContent = `${captchaStage}/${CAPTCHA_REQUIRED_STAGES} doğru. Devam etmek için sıradaki soruyu çöz.`;
+        els.captchaStatus.textContent = '✓ Güvenlik doğrulaması tamamlandı.';
         els.captchaStatus.className = 'captcha-status-v15 ok';
         newCaptcha();
         setTimeout(() => els.captchaAnswer.focus(), 20);
@@ -451,7 +451,7 @@
     } else {
       captchaPassed = false;
       captchaStage = 0;
-      els.captchaStatus.textContent = 'Cevap yanlış. Doğrulama sıfırlandı; üç yeni soruyu arka arkaya doğru cevapla.';
+      els.captchaStatus.textContent = 'Cevap yanlış. Yeni bir güvenlik sorusu oluşturuldu.';
       els.captchaStatus.className = 'captcha-status-v15 error';
       newCaptcha();
     }
@@ -485,7 +485,7 @@
 
   if (els.accountAuthBtn) els.accountAuthBtn.addEventListener('click', () => {
     const ret = 'open-chat.html' + (location.search || '');
-    sessionStorage.setItem('sohbetix-auth-entry-v23', String(Date.now()));
+    sessionStorage.setItem('sohbetix-auth-entry-v24', String(Date.now()));
     location.href = 'auth.html?return=' + encodeURIComponent(ret);
   });
   els.openJoin.addEventListener('click', openJoinModal);
@@ -507,13 +507,115 @@
   els.captchaAnswer.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); verifyCaptcha(); } });
   els.joinBtn.addEventListener('click', joinRoom);
   els.guestNick.addEventListener('keydown', e => { if (e.key === 'Enter' && !els.joinBtn.disabled) { e.preventDefault(); joinRoom(); } });
+
+  const FLOOD_WINDOW_MS = 10000;
+  const FLOOD_MAX_MESSAGES = 3;
+  const STORAGE_FLOOD_STATE = 'sohbetix-v24-flood-state';
+  let floodTimer = null;
+
+  function normalizeFloodText(v){
+    return String(v||'')
+      .toLocaleLowerCase('tr-TR')
+      .replace(/\s+/g,' ')
+      .replace(/[^\p{L}\p{N}\s]/gu,'')
+      .trim();
+  }
+
+  function floodSimilarity(a,b){
+    a=normalizeFloodText(a); b=normalizeFloodText(b);
+    if(!a || !b) return 0;
+    if(a===b) return 1;
+    const short=a.length<=b.length?a:b, long=a.length>b.length?a:b;
+    if(long.includes(short) && short.length>=2) return short.length/long.length;
+    const aa=new Set(a.split(' ').filter(Boolean)), bb=new Set(b.split(' ').filter(Boolean));
+    if(!aa.size || !bb.size) return 0;
+    let common=0;
+    for(const x of aa) if(bb.has(x)) common++;
+    return common/Math.max(aa.size,bb.size);
+  }
+
+  function readFloodState(){
+    try{
+      const x=JSON.parse(sessionStorage.getItem(STORAGE_FLOOD_STATE)||'{}');
+      return {
+        events:Array.isArray(x.events)?x.events:[],
+        lastText:String(x.lastText||''),
+        blockUntil:Number(x.blockUntil||0)
+      };
+    }catch{
+      return {events:[],lastText:'',blockUntil:0};
+    }
+  }
+
+  function writeFloodState(s){
+    sessionStorage.setItem(STORAGE_FLOOD_STATE,JSON.stringify(s));
+  }
+
+  function hideFloodWarning(){
+    if(els.floodWarning) els.floodWarning.hidden=true;
+    if(els.floodCountdown) els.floodCountdown.textContent='';
+    if(floodTimer){clearInterval(floodTimer);floodTimer=null;}
+  }
+
+  function showFloodWarning(blockUntil){
+    if(!els.floodWarning) return;
+    els.floodWarning.hidden=false;
+    if(floodTimer) clearInterval(floodTimer);
+    const update=()=>{
+      const left=Math.max(0,Number(blockUntil)-Date.now());
+      if(els.floodCountdown){
+        els.floodCountdown.textContent=left>0 ? `Kalan süre: ${Math.ceil(left/1000)} sn` : '';
+      }
+      if(left<=0) hideFloodWarning();
+    };
+    update();
+    floodTimer=setInterval(update,250);
+  }
+
+  function checkFloodBeforeSend(text){
+    const now=Date.now();
+    const state=readFloodState();
+    state.events=state.events.filter(t=>now-Number(t)<FLOOD_WINDOW_MS);
+
+    if(state.blockUntil>now){
+      writeFloodState(state);
+      showFloodWarning(state.blockUntil);
+      return false;
+    }
+
+    const similar=state.lastText && floodSimilarity(text,state.lastText)>=0.78;
+    const burst=state.events.length>=FLOOD_MAX_MESSAGES;
+
+    if(similar || burst){
+      state.blockUntil=now+FLOOD_WINDOW_MS;
+      writeFloodState(state);
+      showFloodWarning(state.blockUntil);
+      return false;
+    }
+
+    state.events.push(now);
+    state.lastText=String(text||'').slice(0,512);
+    state.blockUntil=0;
+    writeFloodState(state);
+    hideFloodWarning();
+    return true;
+  }
+
+  if(els.floodVipBtn){
+    els.floodVipBtn.addEventListener('click',()=>{
+      location.href='account.html#vip';
+    });
+  }
+
   els.messageForm.addEventListener('submit', e => {
     e.preventDefault();
     const text = els.messageInput.value.trim();
     if (!currentNick || !text) return;
+    if (!checkFloodBeforeSend(text)) return;
     addMessage('chat', {nick:currentNick, text:text.slice(0,512)});
     els.messageInput.value = '';
     els.messageInput.focus();
+    if(els.mentionSuggest) els.mentionSuggest.hidden=true;
   });
   els.messageInput.addEventListener('input', renderMentionSuggestions);
   els.messageInput.addEventListener('click', renderMentionSuggestions);
