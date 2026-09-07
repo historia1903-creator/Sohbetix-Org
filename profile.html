@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"/>
+  <title>Sohbetix Profil</title>
+  <link rel="stylesheet" href="styles.css?v=V26-TAM-FIX"/>
+  <link rel="icon" type="image/jpeg" href="sohbetix-logo.jpg"/>
+  <meta name="theme-color" content="#980000"/>
+</head>
+<body class="profile-page-v26">
+  <header class="profile-topbar-v26">
+    <a href="index.html" class="profile-brand-link-v26">Sohbetix.com</a>
+  </header>
+
+  <main class="profile-shell-v26">
+    <aside class="profile-side-v26">
+      <a class="active" href="#profil">Profilim</a>
+      <a href="coins.html#vip">VIP</a>
+      <button id="profileIgnoredBtnV26" type="button">Engellenenler listesi</button>
+      <a href="coins.html">Altın</a>
+      <a href="account.html">Hesap</a>
+      <a href="rooms.html">Üyeler</a>
+    </aside>
+
+    <section class="profile-photo-col-v26">
+      <div class="profile-photo-v26" id="profilePhotoV26">
+        <img id="profilePhotoImgV26" src="sohbetix-logo.jpg" alt="Sohbetix profil görseli"/>
+      </div>
+      <input id="profilePhotoInputV26" type="file" accept="image/jpeg,image/png,image/webp" hidden/>
+      <button class="profile-photo-change-v26" id="profilePhotoChangeV26" type="button">▣ Fotoğrafı değiştir</button>
+      <button class="profile-edit-btn-v26" id="profileEditBtnV26" type="button">✎ Profili Düzenle</button>
+    </section>
+
+    <section class="profile-info-v26">
+      <div class="profile-name-row-v26">
+        <strong id="profileNickV26">Kullanıcı</strong>
+        <span class="profile-online-v26" id="profileOnlineV26">ÇEVRİMDIŞI</span>
+      </div>
+
+      <div class="profile-about-v26">
+        <h3>Benim hakkımda:</h3>
+        <p id="profileAboutV26">Bu kullanıcı henüz profil açıklaması eklemedi.</p>
+      </div>
+
+      <div class="profile-note-v26" id="profileNoteV26"></div>
+    </section>
+  </main>
+
+  <footer class="profile-footer-v26">
+    <span>© 2026 Sohbetix</span>
+    <select aria-label="Dil"><option>Türkçe</option><option>English</option></select>
+  </footer>
+
+  <div class="profile-dialog-backdrop-v26" id="profileDialogV26" hidden>
+    <section class="profile-dialog-v26">
+      <header><strong>Profili Düzenle</strong><button id="profileDialogCloseV26" type="button">×</button></header>
+      <label>Benim hakkımda</label>
+      <textarea id="profileAboutInputV26" maxlength="300" rows="6"></textarea>
+      <button id="profileAboutSaveV26" type="button">Kaydet</button>
+    </section>
+  </div>
+
+  <div class="profile-dialog-backdrop-v26" id="ignoredDialogV26" hidden>
+    <section class="profile-dialog-v26">
+      <header><strong>Engellenenler listesi</strong><button id="ignoredDialogCloseV26" type="button">×</button></header>
+      <div id="ignoredListV26" class="ignored-list-v26"></div>
+    </section>
+  </div>
+
+  <script src="profile.js?v=V26-TAM-FIX"></script>
+</body>
+</html>

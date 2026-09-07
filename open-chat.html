@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,interactive-widget=resizes-content"/>
   <title>Sohbetix Sohbet</title>
-  <link rel="stylesheet" href="styles.css?v=V25-PROFIL-SISTEMI"/>
+  <link rel="stylesheet" href="styles.css?v=V26-TAM-FIX"/>
   <meta name="theme-color" content="#980000"/>
 <link rel="icon" type="image/jpeg" href="sohbetix-logo.jpg"/>
 </head>
@@ -31,7 +31,10 @@
         </aside>
 
         <section class="room-chat-v15">
-          <div class="room-tabs-v15"><button class="active" type="button">Ana sayfa</button></div>
+          <div class="room-tabs-v15 room-tabs-v26">
+            <button class="active main-chat-tab-v26" id="mainChatTabV26" type="button">Ana sayfa</button>
+            <div class="private-tabs-v26" id="privateTabsV26" aria-label="Gizli sohbetler"></div>
+          </div>
           <div class="prejoin-blessing-v16" id="preJoinBlessing" aria-label="Bismillahirrahmanirrahim">
             <span class="flag-group-v16" aria-hidden="true"><span>🇹🇷</span><span>🇹🇷</span><span>🇹🇷</span></span>
             <strong>Bɨѕмɨʟʟẵнɨяяẵнмẵηɨяяẵнɨм</strong>
@@ -65,13 +68,10 @@
               <div class="mention-suggest-v23" id="mentionSuggest" hidden aria-label="Kullanıcı etiketleme listesi"></div>
 
               <div class="emoji-panel-v23" id="emojiPanel" hidden aria-label="Emoji paneli">
-                <div class="emoji-tabs-v23">
-                  <strong>Emoji</strong>
-                </div>
+                <div class="emoji-tabs-v23"><strong>Emoji</strong></div>
                 <div class="emoji-grid-v23" id="emojiGrid"></div>
               </div>
             </div>
-            <div class="room-compose-actions-v15">
             <div class="room-compose-actions-v15">
               <span class="room-profile-hint-v15" id="profileSaveHint">👤 Profilini kaydet</span>
               <button class="room-send-v15" type="submit">Gönder</button>
@@ -173,6 +173,6 @@
     </section>
   </div>
 
-  <script src="chat.js?v=V25-PROFIL-SISTEMI"></script>
+  <script src="chat.js?v=V26-TAM-FIX"></script>
 </body>
 </html>
