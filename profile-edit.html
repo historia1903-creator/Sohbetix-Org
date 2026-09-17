@@ -1,0 +1,20 @@
+<!doctype html><html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Profili Düzenle - Sohbetix</title><link rel="stylesheet" href="styles.css?v=V28-TAM-FIX"><link rel="icon" href="sohbetix-logo.jpg"></head><body class="profile-edit-page-v28">
+<header class="profile-topbar-v28"><a href="index.html">Sohbetix.com</a></header>
+<main class="profile-edit-shell-v28">
+<a id="profileBackV28" class="profile-back-v28" href="profile.html">← Profile geri dön</a>
+<form id="profileEditFormV28">
+<label>Bu sohbetteki ad <input id="editNickV28" maxlength="24"><small id="nickCooldownV28"></small></label>
+<label>Cinsiyet <select id="editGenderV28"><option value="unknown">👤 Belirsiz</option><option value="male">👦 Erkek</option><option value="female">👩 Bayan</option></select></label>
+<fieldset><legend>Doğum günü</legend><div class="date-row-v28"><select id="birthDayV28"></select><select id="birthMonthV28"></select><select id="birthYearV28"></select></div></fieldset>
+<label>Ülke <select id="countryV28"></select></label>
+<label>Medeni Durum <select id="maritalV28"><option value="">Seçilmedi</option><option>Aktif arama</option><option>Bekar</option><option>Bu karmaşık</option><option>İlişki kurmak</option><option>Aşk</option><option>Meşgul</option><option>Evli</option></select></label>
+<label>Benim hakkımda <textarea id="aboutV28" maxlength="5000" rows="8"></textarea><small><span id="aboutCountV28">0</span>/5000</small></label>
+<label>Nik rengi (hex kod) <div class="color-row-v28"><input id="nickColorV28" type="color"><input id="nickHexV28" maxlength="7" value="#006600"></div></label>
+<label class="vip-check-v28"><input id="boldNickV28" type="checkbox"> Kalın ve altı çizili nick <b>VIP</b></label>
+<label>Yazı rengi (hex kod) <div class="color-row-v28"><input id="textColorV28" type="color"><input id="textHexV28" maxlength="7" value="#333333"></div></label>
+<label class="vip-check-v28"><input id="boldTextV28" type="checkbox"> Kalın ve altı çizili yazı <b>VIP</b></label>
+<label class="privacy-check-v28"><input id="privateEnabledV28" type="checkbox"> Gizli sohbetlere izin ver</label>
+<button class="save-profile-v28" type="submit">Değişiklikleri kaydet</button><div id="profileEditStatusV28" class="profile-edit-status-v28"></div>
+<hr><button class="delete-profile-v28" id="deleteProfileV28" type="button">Bu profili tamamen sil</button>
+</form></main>
+<script src="v28-core.js?v=V28-TAM-FIX"></script><script src="profile-edit.js?v=V28-TAM-FIX"></script></body></html>

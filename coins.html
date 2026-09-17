@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="tr"><head>
 <meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/>
-<title>Jetonlar - Sohbetix</title><link href="styles.css?v=V27-TAM-FIX" rel="stylesheet"/><meta content="#ffffff" name="theme-color"/>
+<title>Jetonlar - Sohbetix</title><link href="styles.css?v=V28-TAM-FIX" rel="stylesheet"/><meta content="#ffffff" name="theme-color"/>
 <link rel="icon" type="image/jpeg" href="sohbetix-logo.jpg"/>
 </head><body class="public-page coins-page">
 <header class="topbar"><div class="wrap nav"><a class="brand brand-logo-v21" href="index.html" aria-label="Sohbetix"><img src="sohbetix-logo.jpg" alt="Sohbetix"/></a>
@@ -10,7 +10,7 @@
 <div class="mobile-nav-panel" hidden=""><a href="chats.html">SOHBET ODALARI</a><a href="about.html">HAKKINDA</a><button class="mobile-more-toggle" type="button">DAHA FAZLA ▾</button><div class="mobile-more-menu" hidden=""><a href="coins.html">JETONLAR</a><a href="account.html">HESAP</a><a href="help.html">YARDIM VE DESTEK</a></div><a class="mobile-control-link" href="control.html">SOHBET KONTROL PANELİ</a></div>
 <main class="public-main coins-main"><div class="public-content"><div class="coins-layout v14-coins">
 <aside class="coins-menu">
-<div class="coin-balance"><img alt="Sohbetix jetonu" src="sohbetix-coin.png"/><b>0</b></div>
+<div class="coin-balance"><img alt="Sohbetix jetonu" src="sohbetix-coin.png"/><b id="coinBalanceV28">0</b></div>
 <a href="#">⟳ Yenile</a><a class="active" href="#buy">✚ Jeton satın al</a><a href="#">➜ Jeton transfer et</a><a href="#">▣ Geçmiş</a><a href="#">👍 Referans programı</a>
 </aside>
 <section class="coin-shop" id="buy">
@@ -18,21 +18,12 @@
 <div class="coin-purchase-card">
 <div class="coin-title-row"><img alt="Sohbetix jetonu" src="sohbetix-coin.png"/><div><h1>Jeton satın al</h1><p>200 jeton = 100 TL</p></div></div>
 <h2>Ödeme yöntemini seç</h2>
-<div class="payment-tabs">
-<button class="payment-tab active" id="cardTab" type="button"><span class="card-icon"></span> Kart</button>
-<button class="payment-tab" id="morePayTab" type="button"><span class="dots-icon">•••</span> Diğer</button>
-</div>
-<div class="payment-panel" id="cardPanel">
-<div class="coin-calc"><label for="coinAmount">Jeton miktarı</label>
-<div class="coin-calc-row"><input id="coinAmount" inputmode="numeric" min="1" step="1" type="number" value="200"/><span>jeton</span></div>
-<div class="price-result"><strong id="coinPrice">100,00 TL</strong><small>1 jeton = 0,50 TL</small></div></div>
-<button class="pay-button" id="cardPayBtn" type="button">Kart ile Öde</button>
-</div>
-<div class="payment-panel" hidden="" id="morePayPanel">
+<div class="coin-calc"><label for="coinAmount">Jeton miktarı</label><div class="coin-calc-row"><input id="coinAmount" inputmode="numeric" min="1" step="1" type="number" value="200"/><span>jeton</span></div><div class="price-result"><strong id="coinPrice">100,00 TL</strong><small>1 jeton = 0,50 TL</small></div></div>
+<div class="payment-panel">
 <button class="alt-pay bank-pay" type="button"><span class="bank-logo"><svg viewbox="0 0 64 64"><path d="M32 6 6 18v6h52v-6L32 6Zm-18 24h8v20h-8V30Zm14 0h8v20h-8V30Zm14 0h8v20h-8V30ZM8 54h48v6H8v-6Z"></path></svg></span><span><b>Havale / EFT</b><small>Banka hesabına ödeme</small></span></button>
-<button class="alt-pay btc-pay" type="button"><span class="btc-logo">₿</span><span><b>BTC ile Ödeme</b><small>Bitcoin ile ödeme seçeneği</small></span></button>
+<button class="alt-pay btc-pay" type="button"><span class="btc-logo">₿</span><span><b>Bitcoin ile Ödeme</b><small>Bitcoin ile ödeme seçeneği</small></span></button>
 </div>
 <div class="payment-notice" hidden="" id="paymentNotice"></div>
 </div></section></div></div></main>
 <footer><div class="wrap footer-inner"><div><div>© 2026 Sohbetix</div><div class="stats">📶 Online 345 of 3.344 users in 620 chats</div><div><a href="terms.html">Kullanım şartları</a> · <a href="privacy.html">Gizlilik politikası</a></div></div><select class="lang-switch"><option value="tr">Türkçe</option><option value="en">English</option></select></div></footer>
-<script src="app.js?v=V27-TAM-FIX"></script></body></html>
+<script src="v28-core.js?v=V28-TAM-FIX"></script><script src="coins-v28.js?v=V28-TAM-FIX"></script><script src="app.js?v=V28-TAM-FIX"></script></body></html>

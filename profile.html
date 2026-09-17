@@ -1,73 +1,39 @@
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"/>
-  <title>Sohbetix Profil</title>
-  <link rel="stylesheet" href="styles.css?v=V27-TAM-FIX"/>
-  <link rel="icon" type="image/jpeg" href="sohbetix-logo.jpg"/>
-  <meta name="theme-color" content="#980000"/>
-</head>
-<body class="profile-page-v27">
-  <header class="profile-topbar-v27">
-    <a href="index.html" class="profile-brand-link-v27">Sohbetix.com</a>
-  </header>
-
-  <main class="profile-shell-v27">
-    <aside class="profile-side-v27">
-      <a class="active" href="#profil">Profilim</a>
-      <a href="coins.html#vip">VIP</a>
-      <button id="profileIgnoredBtnV27" type="button">Engellenenler listesi</button>
-      <a href="coins.html">Altın</a>
-      <a href="account.html">Hesap</a>
-      <a href="rooms.html">Üyeler</a>
-    </aside>
-
-    <section class="profile-photo-col-v27">
-      <div class="profile-photo-v27" id="profilePhotoV27">
-        <img id="profilePhotoImgV27" src="sohbetix-logo.jpg" alt="Sohbetix profil görseli"/>
-      </div>
-      <input id="profilePhotoInputV27" type="file" accept="image/jpeg,image/png,image/webp" hidden/>
-      <button class="profile-photo-change-v27" id="profilePhotoChangeV27" type="button">▣ Fotoğrafı değiştir</button>
-      <button class="profile-edit-btn-v27" id="profileEditBtnV27" type="button">✎ Profili Düzenle</button>
-    </section>
-
-    <section class="profile-info-v27">
-      <div class="profile-name-row-v27">
-        <strong id="profileNickV27">Kullanıcı</strong>
-        <span class="profile-online-v27" id="profileOnlineV27">ÇEVRİMDIŞI</span>
-      </div>
-
-      <div class="profile-about-v27">
-        <h3>Benim hakkımda:</h3>
-        <p id="profileAboutV27">Bu kullanıcı henüz profil açıklaması eklemedi.</p>
-      </div>
-
-      <div class="profile-note-v27" id="profileNoteV27"></div>
-    </section>
-  </main>
-
-  <footer class="profile-footer-v27">
-    <span>© 2026 Sohbetix</span>
-    <select aria-label="Dil"><option>Türkçe</option><option>English</option></select>
-  </footer>
-
-  <div class="profile-dialog-backdrop-v27" id="profileDialogV27" hidden>
-    <section class="profile-dialog-v27">
-      <header><strong>Profili Düzenle</strong><button id="profileDialogCloseV27" type="button">×</button></header>
-      <label>Benim hakkımda</label>
-      <textarea id="profileAboutInputV27" maxlength="300" rows="6"></textarea>
-      <button id="profileAboutSaveV27" type="button">Kaydet</button>
-    </section>
-  </div>
-
-  <div class="profile-dialog-backdrop-v27" id="ignoredDialogV27" hidden>
-    <section class="profile-dialog-v27">
-      <header><strong>Engellenenler listesi</strong><button id="ignoredDialogCloseV27" type="button">×</button></header>
-      <div id="ignoredListV27" class="ignored-list-v27"></div>
-    </section>
-  </div>
-
-  <script src="profile.js?v=V27-TAM-FIX"></script>
-</body>
-</html>
+<!doctype html><html lang="tr"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>Sohbetix Profil</title><link rel="stylesheet" href="styles.css?v=V28-TAM-FIX"><link rel="icon" href="sohbetix-logo.jpg"><meta name="theme-color" content="#980000">
+</head><body class="profile-page-v28">
+<header class="profile-topbar-v28"><a href="index.html">Sohbetix.com</a></header>
+<main class="profile-layout-v28">
+  <aside class="profile-side-v28" id="profileOwnerNavV28">
+    <a class="active" href="#">Profilim</a>
+    <a id="profileVipLinkV28" href="vip.html">VIP</a>
+    <button id="profileIgnoredBtnV28" type="button">Engellenenler listesi</button>
+    <a href="coins.html">Altın <img src="sohbetix-coin.png" alt=""></a>
+    <a href="account.html">Hesap</a>
+    <a href="members.html">Üyeler</a>
+  </aside>
+  <section class="profile-main-v28">
+    <div class="profile-photo-wrap-v28">
+      <img id="profilePhotoImgV28" src="sohbetix-logo.jpg" alt="Profil fotoğrafı">
+    </div>
+    <div class="profile-actions-v28" id="profileOwnerActionsV28">
+      <input id="profilePhotoInputV28" type="file" accept="image/jpeg,image/png,image/webp,image/gif" hidden>
+      <button id="profilePhotoChangeV28" class="green" type="button">▣ Fotoğrafı değiştir</button>
+      <button id="profileEditBtnV28" class="blue" type="button">✎ Profili Düzenle</button>
+    </div>
+  </section>
+  <section class="profile-info-v28">
+    <div class="profile-name-row-v28"><strong id="profileNickV28">Kullanıcı</strong><span id="profileVipBadgeV28" class="profile-vip-badge-v28" hidden>★ VIP</span><span id="profileOnlineV28" class="profile-online-v28 offline">ÇEVRİM DIŞI</span></div>
+    <dl class="profile-facts-v28">
+      <div><dt>Cinsiyet</dt><dd id="profileGenderV28">Belirsiz</dd></div>
+      <div><dt>Doğum günü</dt><dd id="profileBirthV28">—</dd></div>
+      <div><dt>Ülke</dt><dd id="profileCountryV28">—</dd></div>
+      <div><dt>Medeni durum</dt><dd id="profileMaritalV28">—</dd></div>
+    </dl>
+    <div class="profile-about-v28"><h3>Benim hakkımda:</h3><p id="profileAboutV28">Bu kullanıcı henüz bir şey yazmadı.</p></div>
+  </section>
+</main>
+<footer class="profile-footer-v28"><span>© 2026 Sohbetix</span><select><option>Türkçe</option><option>English</option></select></footer>
+<div class="profile-modal-v28" id="ignoredModalV28" hidden><section><header><strong>Engellenenler listesi</strong><button id="ignoredCloseV28">×</button></header><div id="ignoredListV28"></div></section></div>
+<script src="v28-core.js?v=V28-TAM-FIX"></script><script src="profile.js?v=V28-TAM-FIX"></script>
+</body></html>

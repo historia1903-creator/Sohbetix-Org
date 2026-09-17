@@ -1,73 +1,31 @@
 (() => {
-  'use strict';
-  const $=id=>document.getElementById(id);
-  const params=new URLSearchParams(location.search);
-  const target=(params.get('nick')||sessionStorage.getItem('sohbetix-v17-current-nick')||localStorage.getItem('sohbetix-auth-nick')||'Kullanıcı').trim().slice(0,24);
-  const me=(sessionStorage.getItem('sohbetix-v17-current-nick')||'').trim();
-  const isOwn=!!me && me.toLocaleLowerCase('tr-TR')===target.toLocaleLowerCase('tr-TR');
-  const esc=s=>String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
-  const aboutKey='sohbetix-v27-profile-about:'+target.toLocaleLowerCase('tr-TR');
-  const photoKey='sohbetix-v27-profile-photo:'+target.toLocaleLowerCase('tr-TR');
-
-  $('profileNickV27').textContent=target;
-  document.title=target+' - Sohbetix Profil';
-  const about=localStorage.getItem(aboutKey);
-  if(about) $('profileAboutV27').textContent=about;
-  const photo=localStorage.getItem(photoKey);
-  if(photo) $('profilePhotoImgV27').src=photo;
-
-  function refreshOnline(){
-    let presence={};
-    try{presence=JSON.parse(localStorage.getItem('sohbetix-v17-room-presence')||'{}')}catch{}
-    const now=Date.now();
-    const online=Object.values(presence).some(x=>x&&String(x.nick||'').toLocaleLowerCase('tr-TR')===target.toLocaleLowerCase('tr-TR')&&now-Number(x.lastSeen||0)<=16000);
-    $('profileOnlineV27').textContent=online?'ONLINE':'ÇEVRİMDIŞI';
-    $('profileOnlineV27').classList.toggle('offline',!online);
-  }
-  refreshOnline();
-  setInterval(refreshOnline,4000);
-
-  if(!isOwn){
-    $('profilePhotoChangeV27').hidden=true;
-    $('profileEditBtnV27').hidden=true;
-  }
-
-  const dialog=$('profileDialogV27');
-  $('profileEditBtnV27').addEventListener('click',()=>{
-    if(!isOwn)return;
-    $('profileAboutInputV27').value=localStorage.getItem(aboutKey)||'';
-    dialog.hidden=false;
-    setTimeout(()=>$('profileAboutInputV27').focus(),30);
-  });
-  $('profileDialogCloseV27').addEventListener('click',()=>dialog.hidden=true);
-  $('profileAboutSaveV27').addEventListener('click',()=>{
-    const value=$('profileAboutInputV27').value.trim().slice(0,300);
-    localStorage.setItem(aboutKey,value);
-    $('profileAboutV27').textContent=value||'Bu kullanıcı henüz profil açıklaması eklemedi.';
-    dialog.hidden=true;
-  });
-
-  $('profilePhotoChangeV27').addEventListener('click',()=>{if(isOwn)$('profilePhotoInputV27').click();});
-  $('profilePhotoInputV27').addEventListener('change',()=>{
-    const file=$('profilePhotoInputV27').files?.[0];
-    if(!file)return;
-    if(file.size>700000){alert('Fotoğraf en fazla 700 KB olabilir.');return;}
-    const reader=new FileReader();
-    reader.onload=()=>{
-      const data=String(reader.result||'');
-      localStorage.setItem(photoKey,data);
-      $('profilePhotoImgV27').src=data;
+  'use strict'; const V=window.SohbetixV28,$=id=>document.getElementById(id);
+  const target=V.cleanNick(new URLSearchParams(location.search).get('nick')||sessionStorage.getItem('sohbetix-v17-current-nick')||localStorage.getItem('sohbetix-auth-nick')||'Kullanıcı');
+  const ctx=V.profileContext(target), me=V.currentUserId(), isOwn=!!ctx.profile&&String(ctx.profile.ownerId)===String(me);
+  const d=ctx.data||V.defaultProfileData();
+  $('profileNickV28').textContent=target; document.title=target+' - Sohbetix Profil';
+  $('profileNickV28').style.color=d.nickColor||'#b51b1b'; $('profileNickV28').style.fontWeight=(ctx.vip&&d.boldNick)?'900':'800'; $('profileNickV28').style.textDecoration=(ctx.vip&&d.boldNick)?'underline':'none';
+  $('profilePhotoImgV28').src=d.photo||'sohbetix-logo.jpg';
+  $('profileAboutV28').textContent=d.about||'Bu kullanıcı henüz bir şey yazmadı.';
+  $('profileGenderV28').textContent=d.gender==='male'?'👦 Erkek':d.gender==='female'?'👩 Bayan':'👤 Belirsiz';
+  $('profileBirthV28').textContent=(d.birthDay&&d.birthMonth&&d.birthYear)?`${d.birthDay}.${d.birthMonth}.${d.birthYear}`:'—';
+  $('profileCountryV28').textContent=d.country||'—'; $('profileMaritalV28').textContent=d.marital||'—';
+  $('profileVipBadgeV28').hidden=!ctx.vip;
+  function online(){const on=V.isNickOnline(target);$('profileOnlineV28').textContent=on?'ÇEVRİM İÇİ':'ÇEVRİM DIŞI';$('profileOnlineV28').classList.toggle('offline',!on);}
+  online(); setInterval(online,15000);
+  if(!isOwn){$('profileOwnerNavV28').querySelectorAll('a:not(.active),button').forEach(x=>x.hidden=true);$('profileOwnerActionsV28').hidden=true;}
+  else {
+    $('profileEditBtnV28').onclick=()=>location.href='profile-edit.html?nick='+encodeURIComponent(target);
+    $('profilePhotoChangeV28').onclick=()=>$('profilePhotoInputV28').click();
+    $('profilePhotoInputV28').onchange=()=>{
+      const f=$('profilePhotoInputV28').files?.[0]; if(!f)return;
+      if(f.type==='image/gif'&&!ctx.vip){alert('Hareketli GIF avatarları yalnızca VIP kullanıcılar yükleyebilir.');return;}
+      if(f.size>1200000){alert('Fotoğraf en fazla 1,2 MB olabilir.');return;}
+      const r=new FileReader(); r.onload=()=>{const next={...V.getProfileDataByProfile(ctx.profile),photo:String(r.result||'')};V.saveProfileData(ctx.profile.id,next);$('profilePhotoImgV28').src=next.photo;};r.readAsDataURL(f);
     };
-    reader.readAsDataURL(file);
-  });
-
-  const ignoredDialog=$('ignoredDialogV27');
-  $('profileIgnoredBtnV27').addEventListener('click',()=>{
-    let list=[]; try{list=JSON.parse(localStorage.getItem('sohbetix-v20-ignore-list')||'[]')}catch{}
-    $('ignoredListV27').innerHTML=list.length?list.map(x=>`<div>${esc(x)}</div>`).join(''):'<p>Engellenen kullanıcı yok.</p>';
-    ignoredDialog.hidden=false;
-  });
-  $('ignoredDialogCloseV27').addEventListener('click',()=>ignoredDialog.hidden=true);
-
-  [dialog,ignoredDialog].forEach(d=>d.addEventListener('click',e=>{if(e.target===d)d.hidden=true;}));
+    const modal=$('ignoredModalV28');
+    function drawIgnored(){const list=V.ignored();$('ignoredListV28').innerHTML=list.length?list.map(n=>`<div class="ignored-row-v28"><span>${n}</span><button data-unignore="${n.replaceAll('&','&amp;').replaceAll('"','&quot;')}">Engeli kaldır</button></div>`).join(''):'<p>Engellenen kullanıcı yok.</p>';}
+    $('profileIgnoredBtnV28').onclick=()=>{drawIgnored();modal.hidden=false;};$('ignoredCloseV28').onclick=()=>modal.hidden=true;modal.onclick=e=>{if(e.target===modal)modal.hidden=true;};
+    $('ignoredListV28').onclick=e=>{const b=e.target.closest('[data-unignore]');if(!b)return;V.unignoreNick(b.dataset.unignore);drawIgnored();};
+  }
 })();

@@ -1,16 +1,17 @@
 (() => {
   'use strict';
 
-  const STORAGE_MESSAGES = 'sohbetix-v17-room-messages';
-  const STORAGE_PRESENCE = 'sohbetix-v17-room-presence';
+  const V=window.SohbetixV28;
+  let STORAGE_MESSAGES='';
+  let STORAGE_PRESENCE='';
   const SESSION_NICK = 'sohbetix-v17-current-nick';
   const MAX_MESSAGES = 10000;
   const BOT_NICK = 'Sohbetix Bot';
   const BOT_PURGE_TEXT = 'Eski 10.000 tane mesaj kalıcı olarak silindi!';
-  const PRESENCE_TTL = 16000;
-  const HEARTBEAT_MS = 4000;
-  const STORAGE_LEAVE_SEEN = 'sohbetix-v27-leave-seen';
-  const SESSION_JOIN_FLAG = 'sohbetix-v27-join-announced';
+  const PRESENCE_TTL = 210000;
+  const HEARTBEAT_MS = 15000;
+  const STORAGE_LEAVE_SEEN = 'sohbetix-v28-leave-seen';
+  const SESSION_JOIN_FLAG = 'sohbetix-v28-join-announced';
   const CONFIG_KEY='sohbetix-v18-chat-config';
   const DEFAULT_CONFIG={title:'Sohbetix',language:'tr',disabled:false,imageShare:false,privateMode:'entered',catalogVisible:true,description:'',category:'Arkadaşlık',slug:'sohbetix'};
   function readConfig(){
@@ -20,7 +21,7 @@
     const room=String(params.get('room')||'').trim().toLocaleLowerCase('tr-TR');
     if(room){
       try{
-        const catalog=JSON.parse(localStorage.getItem('sohbetix-v27-chat-catalog')||'[]');
+        const catalog=JSON.parse(localStorage.getItem('sohbetix-v28-chat-catalog')||localStorage.getItem('sohbetix-v27-chat-catalog')||'[]');
         const found=Array.isArray(catalog)?catalog.find(x=>String(x?.slug||'').toLocaleLowerCase('tr-TR')===room):null;
         if(found){
           base={
@@ -39,6 +40,8 @@
     return base;
   }
   const cfg=readConfig();
+  STORAGE_MESSAGES='sohbetix-v28-room-messages:'+String(cfg.slug||'sohbetix');
+  STORAGE_PRESENCE='sohbetix-v28-room-presence:'+String(cfg.slug||'sohbetix');
   const isRegistered=localStorage.getItem('sohbetix-auth-type')==='registered' && !!String(localStorage.getItem('sohbetix-auth-nick')||'').trim();
 
   const $ = (id) => document.getElementById(id);
@@ -53,11 +56,11 @@
     registeredLogoutBtn:$('registeredLogoutBtn'), savedProfilesV25:$('savedProfilesV25'), newProfileBtnV25:$('newProfileBtnV25'),
     profileEditorV25:$('profileEditorV25'), profileEditorLabelV25:$('profileEditorLabelV25'), profileNickV25:$('profileNickV25'),
     profileNickCounterV25:$('profileNickCounterV25'), profileLimitV25:$('profileLimitV25'), profileVipBtnV25:$('profileVipBtnV25'),
-    profileRefreshBtn:$('profileRefreshBtn'),
-    mainChatTabV27:$('mainChatTabV27'), privateTabsV27:$('privateTabsV27')
+    profileRefreshBtn:$('profileRefreshBtn'), chatImageInputV28:$('chatImageInputV28'), chatImageButtonV28:$('chatImageButtonV28'),
+    mainChatTabV28:$('mainChatTabV28'), privateTabsV28:$('privateTabsV28')
   };
 
-  const CLIENT_ID_KEY='sohbetix-v27-client-id';
+  const CLIENT_ID_KEY='sohbetix-v28-client-id:'+String(cfg.slug||'sohbetix');
   let clientId=sessionStorage.getItem(CLIENT_ID_KEY);
   if(!clientId){
     clientId=(crypto?.randomUUID?.() || `client-${Date.now()}-${Math.random().toString(36).slice(2)}`);
@@ -65,7 +68,7 @@
   }
   let currentNick = sessionStorage.getItem(SESSION_NICK) || '';
   let heartbeat = null;
-  const PRIVATE_STORAGE_PREFIX = 'sohbetix-v27-private:' + String(cfg.slug || 'sohbetix') + ':';
+  const PRIVATE_STORAGE_PREFIX = 'sohbetix-v28-private:' + String(cfg.slug || 'sohbetix') + ':';
   let activePrivateNick = '';
   const openedPrivateNicks = new Set();
 
@@ -86,25 +89,20 @@
 
   const AUTH_ID = String(localStorage.getItem('sohbetix-auth-id') || '');
   const AUTH_EMAIL = String(localStorage.getItem('sohbetix-auth-email') || '');
-  const PROFILE_STORE_KEY = 'sohbetix-v27-chat-profiles:' + (AUTH_ID || AUTH_EMAIL || 'guest');
+  const PROFILE_STORE_KEY = 'sohbetix-v28-chat-profiles:' + (AUTH_ID || AUTH_EMAIL || 'guest');
   let selectedProfileId = '';
   let profileMode = 'existing'; // existing | new | edit
 
   function readChatProfilesV25(){
     if(!isRegistered) return [];
-    const raw = safeParse(localStorage.getItem(PROFILE_STORE_KEY), []);
-    return Array.isArray(raw)
-      ? raw.filter(x=>x && x.id && cleanNick(x.nick)).map(x=>({...x,nick:cleanNick(x.nick)})).slice(0,10)
-      : [];
+    return V.readProfiles(AUTH_ID || AUTH_EMAIL);
   }
 
   function writeChatProfilesV25(list){
-    localStorage.setItem(PROFILE_STORE_KEY, JSON.stringify(list.slice(0,10)));
+    V.writeProfiles(AUTH_ID || AUTH_EMAIL, list);
   }
 
-  function isVipV25(){
-    return localStorage.getItem('sohbetix-vip-active') === '1';
-  }
+  function isVipV25(){ return V.isVipCurrent(); }
 
   function profileLimitV25(){
     return isVipV25() ? 10 : 1;
@@ -192,15 +190,25 @@
   function beginEditProfileV25(id){
     const profile=readChatProfilesV25().find(x=>x.id===id);
     if(!profile) return;
-    selectedProfileId=id;
-    setProfileEditorV25('edit',profile);
-    updateJoinEnabled();
-    renderProfilesV25();
+    location.href='profile-edit.html?nick='+encodeURIComponent(profile.nick);
   }
 
   function deleteProfileV25(id){
+    const profile=readChatProfilesV25().find(x=>x.id===id);
+    if(!profile) return;
+    if(!confirm(`“${profile.nick}” profilini tamamen silmek istediğinizden emin misiniz? Bu rumuz bir daha kullanılamaz.`)) return;
+    V.reserveDeletedNick(profile.nick);
+    localStorage.removeItem(V.profileDataKey(profile.id));
+    V.removeNickFromAllPresence(profile.nick);
     const next=readChatProfilesV25().filter(x=>x.id!==id);
     writeChatProfilesV25(next);
+    if(cleanNick(currentNick).toLocaleLowerCase('tr-TR')===cleanNick(profile.nick).toLocaleLowerCase('tr-TR')){
+      clearInterval(heartbeat);
+      sessionStorage.removeItem(SESSION_NICK);
+      sessionStorage.removeItem(SESSION_JOIN_FLAG);
+      currentNick='';
+      setLoggedInState(false);
+    }
     if(selectedProfileId===id) selectedProfileId=next[0]?.id || '';
     if(next.length){
       profileMode='existing';
@@ -218,7 +226,7 @@
     if(currentNick) removePresence(true);
     sessionStorage.removeItem(SESSION_NICK);
     sessionStorage.removeItem(SESSION_JOIN_FLAG);
-    sessionStorage.removeItem('sohbetix-v27-open-profile');
+    sessionStorage.removeItem('sohbetix-v28-open-profile');
     ['sohbetix-auth-type','sohbetix-auth-nick','sohbetix-auth-email','sohbetix-auth-id'].forEach(k=>localStorage.removeItem(k));
     location.reload();
   }
@@ -236,14 +244,14 @@
     if(!nick) return {ok:false,error:'Bir rumuz yaz.'};
     const list=readChatProfilesV25();
     const duplicate=list.some(x=>x.id!==selectedProfileId && x.nick.toLocaleLowerCase('tr-TR')===nick.toLocaleLowerCase('tr-TR'));
-    if(duplicate) return {ok:false,error:'Bu profil adı zaten kayıtlı.'};
+    if(duplicate || !V.nickAvailable(nick, selectedProfileId)) return {ok:false,error:'Bu profil adı kullanılamıyor.'};
 
     if(profileMode==='new'){
       if(list.length>=profileLimitV25()){
         els.profileLimitV25.hidden=false;
         return {ok:false,error:'limit'};
       }
-      const profile={id:(crypto?.randomUUID?.() || 'p-'+Date.now()+'-'+Math.random().toString(36).slice(2)),nick,createdAt:Date.now()};
+      const profile={id:V.uuid(),ownerId:AUTH_ID || AUTH_EMAIL,nick,createdAt:Date.now()};
       list.push(profile);
       writeChatProfilesV25(list);
       selectedProfileId=profile.id;
@@ -269,6 +277,22 @@
   function makeAvatar(nick) {
     const first = Array.from(nick.trim())[0] || '👤';
     return /[A-Za-zÇĞİÖŞÜçğıöşü0-9]/.test(first) ? first.toLocaleUpperCase('tr-TR') : first;
+  }
+  function userVisualV28(nick){
+    const ctx=V.profileContext(nick);
+    const d=ctx.data||V.defaultProfileData();
+    const gender=d.gender==='male'?'👦':d.gender==='female'?'👩':'👤';
+    return {
+      registered:!!ctx.profile, vip:!!ctx.vip, gender, photo:d.photo||'',
+      nickColor:d.nickColor||makeColor(nick), textColor:d.textColor||'#333333',
+      boldNick:!!d.boldNick&&!!ctx.vip, boldText:!!d.boldText&&!!ctx.vip, privateEnabled:d.privateEnabled!==false
+    };
+  }
+
+  function avatarHtmlV28(nick,small=false){
+    const v=userVisualV28(nick);
+    const inner=v.photo?`<img src="${escapeHtml(v.photo)}" alt="">`:escapeHtml(v.registered?v.gender:makeAvatar(nick));
+    return `<span class="${small?'room-mini-avatar-v15 ':''}user-avatar-v28 ${v.registered?'registered':'guest'} ${v.vip?'vip':''}">${inner}${v.vip?'<i>★</i>':''}</span>`;
   }
 
   function isNearMessagesBottom() {
@@ -297,7 +321,8 @@
     const key=String(nick||'').toLocaleLowerCase('tr-TR');
     const presence=Object.values(prunePresence(readPresence()));
     const found=presence.find(u=>String(u.nick||'').toLocaleLowerCase('tr-TR')===key);
-    return found ? normalizeRegisteredFlag(found.registered) : normalizeRegisteredFlag(fallback);
+    if(found) return normalizeRegisteredFlag(found.registered);
+    return !!V.getProfileByNick(nick) || normalizeRegisteredFlag(fallback);
   }
 
   function iconSvg(kind) {
@@ -330,11 +355,12 @@
     const menu=document.createElement('div');
     menu.className='sohbetix-user-menu-v20';
     menu.setAttribute('role','menu');
-    menu.innerHTML=`<div class="sohbetix-user-menu-head-v20"><span class="sohbetix-user-menu-avatar-v20" style="--user-color:${makeColor(nick)}">${escapeHtml(makeAvatar(nick))}</span><strong>${escapeHtml(nick)}</strong></div>
+    const uv=userVisualV28(nick);
+    menu.innerHTML=`<div class="sohbetix-user-menu-head-v20">${avatarHtmlV28(nick)}<strong>${escapeHtml(nick)}</strong></div>
       <button type="button" data-action="mention">${iconSvg('mention')}<span>Bahset</span></button>
-      <button type="button" data-action="private">${iconSvg('private')}<span>Gizli</span></button>
-      ${registered?`<button type="button" data-action="profile">${iconSvg('profile')}<span>Profil</span></button>
-      <button type="button" data-action="ignore">${iconSvg('ignore')}<span>Yoksay</span></button>`:''}`;
+      ${(registered&&isRegistered&&uv.privateEnabled)?`<button type="button" data-action="private">${iconSvg('private')}<span>Gizli</span></button>`:''}
+      ${registered?`<button type="button" data-action="profile">${iconSvg('profile')}<span>Profil</span></button>`:''}
+      ${(registered&&isRegistered)?`<button type="button" data-action="ignore">${iconSvg('ignore')}<span>Yoksay</span></button>`:''}`;
     document.body.appendChild(menu);
     const rect=anchor?.getBoundingClientRect?.() || {left:12,top:80,bottom:110,right:120};
     const mw=Math.min(230, window.innerWidth-16);
@@ -355,14 +381,11 @@
         els.messageInput.focus();
       } else if(action==='private'){
         if(!currentNick){ openJoinModal(); closeUserMenu(); return; }
-        openPrivateConversationV27(nick);
+        openPrivateConversationV28(nick);
       } else if(action==='profile'){
         location.href='profile.html?nick='+encodeURIComponent(nick);
       } else if(action==='ignore' && registered){
-        const key='sohbetix-v20-ignore-list';
-        const list=safeParse(localStorage.getItem(key),[]);
-        if(!list.includes(nick)) list.push(nick);
-        localStorage.setItem(key,JSON.stringify(list));
+        V.ignoreNick(nick);
         toastV20(`${nick} yoksayıldı.`);
       }
       closeUserMenu();
@@ -370,30 +393,30 @@
   }
 
 
-  function privatePairKeyV27(targetNick){
+  function privatePairKeyV28(targetNick){
     const a=cleanNick(currentNick).toLocaleLowerCase('tr-TR');
     const b=cleanNick(targetNick).toLocaleLowerCase('tr-TR');
     return [a,b].sort((x,y)=>x.localeCompare(y,'tr')).map(encodeURIComponent).join('~');
   }
 
-  function privateStorageKeyV27(targetNick){
-    return PRIVATE_STORAGE_PREFIX + privatePairKeyV27(targetNick);
+  function privateStorageKeyV28(targetNick){
+    return PRIVATE_STORAGE_PREFIX + privatePairKeyV28(targetNick);
   }
 
-  function readPrivateMessagesV27(targetNick){
+  function readPrivateMessagesV28(targetNick){
     if(!currentNick || !targetNick) return [];
-    const list=safeParse(localStorage.getItem(privateStorageKeyV27(targetNick)),[]);
+    const list=safeParse(localStorage.getItem(privateStorageKeyV28(targetNick)),[]);
     return Array.isArray(list) ? list : [];
   }
 
-  function writePrivateMessagesV27(targetNick,list){
-    localStorage.setItem(privateStorageKeyV27(targetNick),JSON.stringify(list.slice(-3000)));
+  function writePrivateMessagesV28(targetNick,list){
+    localStorage.setItem(privateStorageKeyV28(targetNick),JSON.stringify(list.slice(-3000)));
   }
 
-  function addPrivateMessageV27(targetNick,payload={}){
+  function addPrivateMessageV28(targetNick,payload={}){
     targetNick=cleanNick(targetNick);
     if(!currentNick || !targetNick) return;
-    const list=readPrivateMessagesV27(targetNick);
+    const list=readPrivateMessagesV28(targetNick);
     list.push({
       id:`pm-${Date.now()}-${Math.random().toString(36).slice(2)}`,
       sender:currentNick,
@@ -405,80 +428,80 @@
       time:nowTime(),
       registered:isRegistered
     });
-    writePrivateMessagesV27(targetNick,list);
-    renderPrivateMessagesV27(true);
+    writePrivateMessagesV28(targetNick,list);
+    renderPrivateMessagesV28(true);
   }
 
-  function renderPrivateTabsV27(){
-    if(!els.privateTabsV27 || !els.mainChatTabV27) return;
-    els.mainChatTabV27.classList.toggle('active',!activePrivateNick);
-    els.privateTabsV27.innerHTML=[...openedPrivateNicks].map(nick=>`
-      <div class="private-tab-v27 ${activePrivateNick===nick?'active':''}" data-private-tab="${escapeHtml(nick)}">
-        <button class="private-tab-open-v27" type="button" data-private-open="${escapeHtml(nick)}">
-          <span class="private-tab-avatar-v27" aria-hidden="true">
+  function renderPrivateTabsV28(){
+    if(!els.privateTabsV28 || !els.mainChatTabV28) return;
+    els.mainChatTabV28.classList.toggle('active',!activePrivateNick);
+    els.privateTabsV28.innerHTML=[...openedPrivateNicks].map(nick=>`
+      <div class="private-tab-v28 ${activePrivateNick===nick?'active':''}" data-private-tab="${escapeHtml(nick)}">
+        <button class="private-tab-open-v28" type="button" data-private-open="${escapeHtml(nick)}">
+          <span class="private-tab-avatar-v28" aria-hidden="true">
             <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M5 20c.7-4.2 3.1-6.3 7-6.3s6.3 2.1 7 6.3"/></svg>
           </span>
           <span>${escapeHtml(nick)}</span>
         </button>
-        <button class="private-tab-close-v27" type="button" data-private-close="${escapeHtml(nick)}" aria-label="${escapeHtml(nick)} gizli sohbetini kapat">×</button>
+        <button class="private-tab-close-v28" type="button" data-private-close="${escapeHtml(nick)}" aria-label="${escapeHtml(nick)} gizli sohbetini kapat">×</button>
       </div>`).join('');
     requestAnimationFrame(()=>{
-      const active=els.privateTabsV27.querySelector('.private-tab-v27.active');
+      const active=els.privateTabsV28.querySelector('.private-tab-v28.active');
       active?.scrollIntoView?.({behavior:'smooth',block:'nearest',inline:'nearest'});
     });
   }
 
-  function showMainConversationV27(){
+  function showMainConversationV28(){
     activePrivateNick='';
-    renderPrivateTabsV27();
+    renderPrivateTabsV28();
     renderMessages(true);
     els.messageInput.placeholder=cfg.language==='en'?'Write a message...':'Mesajını yaz...';
   }
 
-  function openPrivateConversationV27(nick){
+  function openPrivateConversationV28(nick){
     nick=cleanNick(nick);
     if(!nick || nick===currentNick || nick===BOT_NICK) return;
     openedPrivateNicks.add(nick);
     activePrivateNick=nick;
-    renderPrivateTabsV27();
-    renderPrivateMessagesV27(true);
+    renderPrivateTabsV28();
+    renderPrivateMessagesV28(true);
     els.messageInput.placeholder=`${nick} kişisine gizli mesaj yaz...`;
     setTimeout(()=>els.messageInput.focus(),30);
   }
 
-  function closePrivateConversationV27(nick){
+  function closePrivateConversationV28(nick){
     nick=cleanNick(nick);
     openedPrivateNicks.delete(nick);
     if(activePrivateNick===nick){
       const left=[...openedPrivateNicks];
       if(left.length){
         activePrivateNick=left[left.length-1];
-        renderPrivateTabsV27();
-        renderPrivateMessagesV27(true);
+        renderPrivateTabsV28();
+        renderPrivateMessagesV28(true);
         els.messageInput.placeholder=`${activePrivateNick} kişisine gizli mesaj yaz...`;
       }else{
-        showMainConversationV27();
+        showMainConversationV28();
       }
     }else{
-      renderPrivateTabsV27();
+      renderPrivateTabsV28();
     }
   }
 
-  function renderPrivateMessagesV27(forceBottom=false){
+  function renderPrivateMessagesV28(forceBottom=false){
     if(!activePrivateNick){ renderMessages(forceBottom); return; }
-    const list=readPrivateMessagesV27(activePrivateNick);
+    const list=readPrivateMessagesV28(activePrivateNick);
     const wasNearBottom=isNearMessagesBottom();
     const previousScrollTop=els.messages.scrollTop;
     if(!list.length){
-      els.messages.innerHTML=`<div class="private-empty-v27"><strong>${escapeHtml(activePrivateNick)}</strong> ile gizli sohbet başladı.<br><span>Mesajlarını yalnızca bu gizli sohbet sekmesinde görürsün.</span></div>`;
+      els.messages.innerHTML=`<div class="private-empty-v28"><strong>${escapeHtml(activePrivateNick)}</strong> ile gizli sohbet başladı.<br><span>Mesajlarını yalnızca bu gizli sohbet sekmesinde görürsün.</span></div>`;
     }else{
       els.messages.innerHTML=list.map(msg=>{
         const sender=cleanNick(msg.sender||'');
         const registered=normalizeRegisteredFlag(msg.registered) || targetRegistrationByNick(sender,false);
         if(msg.type==='image'){
-          return `<article class="live-message-v15 private-message-v27 user-target-v20" data-user-nick="${escapeHtml(sender)}" data-user-registered="${registered?'1':'0'}"><div class="live-avatar-v15" style="--user-color:${makeColor(sender)}">${escapeHtml(makeAvatar(sender))}</div><div class="live-message-body-v15"><div class="live-message-meta-v15"><b style="color:${makeColor(sender)}">${escapeHtml(sender)}</b><small>${escapeHtml(msg.time||'')}</small></div><img class="live-image-v18" src="${escapeHtml(msg.data||'')}" alt="Gizli paylaşılan resim"></div></article>`;
+          return `<article class="live-message-v15 private-message-v28 user-target-v20" data-user-nick="${escapeHtml(sender)}" data-user-registered="${registered?'1':'0'}">${avatarHtmlV28(sender)}<div class="live-message-body-v15"><div class="live-message-meta-v15"><b style="color:${userVisualV28(sender).nickColor};font-weight:${userVisualV28(sender).boldNick?'900':'700'};text-decoration:${userVisualV28(sender).boldNick?'underline':'none'}">${escapeHtml(sender)}</b><small>${escapeHtml(msg.time||'')}</small></div><img class="live-image-v18" src="${escapeHtml(msg.data||'')}" alt="Gizli paylaşılan resim"></div></article>`;
         }
-        return `<article class="live-message-v15 private-message-v27 user-target-v20" data-user-nick="${escapeHtml(sender)}" data-user-registered="${registered?'1':'0'}"><div class="live-avatar-v15" style="--user-color:${makeColor(sender)}">${escapeHtml(makeAvatar(sender))}</div><div class="live-message-body-v15"><div class="live-message-meta-v15"><b style="color:${makeColor(sender)}">${escapeHtml(sender)}</b><small>${escapeHtml(msg.time||'')}</small></div><p>${renderChatText(msg.text||'')}</p></div></article>`;
+        return `<article class="live-message-v15 private-message-v28 user-target-v20" data-user-nick="${escapeHtml(sender)}" data-user-registered="${registered?'1':'0'}">${avatarHtmlV28(sender)}<div class="live-message-body-v15"><div class="live-message-meta-v15"><b style="color:${userVisualV28(sender).nickColor};font-weight:${userVisualV28(sender).boldNick?'900':'700'};text-decoration:${userVisualV28(sender).boldNick?'underline':'none'}">${escapeHtml(sender)}</b><small>${escapeHtml(msg.time||'')}</small></div><p style="color:${userVisualV28(sender).textColor};font-weight:${userVisualV28(sender).boldText?'800':'400'};text-decoration:${userVisualV28(sender).boldText?'underline':'none'}">${renderChatText(msg.text||'')}</p></div></article>`;
       }).join('');
     }
     if(forceBottom || wasNearBottom) els.messages.scrollTop=els.messages.scrollHeight;
@@ -486,8 +509,8 @@
     requestAnimationFrame(updateLatestMessagesButton);
   }
 
-  function renderActiveConversationV27(forceBottom=false){
-    if(activePrivateNick) renderPrivateMessagesV27(forceBottom);
+  function renderActiveConversationV28(forceBottom=false){
+    if(activePrivateNick) renderPrivateMessagesV28(forceBottom);
     else renderMessages(forceBottom);
   }
 
@@ -548,7 +571,7 @@
 
   function initEmojiPanelV23() {
     if (!els.emojiGrid || !els.smileyBtn) return;
-    const emojis = ['😀','😃','😄','😁','😂','🤣','😊','😍','🥰','😘','😢','😭','😞','😔','☹️','🙁','😥','😓','😩','😫','🥺','😡','🤬','😎','🤗','🤔','👍','👎','❤️','💔','🔥','🎉','🌹','⭐','🙏','👏','👋','👌','💯','🎈','✨','😴','🤭','🙄','😇','🤩','🥳','😜','😋'];
+    const emojis = [(isVipV25()?'👑':null),(isVipV25()?'💎':null),(isVipV25()?'🪙':null),'😀','😃','😄','😁','😂','🤣','😊','😍','🥰','😘','😢','😭','😞','😔','☹️','🙁','😥','😓','😩','😫','🥺','😡','🤬','😎','🤗','🤔','👍','👎','❤️','💔','🔥','🎉','🌹','⭐','🙏','👏','👋','👌','💯','🎈','✨','😴','🤭','🙄','😇','🤩','🥳','😜','😋'].filter(Boolean);
     els.emojiGrid.innerHTML = emojis.map(x=>`<button type="button" data-emoji="${x}" aria-label="${x}">${x}</button>`).join('');
     els.smileyBtn.addEventListener('click', e=>{
       e.stopPropagation();
@@ -587,7 +610,7 @@
       .filter(u=>!q||String(u.nick).toLocaleLowerCase('tr-TR').includes(q))
       .slice(0,40);
     if(!users.length){els.mentionSuggest.hidden=true;return;}
-    els.mentionSuggest.innerHTML=users.map(u=>`<button type="button" data-mention="${escapeHtml(u.nick)}"><span class="room-mini-avatar-v15" style="--user-color:${makeColor(u.nick)}">${escapeHtml(makeAvatar(u.nick))}</span><b>${escapeHtml(u.nick)}</b></button>`).join('');
+    els.mentionSuggest.innerHTML=users.map(u=>`<button type="button" data-mention="${escapeHtml(u.nick)}">${avatarHtmlV28(u.nick,true)}<b>${escapeHtml(u.nick)}</b></button>`).join('');
     els.mentionSuggest.hidden=false;
   }
 
@@ -633,26 +656,28 @@
       els.messages.innerHTML = '<div class="room-empty-v15">Sohbet henüz boş. İlk katılan sen olabilirsin.</div>';
       return;
     }
-    els.messages.innerHTML = list.map(msg => {
+    els.messages.innerHTML = list.filter(msg=>!msg.nick || !V.isIgnored(msg.nick)).map(msg => {
       const registered = targetRegistrationByNick(msg.nick, msg.registered);
       if (msg.type === 'join') {
-        return `<div class="system-message-v15 user-target-v20" data-user-nick="${escapeHtml(msg.nick||'')}" data-user-registered="${registered?'1':'0'}"><button class="system-nick-v15" type="button">@${escapeHtml(msg.nick)}</button> <span>${cfg.language==='en'?'joined us...':'bize katılıyor...'}</span> <small>${escapeHtml(msg.time || '')}</small></div>`;
+        const vv=userVisualV28(msg.nick||'');
+        return `<div class="system-message-v15 user-target-v20" data-user-nick="${escapeHtml(msg.nick||'')}" data-user-registered="${registered?'1':'0'}"><button class="system-nick-v15" style="color:${vv.nickColor};font-weight:${vv.boldNick?'900':'800'};text-decoration:${vv.boldNick?'underline':'none'}" type="button">@${escapeHtml(msg.nick)}</button> <span>${cfg.language==='en'?'joined us...':'bize katılıyor...'}</span> <small>${escapeHtml(msg.time || '')}</small></div>`;
       }
       if (msg.type === 'leave') {
-        return `<div class="system-message-v15 leave user-target-v20" data-user-nick="${escapeHtml(msg.nick||'')}" data-user-registered="${registered?'1':'0'}"><button class="system-nick-v15" type="button">@${escapeHtml(msg.nick)}</button> <span>${cfg.language==='en'?'left us...':'bizi terk ediyor...'}</span> <small>${escapeHtml(msg.time || '')}</small></div>`;
+        const vv=userVisualV28(msg.nick||'');
+        return `<div class="system-message-v15 leave user-target-v20" data-user-nick="${escapeHtml(msg.nick||'')}" data-user-registered="${registered?'1':'0'}"><button class="system-nick-v15" style="color:${vv.nickColor};font-weight:${vv.boldNick?'900':'800'};text-decoration:${vv.boldNick?'underline':'none'}" type="button">@${escapeHtml(msg.nick)}</button> <span>${cfg.language==='en'?'left us...':'bizi terk ediyor...'}</span> <small>${escapeHtml(msg.time || '')}</small></div>`;
       }
       if (msg.type === 'bot') {
         return `<article class="bot-message-v17"><div class="bot-avatar-v17">S</div><div class="bot-message-body-v17"><div class="bot-message-meta-v17"><b>${escapeHtml(BOT_NICK)}</b><small>${escapeHtml(msg.time || '')}</small></div><p>${escapeHtml(msg.text || BOT_PURGE_TEXT)}</p></div></article>`;
       }
-      if(msg.type==='image') return `<article class="live-message-v15 user-target-v20" data-user-nick="${escapeHtml(msg.nick||'')}" data-user-registered="${registered?'1':'0'}"><div class="live-avatar-v15" style="--user-color:${makeColor(msg.nick||'')}">${escapeHtml(makeAvatar(msg.nick||''))}</div><div class="live-message-body-v15"><div class="live-message-meta-v15"><b style="color:${makeColor(msg.nick||'')}">${escapeHtml(msg.nick||'')}</b><small>${escapeHtml(msg.time||'')}</small></div><img class="live-image-v18" src="${escapeHtml(msg.data||'')}" alt="Paylaşılan resim"></div></article>`;
-      return `<article class="live-message-v15 user-target-v20" data-user-nick="${escapeHtml(msg.nick||'')}" data-user-registered="${registered?'1':'0'}"><div class="live-avatar-v15" style="--user-color:${makeColor(msg.nick || '')}">${escapeHtml(makeAvatar(msg.nick || ''))}</div><div class="live-message-body-v15"><div class="live-message-meta-v15"><b style="color:${makeColor(msg.nick || '')}">${escapeHtml(msg.nick || '')}</b><small>${escapeHtml(msg.time || '')}</small></div><p>${renderChatText(msg.text || '')}</p></div></article>`;
+      if(msg.type==='image') return `<article class="live-message-v15 user-target-v20" data-user-nick="${escapeHtml(msg.nick||'')}" data-user-registered="${registered?'1':'0'}">${avatarHtmlV28(msg.nick||'')}<div class="live-message-body-v15"><div class="live-message-meta-v15"><b style="color:${userVisualV28(msg.nick||'').nickColor};font-weight:${userVisualV28(msg.nick||'').boldNick?'900':'700'};text-decoration:${userVisualV28(msg.nick||'').boldNick?'underline':'none'}">${escapeHtml(msg.nick||'')}</b><small>${escapeHtml(msg.time||'')}</small></div><img class="live-image-v18" src="${escapeHtml(msg.data||'')}" alt="Paylaşılan resim"></div></article>`;
+      return `<article class="live-message-v15 user-target-v20" data-user-nick="${escapeHtml(msg.nick||'')}" data-user-registered="${registered?'1':'0'}">${avatarHtmlV28(msg.nick||'')}<div class="live-message-body-v15"><div class="live-message-meta-v15"><b style="color:${userVisualV28(msg.nick||'').nickColor};font-weight:${userVisualV28(msg.nick||'').boldNick?'900':'700'};text-decoration:${userVisualV28(msg.nick||'').boldNick?'underline':'none'}">${escapeHtml(msg.nick||'')}</b><small>${escapeHtml(msg.time || '')}</small></div><p style="color:${userVisualV28(msg.nick||'').textColor};font-weight:${userVisualV28(msg.nick||'').boldText?'800':'400'};text-decoration:${userVisualV28(msg.nick||'').boldText?'underline':'none'}">${renderChatText(msg.text||'')}</p></div></article>`;
     }).join('');
     if (forceBottom || wasNearBottom) els.messages.scrollTop = els.messages.scrollHeight;
     else els.messages.scrollTop = previousScrollTop;
     requestAnimationFrame(updateLatestMessagesButton);
   }
 
-  function dedupePresenceV27(presence) {
+  function dedupePresenceV28(presence) {
     const best=new Map();
     for(const [id,item] of Object.entries(presence||{})){
       if(!item) continue;
@@ -681,7 +706,7 @@
     for (const [id, item] of Object.entries(presence)) {
       if (!item || now - Number(item.lastSeen || 0) > PRESENCE_TTL) delete presence[id];
     }
-    return dedupePresenceV27(presence);
+    return dedupePresenceV28(presence);
   }
 
   function renderPresence() {
@@ -701,20 +726,20 @@
     const filtered = users.filter(u => !q || String(u.nick).toLocaleLowerCase('tr-TR').includes(q));
     const botMatches = !q || BOT_NICK.toLocaleLowerCase('tr-TR').includes(q);
     const botRow = botMatches ? `<li class="room-bot-user-v17"><span class="room-mini-avatar-v15 room-bot-avatar-v17">S</span><b>${escapeHtml(BOT_NICK)}</b></li>` : '';
-    els.userList.innerHTML = botRow + filtered.map(u => `<li class="user-target-v20" data-user-nick="${escapeHtml(u.nick||'')}" data-user-registered="${normalizeRegisteredFlag(u.registered)?'1':'0'}"><span class="room-mini-avatar-v15" style="--user-color:${makeColor(u.nick)}">${escapeHtml(makeAvatar(u.nick))}</span><b style="color:${makeColor(u.nick)}">${escapeHtml(u.nick)}</b></li>`).join('');
+    els.userList.innerHTML = botRow + filtered.filter(u=>!V.isIgnored(u.nick)).map(u => {const vv=userVisualV28(u.nick);return `<li class="user-target-v20 ${vv.vip?'vip-user-v28':''}" data-user-nick="${escapeHtml(u.nick||'')}" data-user-registered="${normalizeRegisteredFlag(u.registered)?'1':'0'}">${avatarHtmlV28(u.nick,true)}<b style="color:${vv.nickColor};font-weight:${vv.boldNick?'900':'700'};text-decoration:${vv.boldNick?'underline':'none'}">${escapeHtml(u.nick)}</b>${vv.vip?'<span class="vip-crown-v28">VIP</span>':''}</li>`;}).join('');
   }
 
   function heartbeatPresence() {
     if (!currentNick) return;
-    const presence=prunePresence(readPresence());
+    const presence=sweepExpiredPresence(readPresence());
     const key=cleanNick(currentNick).toLocaleLowerCase('tr-TR');
     for(const [id,item] of Object.entries(presence)){
       if(id!==clientId && item && cleanNick(item.nick).toLocaleLowerCase('tr-TR')===key){
         delete presence[id];
       }
     }
-    presence[clientId]={nick:currentNick,registered:isRegistered,lastSeen:Date.now()};
-    writePresence(dedupePresenceV27(presence));
+    presence[clientId]={nick:currentNick,registered:isRegistered,ownerId:AUTH_ID||'',profileId:V.getProfileByNick(currentNick)?.id||'',lastSeen:Date.now()};
+    writePresence(dedupePresenceV28(presence));
     renderPresence();
   }
 
@@ -811,8 +836,18 @@
 
     if(!nick) return;
     currentNick = nick;
+    if(isRegistered){
+      const prof=V.getProfileByNick(currentNick);
+      if(prof){
+        const pd=V.getProfileDataByProfile(prof);
+        const rooms=Array.isArray(pd.rooms)?pd.rooms:[];
+        if(!rooms.includes(String(cfg.slug||'sohbetix'))) rooms.push(String(cfg.slug||'sohbetix'));
+        V.saveProfileData(prof.id,{...pd,rooms:rooms.slice(-100)});
+      }
+    }
+    sessionStorage.setItem('sohbetix-v28-last-room',String(cfg.slug||'sohbetix'));
     sessionStorage.setItem(SESSION_NICK, currentNick);
-    sessionStorage.removeItem('sohbetix-v27-open-profile');
+    sessionStorage.removeItem('sohbetix-v28-open-profile');
     closeJoinModal();
     setLoggedInState(true);
     startHeartbeat();
@@ -825,7 +860,7 @@
     if (!currentNick) return;
     activePrivateNick='';
     openedPrivateNicks.clear();
-    renderPrivateTabsV27();
+    renderPrivateTabsV28();
     clearInterval(heartbeat);
     removePresence(true);
     sessionStorage.removeItem(SESSION_NICK);
@@ -839,11 +874,11 @@
 
   if (els.accountAuthBtn) els.accountAuthBtn.addEventListener('click', () => {
     const ret = 'open-chat.html' + (location.search || '');
-    sessionStorage.setItem('sohbetix-auth-entry-v27', String(Date.now()));
+    sessionStorage.setItem('sohbetix-auth-entry-v28', String(Date.now()));
     location.href = 'auth.html?return=' + encodeURIComponent(ret);
   });
   if(els.registeredLogoutBtn) els.registeredLogoutBtn.addEventListener('click', logoutRegisteredV25);
-  if(els.profileVipBtnV25) els.profileVipBtnV25.addEventListener('click',()=>{ location.href='coins.html#vip'; });
+  if(els.profileVipBtnV25) els.profileVipBtnV25.addEventListener('click',()=>{ location.href='vip.html'; });
   if(els.profileRefreshBtn) els.profileRefreshBtn.addEventListener('click',()=>{ renderProfilesV25(); updateJoinEnabled(); });
   if(els.newProfileBtnV25) els.newProfileBtnV25.addEventListener('click',beginNewProfileV25);
   if(els.profileNickV25) els.profileNickV25.addEventListener('input',()=>{ els.profileLimitV25.hidden=true; updateJoinEnabled(); });
@@ -871,12 +906,12 @@
     });
   }
 
-  if(els.mainChatTabV27) els.mainChatTabV27.addEventListener('click',showMainConversationV27);
-  if(els.privateTabsV27) els.privateTabsV27.addEventListener('click',e=>{
+  if(els.mainChatTabV28) els.mainChatTabV28.addEventListener('click',showMainConversationV28);
+  if(els.privateTabsV28) els.privateTabsV28.addEventListener('click',e=>{
     const close=e.target.closest('[data-private-close]');
-    if(close){ e.stopPropagation(); closePrivateConversationV27(close.dataset.privateClose); return; }
+    if(close){ e.stopPropagation(); closePrivateConversationV28(close.dataset.privateClose); return; }
     const open=e.target.closest('[data-private-open]');
-    if(open){ openPrivateConversationV27(open.dataset.privateOpen); }
+    if(open){ openPrivateConversationV28(open.dataset.privateOpen); }
   });
 
   els.openJoin.addEventListener('click', openJoinModal);
@@ -888,8 +923,8 @@
   els.guestNick.addEventListener('keydown', e => { if (e.key === 'Enter' && !els.joinBtn.disabled) { e.preventDefault(); joinRoom(); } });
 
   const FLOOD_WINDOW_MS = 10000;
-  const FLOOD_MAX_MESSAGES = 3;
-  const STORAGE_FLOOD_STATE = 'sohbetix-v27-flood-state';
+  const FLOOD_MAX_MESSAGES = 5;
+  const STORAGE_FLOOD_STATE = 'sohbetix-v28-flood-state';
   let floodTimer = null;
 
   function normalizeFloodText(v){
@@ -962,8 +997,8 @@
       return false;
     }
 
-    const similar=state.lastText && floodSimilarity(text,state.lastText)>=0.78;
-    const burst=state.events.length>=FLOOD_MAX_MESSAGES;
+    const similar=state.lastText && floodSimilarity(text,state.lastText)>=(isVipV25()?0.96:0.78);
+    const burst=state.events.length>=(isVipV25()?10:FLOOD_MAX_MESSAGES);
 
     if(similar || burst){
       state.blockUntil=now+FLOOD_WINDOW_MS;
@@ -982,7 +1017,20 @@
 
   if(els.floodVipBtn){
     els.floodVipBtn.addEventListener('click',()=>{
-      location.href='coins.html#vip';
+      location.href='vip.html';
+    });
+  }
+
+  if(els.chatImageButtonV28 && els.chatImageInputV28){
+    els.chatImageButtonV28.addEventListener('click',()=>{
+      if(!currentNick)return;
+      if(!cfg.imageShare && !isVipV25()){alert('Bu sohbette resim paylaşımı yalnızca VIP kullanıcılar için açık.');return;}
+      els.chatImageInputV28.click();
+    });
+    els.chatImageInputV28.addEventListener('change',()=>{
+      const file=els.chatImageInputV28.files?.[0]; if(!file)return;
+      if(file.size>900000){alert('Resim çok büyük. En fazla 900 KB.');els.chatImageInputV28.value='';return;}
+      const reader=new FileReader(); reader.onload=()=>{const data=String(reader.result||'');if(activePrivateNick)addPrivateMessageV28(activePrivateNick,{type:'image',data});else addMessage('image',{nick:currentNick,data});els.chatImageInputV28.value='';}; reader.readAsDataURL(file);
     });
   }
 
@@ -991,7 +1039,7 @@
     const text = els.messageInput.value.trim();
     if (!currentNick || !text) return;
     if (!checkFloodBeforeSend(text)) return;
-    if(activePrivateNick) addPrivateMessageV27(activePrivateNick,{type:'chat',text:text.slice(0,512)});
+    if(activePrivateNick) addPrivateMessageV28(activePrivateNick,{type:'chat',text:text.slice(0,512)});
     else addMessage('chat', {nick:currentNick, text:text.slice(0,512)});
     els.messageInput.value = '';
     els.messageInput.focus();
@@ -1010,9 +1058,9 @@
   });
   els.messageInput.addEventListener('paste', e => {
     const items=[...(e.clipboardData?.items||[])]; const image=items.find(i=>i.type&&i.type.startsWith('image/')); if(!image)return;
-    e.preventDefault(); if(!cfg.imageShare){alert(cfg.language==='en'?'Image sharing is disabled in this chat.':'Bu sohbette resim paylaşımı kapalı.');return;}
+    e.preventDefault(); if(!cfg.imageShare && !isVipV25()){alert(cfg.language==='en'?'Image sharing is disabled in this chat.':'Bu sohbette resim paylaşımı kapalı. VIP kullanıcılar paylaşabilir.');return;}
     const file=image.getAsFile(); if(!file)return; if(file.size>900000){alert(cfg.language==='en'?'Image is too large. Maximum 900 KB.':'Resim çok büyük. En fazla 900 KB.');return;}
-    const reader=new FileReader(); reader.onload=()=>{try{if(activePrivateNick)addPrivateMessageV27(activePrivateNick,{type:'image',data:String(reader.result||'')});else addMessage('image',{nick:currentNick,data:String(reader.result||'')});}catch{alert('Resim kaydedilemedi.');}}; reader.readAsDataURL(file);
+    const reader=new FileReader(); reader.onload=()=>{try{if(activePrivateNick)addPrivateMessageV28(activePrivateNick,{type:'image',data:String(reader.result||'')});else addMessage('image',{nick:currentNick,data:String(reader.result||'')});}catch{alert('Resim kaydedilemedi.');}}; reader.readAsDataURL(file);
   });
   els.roomAccountBtn.addEventListener('click', e => { e.stopPropagation(); els.roomAccountMenu.hidden = !els.roomAccountMenu.hidden; });
   els.leaveBtn.addEventListener('click', leaveRoom);
@@ -1020,9 +1068,9 @@
   window.addEventListener('storage', e => {
     if (e.key === STORAGE_MESSAGES && !activePrivateNick) renderMessages();
     if (e.key === STORAGE_PRESENCE) renderPresence();
-    if (e.key && e.key.startsWith(PRIVATE_STORAGE_PREFIX) && activePrivateNick) renderPrivateMessagesV27();
+    if (e.key && e.key.startsWith(PRIVATE_STORAGE_PREFIX) && activePrivateNick) renderPrivateMessagesV28();
   });
-  // V27: F5/yenilemede sahte katılma-ayrılma üretme.
+  // V28: F5/yenilemede sahte katılma-ayrılma üretme.
   // Gerçek sekme kapanışında presence TTL ile düşer; aynı nick yeni oturumda varsa ayrılma yazılmaz.
   window.addEventListener('pagehide', () => {});
   window.addEventListener('beforeunload', () => {});
@@ -1047,7 +1095,7 @@
     }
   });
   initEmojiPanelV23();
-  renderPrivateTabsV27();
+  renderPrivateTabsV28();
   renderMessages();
   renderPresence();
   if (currentNick) {
@@ -1067,7 +1115,7 @@
     }
   } else {
     setLoggedInState(false);
-    if(isRegistered || sessionStorage.getItem('sohbetix-v27-open-profile')==='1'){
+    if(isRegistered || sessionStorage.getItem('sohbetix-v28-open-profile')==='1'){
       setTimeout(openJoinModal, 60);
     }
   }

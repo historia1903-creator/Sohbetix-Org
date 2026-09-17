@@ -166,8 +166,9 @@ document.addEventListener('DOMContentLoaded', ()=>{ initMenus(); applyLanguage()
 
 // ===== Sohbetix chat-owner settings + V27 katalog =====
 const V18_CONFIG_KEY='sohbetix-v18-chat-config';
-const V27_CATALOG_KEY='sohbetix-v27-chat-catalog';
-const V27_CHAT_ID_KEY='sohbetix-v27-current-chat-id';
+const V27_CATALOG_KEY='sohbetix-v28-chat-catalog';
+if(!localStorage.getItem(V27_CATALOG_KEY)&&localStorage.getItem('sohbetix-v27-chat-catalog')) localStorage.setItem(V27_CATALOG_KEY,localStorage.getItem('sohbetix-v27-chat-catalog'));
+const V27_CHAT_ID_KEY='sohbetix-v28-current-chat-id';
 const V18_DEFAULT_CONFIG={title:'Sohbetix',language:'tr',disabled:false,imageShare:false,privateMode:'entered',catalogVisible:true,description:'',category:'Arkadaşlık',slug:'sohbetix'};
 
 function getV18Config(){

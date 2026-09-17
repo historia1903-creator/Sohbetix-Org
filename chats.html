@@ -5,7 +5,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <title>Sohbet Odaları - Sohbetix</title>
-<link href="styles.css?v=V27-TAM-FIX" rel="stylesheet"/>
+<link href="styles.css?v=V28-TAM-FIX" rel="stylesheet"/>
 <meta content="#ffffff" name="theme-color"/>
 <link rel="icon" type="image/jpeg" href="sohbetix-logo.jpg"/>
 </head>
@@ -89,20 +89,21 @@
 </div>
 </footer>
 <script>
-const CATALOG_KEY='sohbetix-v27-chat-catalog';
+const CATALOG_KEY='sohbetix-v28-chat-catalog';
+if(!localStorage.getItem(CATALOG_KEY)&&localStorage.getItem('sohbetix-v27-chat-catalog'))localStorage.setItem(CATALOG_KEY,localStorage.getItem('sohbetix-v27-chat-catalog'));
 const CONFIG_KEY='sohbetix-v18-chat-config';
-const PRESENCE_KEY='sohbetix-v17-room-presence';
+const PRESENCE_PREFIX='sohbetix-v28-room-presence:';
 
 const safe=(raw,fallback)=>{try{return raw?JSON.parse(raw):fallback}catch{return fallback}};
 const cfgV18=safe(localStorage.getItem(CONFIG_KEY),{});
 const storedCatalog=safe(localStorage.getItem(CATALOG_KEY),[]);
 
 function uniqueOnlineNow(){
-  const presence=safe(localStorage.getItem(PRESENCE_KEY),{});
+  const presence=safe(localStorage.getItem(PRESENCE_PREFIX+String(cfgV18.slug||'sohbetix')),{});
   const now=Date.now();
   const seen=new Set();
   for(const item of Object.values(presence)){
-    if(!item || now-Number(item.lastSeen||0)>16000) continue;
+    if(!item || now-Number(item.lastSeen||0)>210000) continue;
     const nick=String(item.nick||'').trim().toLocaleLowerCase('tr-TR');
     if(nick) seen.add(nick);
   }
@@ -230,5 +231,5 @@ if(mobileMore&&mobileMoreMenu) mobileMore.addEventListener("click",e=>{
 
 renderResults();
 </script>
-<script src="app.js?v=V27-TAM-FIX"></script></body>
+<script src="app.js?v=V28-TAM-FIX"></script></body>
 </html>
