@@ -1915,3 +1915,158 @@ html.room-fixed-viewport .room-grid-v15,body.room-page-v15 .room-grid-v15,.room-
 .room-photo-v28{border:0;background:transparent;font-size:20px;cursor:pointer;padding:5px 7px;line-height:1}.room-photo-v28:hover{background:#eef2f5;border-radius:5px}
 @media(max-width:760px){html.room-fixed-viewport .room-grid-v15,body.room-page-v15 .room-grid-v15,.room-grid-v15{grid-template-columns:minmax(0,1fr) clamp(72px,17vw,88px)!important}.room-photo-v28{font-size:18px;padding:4px}}
 .user-avatar-v28.guest{border-color:#c7cdd2;background:#eef1f3;color:#37434b}.user-avatar-v28.registered{border-color:#e4b91e}
+
+
+/* ==========================================================
+   SOHBETIX V29 — VIP SIRALAMA / DURUM / MESAJ SECME / PROFIL
+   ========================================================== */
+
+/* Kayıtlı kullanıcı artık otomatik altın çerçeveli değil; yalnız VIP altın. */
+.user-avatar-v28,
+.user-avatar-v28.registered,
+.user-avatar-v28.guest{
+  border-color:#c8d0d7!important;
+  background:#eef2f5!important;
+  box-shadow:none!important;
+  color:#34424e!important;
+}
+.user-avatar-v28.vip{
+  border-color:#d79a00!important;
+  background:linear-gradient(#ffe36b,#ffc928)!important;
+  box-shadow:0 0 0 2px #ffe08a inset,0 0 8px rgba(214,155,0,.35)!important;
+}
+.user-avatar-v28.vip img{border-radius:3px}
+
+/* Kullanıcı listesi ve profil tarafı hafif büyütüldü. */
+.room-user-list-v15 li{
+  min-height:32px!important;
+  gap:6px!important;
+  padding:6px 4px!important;
+}
+.room-user-list-v15 b{
+  font-size:12px!important;
+  line-height:1.18!important;
+}
+.room-mini-avatar-v15.user-avatar-v28{
+  width:27px!important;
+  height:27px!important;
+  flex-basis:27px!important;
+  font-size:14px!important;
+}
+.sohbetix-user-menu-head-v20 strong{font-size:14px!important}
+.sohbetix-user-menu-v20 button{font-size:13px!important}
+
+/* Online / Bir yana / Meşgul menüsü */
+.room-account-icon-v29,
+.status-menu-icon-v29{
+  position:relative;
+  display:inline-grid;
+  place-items:center;
+  width:25px;
+  height:25px;
+  flex:0 0 25px;
+  color:#26749a;
+}
+.room-account-icon-v29 svg,
+.status-menu-icon-v29 svg{
+  width:21px;height:21px;fill:#e7f4fb;stroke:#26749a;stroke-width:1.8;
+}
+.room-account-icon-v29 i,
+.status-menu-icon-v29 i{
+  position:absolute;right:-1px;bottom:0;width:8px;height:8px;border:2px solid #fff;border-radius:50%;background:#41b95d;
+}
+.room-account-icon-v29[data-status="away"] i,
+.status-menu-icon-v29.away i{background:#9aa5ae}
+.room-account-icon-v29[data-status="busy"] i,
+.status-menu-icon-v29.busy i{
+  background:#d83b3b;
+}
+.room-account-icon-v29[data-status="busy"] i::after,
+.status-menu-icon-v29.busy i::after{
+  content:"";position:absolute;left:1px;right:1px;top:3px;height:2px;background:#fff;border-radius:2px;
+}
+.room-account-menu-v29{width:170px!important;padding:5px!important}
+.room-account-menu-v29 .room-status-option-v29{
+  display:flex!important;align-items:center!important;gap:7px!important;
+  color:#26343e!important;font-weight:700!important;
+}
+.room-account-menu-v29 .room-status-option-v29.active{background:#eef7fb!important;color:#12698f!important}
+.room-status-separator-v29{height:1px;background:#e1e7eb;margin:4px 2px}
+.room-account-menu-v29 .leave-room-v29{color:#9a1111!important}
+
+/* Kullanıcı listesinde durum işareti */
+.presence-status-v29{
+  position:relative;width:10px;height:10px;flex:0 0 10px;margin-left:-8px;margin-right:-1px;margin-top:16px;
+  border:2px solid #fff;border-radius:50%;background:#42b95d;z-index:2;
+}
+.presence-status-v29.away{background:#9aa5ae}
+.presence-status-v29.busy{background:#d83b3b}
+.presence-status-v29.busy::after{
+  content:"";position:absolute;left:1px;right:1px;top:3px;height:2px;background:#fff;border-radius:2px;
+}
+
+/* Kullanıcının sadece kendi mesajlarında seçim kutusu */
+.live-message-v15{position:relative;padding-right:34px}
+.own-message-select-wrap-v29{
+  position:absolute;right:7px;top:50%;transform:translateY(-50%);
+  width:20px;height:20px;display:grid;place-items:center;cursor:pointer;
+}
+.own-message-select-v29{
+  width:15px;height:15px;accent-color:#4fa6cf;cursor:pointer;
+}
+.message-selection-menu-v29{
+  position:absolute;left:50%;bottom:88px;transform:translateX(-50%);
+  z-index:90;background:#fff;border:1px solid #aeb9c1;box-shadow:0 6px 18px rgba(0,0,0,.18);
+  min-width:128px;padding:0;
+}
+.message-selection-menu-v29[hidden]{display:none!important}
+.message-selection-menu-v29 button{
+  display:block;width:100%;border:0;background:#fff;text-align:center;padding:8px 12px;
+  font:700 12px Arial;cursor:pointer;color:#222;
+}
+.message-selection-menu-v29 button:first-child{background:#eaf6ff}
+.message-selection-menu-v29 button+button{border-top:1px solid #d8e0e5}
+
+/* Etiket sadece etiketlenen kullanıcının ekranında vurgulu görünür. */
+.mention-tag-v29{
+  color:#137eaa!important;
+  font-weight:900!important;
+  text-decoration:none!important;
+}
+.message-mentions-me-v29{
+  background:#fff3c9!important;
+  border-radius:3px;
+}
+
+/* Profil footer PC'de gerçek sayfa altına sabitlenir. */
+.profile-page-v28{
+  min-height:100vh!important;
+  display:flex!important;
+  flex-direction:column!important;
+}
+.profile-layout-v28{
+  flex:1 0 auto!important;
+}
+.profile-footer-v28{
+  margin-top:auto!important;
+  flex:0 0 auto!important;
+}
+
+/* Gizli sohbet sekmeleri yatay kaydırma korunur */
+.private-tabs-v28{
+  overflow-x:auto!important;
+  overflow-y:hidden!important;
+  scroll-behavior:smooth;
+  -webkit-overflow-scrolling:touch;
+}
+
+/* Mobil uyum */
+@media(max-width:760px){
+  .room-user-list-v15 b{font-size:11px!important}
+  .room-mini-avatar-v15.user-avatar-v28{
+    width:25px!important;height:25px!important;flex-basis:25px!important;font-size:13px!important;
+  }
+  .presence-status-v29{width:9px;height:9px;flex-basis:9px;margin-left:-8px;margin-top:15px}
+  .message-selection-menu-v29{bottom:82px;min-width:122px}
+  .room-account-menu-v29{width:158px!important}
+}

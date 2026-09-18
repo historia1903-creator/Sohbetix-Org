@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const V=window.SohbetixV28;
+  const V=window.SohbetixV29;
   let STORAGE_MESSAGES='';
   let STORAGE_PRESENCE='';
   const SESSION_NICK = 'sohbetix-v17-current-nick';
@@ -56,8 +56,12 @@
     registeredLogoutBtn:$('registeredLogoutBtn'), savedProfilesV25:$('savedProfilesV25'), newProfileBtnV25:$('newProfileBtnV25'),
     profileEditorV25:$('profileEditorV25'), profileEditorLabelV25:$('profileEditorLabelV25'), profileNickV25:$('profileNickV25'),
     profileNickCounterV25:$('profileNickCounterV25'), profileLimitV25:$('profileLimitV25'), profileVipBtnV25:$('profileVipBtnV25'),
-    profileRefreshBtn:$('profileRefreshBtn'), chatImageInputV28:$('chatImageInputV28'), chatImageButtonV28:$('chatImageButtonV28'),
-    mainChatTabV28:$('mainChatTabV28'), privateTabsV28:$('privateTabsV28')
+    profileRefreshBtn:$('profileRefreshBtn'), chatImageInputV29:$('chatImageInputV29'), chatImageButtonV29:$('chatImageButtonV29'),
+    mainChatTabV29:$('mainChatTabV28'), privateTabsV29:$('privateTabsV28'),
+    roomAccountStatusIcon:$('roomAccountStatusIcon'),
+    messageSelectionMenuV29:$('messageSelectionMenuV29'),
+    deleteSelectedMessagesV29:$('deleteSelectedMessagesV29'),
+    cancelSelectedMessagesV29:$('cancelSelectedMessagesV29')
   };
 
   const CLIENT_ID_KEY='sohbetix-v28-client-id:'+String(cfg.slug||'sohbetix');
@@ -89,6 +93,9 @@
 
   const AUTH_ID = String(localStorage.getItem('sohbetix-auth-id') || '');
   const AUTH_EMAIL = String(localStorage.getItem('sohbetix-auth-email') || '');
+  const STATUS_STORAGE_PREFIX = 'sohbetix-v29-presence-status:' + String(cfg.slug||'sohbetix') + ':';
+  let currentStatus = 'online';
+  const selectedMessageIdsV29 = new Set();
   const PROFILE_STORE_KEY = 'sohbetix-v28-chat-profiles:' + (AUTH_ID || AUTH_EMAIL || 'guest');
   let selectedProfileId = '';
   let profileMode = 'existing'; // existing | new | edit
@@ -278,7 +285,84 @@
     const first = Array.from(nick.trim())[0] || '👤';
     return /[A-Za-zÇĞİÖŞÜçğıöşü0-9]/.test(first) ? first.toLocaleUpperCase('tr-TR') : first;
   }
-  function userVisualV28(nick){
+
+  function statusKeyV29(nick=currentNick){
+    const ident = AUTH_ID || cleanNick(nick).toLocaleLowerCase('tr-TR') || clientId;
+    return STATUS_STORAGE_PREFIX + ident;
+  }
+  function normalizeStatusV29(v){
+    return ['online','away','busy'].includes(v) ? v : 'online';
+  }
+  function loadStatusV29(nick=currentNick){
+    return normalizeStatusV29(localStorage.getItem(statusKeyV29(nick)) || 'online');
+  }
+  function statusLabelV29(v){
+    return v==='busy' ? 'Meşgul' : v==='away' ? 'Bir yana' : 'Online';
+  }
+  function updateAccountStatusIconV29(){
+    if(!els.roomAccountStatusIcon) return;
+    els.roomAccountStatusIcon.dataset.status=currentStatus;
+    els.roomAccountStatusIcon.title=statusLabelV29(currentStatus);
+    document.querySelectorAll('[data-presence-status]').forEach(btn=>{
+      btn.classList.toggle('active', btn.dataset.presenceStatus===currentStatus);
+    });
+  }
+  function setPresenceStatusV29(status){
+    currentStatus=normalizeStatusV29(status);
+    localStorage.setItem(statusKeyV29(), currentStatus);
+    updateAccountStatusIconV29();
+    if(currentNick) heartbeatPresence();
+    renderPresence();
+  }
+  function presenceStatusHtmlV29(status){
+    status=normalizeStatusV29(status);
+    const label=statusLabelV29(status);
+    return `<span class="presence-status-v29 ${status}" title="${label}" aria-label="${label}"><i></i></span>`;
+  }
+
+  function isOwnSelectableMessageV29(msg){
+    return !!(isRegistered && currentNick && msg && ['chat','image'].includes(msg.type) &&
+      cleanNick(msg.nick).toLocaleLowerCase('tr-TR')===cleanNick(currentNick).toLocaleLowerCase('tr-TR'));
+  }
+  function ownMessageCheckboxV29(msg){
+    if(!isOwnSelectableMessageV29(msg)) return '';
+    const checked=selectedMessageIdsV29.has(String(msg.id))?' checked':'';
+    return `<label class="own-message-select-wrap-v29" title="Mesajı seç"><input class="own-message-select-v29" type="checkbox" data-message-id="${escapeHtml(msg.id)}"${checked}><span></span></label>`;
+  }
+  function updateMessageSelectionMenuV29(){
+    if(!els.messageSelectionMenuV29) return;
+    els.messageSelectionMenuV29.hidden = !isRegistered || selectedMessageIdsV29.size===0;
+  }
+  function clearMessageSelectionV29(){
+    selectedMessageIdsV29.clear();
+    updateMessageSelectionMenuV29();
+    els.messages?.querySelectorAll('.own-message-select-v29').forEach(x=>x.checked=false);
+  }
+  function deleteSelectedMessagesV29(){
+    if(!isRegistered || !selectedMessageIdsV29.size) return;
+    if(activePrivateNick){
+      let list=readPrivateMessagesV29(activePrivateNick);
+      list=list.filter(msg=>!(
+        selectedMessageIdsV29.has(String(msg.id)) &&
+        cleanNick(msg.sender).toLocaleLowerCase('tr-TR')===cleanNick(currentNick).toLocaleLowerCase('tr-TR')
+      ));
+      writePrivateMessagesV29(activePrivateNick,list);
+      clearMessageSelectionV29();
+      renderPrivateMessagesV29();
+      return;
+    }
+    let list=readMessages();
+    list=list.filter(msg=>!(
+      selectedMessageIdsV29.has(String(msg.id)) &&
+      ['chat','image'].includes(msg.type) &&
+      cleanNick(msg.nick).toLocaleLowerCase('tr-TR')===cleanNick(currentNick).toLocaleLowerCase('tr-TR')
+    ));
+    writeMessages(list);
+    clearMessageSelectionV29();
+    renderMessages();
+  }
+
+  function userVisualV29(nick){
     const ctx=V.profileContext(nick);
     const d=ctx.data||V.defaultProfileData();
     const gender=d.gender==='male'?'👦':d.gender==='female'?'👩':'👤';
@@ -289,8 +373,8 @@
     };
   }
 
-  function avatarHtmlV28(nick,small=false){
-    const v=userVisualV28(nick);
+  function avatarHtmlV29(nick,small=false){
+    const v=userVisualV29(nick);
     const inner=v.photo?`<img src="${escapeHtml(v.photo)}" alt="">`:escapeHtml(v.registered?v.gender:makeAvatar(nick));
     return `<span class="${small?'room-mini-avatar-v15 ':''}user-avatar-v28 ${v.registered?'registered':'guest'} ${v.vip?'vip':''}">${inner}${v.vip?'<i>★</i>':''}</span>`;
   }
@@ -355,10 +439,10 @@
     const menu=document.createElement('div');
     menu.className='sohbetix-user-menu-v20';
     menu.setAttribute('role','menu');
-    const uv=userVisualV28(nick);
-    menu.innerHTML=`<div class="sohbetix-user-menu-head-v20">${avatarHtmlV28(nick)}<strong>${escapeHtml(nick)}</strong></div>
+    const uv=userVisualV29(nick);
+    menu.innerHTML=`<div class="sohbetix-user-menu-head-v20">${avatarHtmlV29(nick)}<strong>${escapeHtml(nick)}</strong></div>
       <button type="button" data-action="mention">${iconSvg('mention')}<span>Bahset</span></button>
-      ${(registered&&isRegistered&&uv.privateEnabled)?`<button type="button" data-action="private">${iconSvg('private')}<span>Gizli</span></button>`:''}
+      ${(currentNick&&uv.privateEnabled)?`<button type="button" data-action="private">${iconSvg('private')}<span>Gizli</span></button>`:''}
       ${registered?`<button type="button" data-action="profile">${iconSvg('profile')}<span>Profil</span></button>`:''}
       ${(registered&&isRegistered)?`<button type="button" data-action="ignore">${iconSvg('ignore')}<span>Yoksay</span></button>`:''}`;
     document.body.appendChild(menu);
@@ -381,7 +465,7 @@
         els.messageInput.focus();
       } else if(action==='private'){
         if(!currentNick){ openJoinModal(); closeUserMenu(); return; }
-        openPrivateConversationV28(nick);
+        openPrivateConversationV29(nick);
       } else if(action==='profile'){
         location.href='profile.html?nick='+encodeURIComponent(nick);
       } else if(action==='ignore' && registered){
@@ -393,30 +477,30 @@
   }
 
 
-  function privatePairKeyV28(targetNick){
+  function privatePairKeyV29(targetNick){
     const a=cleanNick(currentNick).toLocaleLowerCase('tr-TR');
     const b=cleanNick(targetNick).toLocaleLowerCase('tr-TR');
     return [a,b].sort((x,y)=>x.localeCompare(y,'tr')).map(encodeURIComponent).join('~');
   }
 
-  function privateStorageKeyV28(targetNick){
-    return PRIVATE_STORAGE_PREFIX + privatePairKeyV28(targetNick);
+  function privateStorageKeyV29(targetNick){
+    return PRIVATE_STORAGE_PREFIX + privatePairKeyV29(targetNick);
   }
 
-  function readPrivateMessagesV28(targetNick){
+  function readPrivateMessagesV29(targetNick){
     if(!currentNick || !targetNick) return [];
-    const list=safeParse(localStorage.getItem(privateStorageKeyV28(targetNick)),[]);
+    const list=safeParse(localStorage.getItem(privateStorageKeyV29(targetNick)),[]);
     return Array.isArray(list) ? list : [];
   }
 
-  function writePrivateMessagesV28(targetNick,list){
-    localStorage.setItem(privateStorageKeyV28(targetNick),JSON.stringify(list.slice(-3000)));
+  function writePrivateMessagesV29(targetNick,list){
+    localStorage.setItem(privateStorageKeyV29(targetNick),JSON.stringify(list.slice(-3000)));
   }
 
-  function addPrivateMessageV28(targetNick,payload={}){
+  function addPrivateMessageV29(targetNick,payload={}){
     targetNick=cleanNick(targetNick);
     if(!currentNick || !targetNick) return;
-    const list=readPrivateMessagesV28(targetNick);
+    const list=readPrivateMessagesV29(targetNick);
     list.push({
       id:`pm-${Date.now()}-${Math.random().toString(36).slice(2)}`,
       sender:currentNick,
@@ -428,14 +512,14 @@
       time:nowTime(),
       registered:isRegistered
     });
-    writePrivateMessagesV28(targetNick,list);
-    renderPrivateMessagesV28(true);
+    writePrivateMessagesV29(targetNick,list);
+    renderPrivateMessagesV29(true);
   }
 
-  function renderPrivateTabsV28(){
-    if(!els.privateTabsV28 || !els.mainChatTabV28) return;
-    els.mainChatTabV28.classList.toggle('active',!activePrivateNick);
-    els.privateTabsV28.innerHTML=[...openedPrivateNicks].map(nick=>`
+  function renderPrivateTabsV29(){
+    if(!els.privateTabsV29 || !els.mainChatTabV29) return;
+    els.mainChatTabV29.classList.toggle('active',!activePrivateNick);
+    els.privateTabsV29.innerHTML=[...openedPrivateNicks].map(nick=>`
       <div class="private-tab-v28 ${activePrivateNick===nick?'active':''}" data-private-tab="${escapeHtml(nick)}">
         <button class="private-tab-open-v28" type="button" data-private-open="${escapeHtml(nick)}">
           <span class="private-tab-avatar-v28" aria-hidden="true">
@@ -446,50 +530,52 @@
         <button class="private-tab-close-v28" type="button" data-private-close="${escapeHtml(nick)}" aria-label="${escapeHtml(nick)} gizli sohbetini kapat">×</button>
       </div>`).join('');
     requestAnimationFrame(()=>{
-      const active=els.privateTabsV28.querySelector('.private-tab-v28.active');
+      const active=els.privateTabsV29.querySelector('.private-tab-v28.active');
       active?.scrollIntoView?.({behavior:'smooth',block:'nearest',inline:'nearest'});
     });
   }
 
-  function showMainConversationV28(){
+  function showMainConversationV29(){
+    clearMessageSelectionV29();
     activePrivateNick='';
-    renderPrivateTabsV28();
+    renderPrivateTabsV29();
     renderMessages(true);
     els.messageInput.placeholder=cfg.language==='en'?'Write a message...':'Mesajını yaz...';
   }
 
-  function openPrivateConversationV28(nick){
+  function openPrivateConversationV29(nick){
+    clearMessageSelectionV29();
     nick=cleanNick(nick);
-    if(!nick || nick===currentNick || nick===BOT_NICK) return;
+    if(!nick || nick===BOT_NICK) return;
     openedPrivateNicks.add(nick);
     activePrivateNick=nick;
-    renderPrivateTabsV28();
-    renderPrivateMessagesV28(true);
+    renderPrivateTabsV29();
+    renderPrivateMessagesV29(true);
     els.messageInput.placeholder=`${nick} kişisine gizli mesaj yaz...`;
     setTimeout(()=>els.messageInput.focus(),30);
   }
 
-  function closePrivateConversationV28(nick){
+  function closePrivateConversationV29(nick){
     nick=cleanNick(nick);
     openedPrivateNicks.delete(nick);
     if(activePrivateNick===nick){
       const left=[...openedPrivateNicks];
       if(left.length){
         activePrivateNick=left[left.length-1];
-        renderPrivateTabsV28();
-        renderPrivateMessagesV28(true);
+        renderPrivateTabsV29();
+        renderPrivateMessagesV29(true);
         els.messageInput.placeholder=`${activePrivateNick} kişisine gizli mesaj yaz...`;
       }else{
-        showMainConversationV28();
+        showMainConversationV29();
       }
     }else{
-      renderPrivateTabsV28();
+      renderPrivateTabsV29();
     }
   }
 
-  function renderPrivateMessagesV28(forceBottom=false){
+  function renderPrivateMessagesV29(forceBottom=false){
     if(!activePrivateNick){ renderMessages(forceBottom); return; }
-    const list=readPrivateMessagesV28(activePrivateNick);
+    const list=readPrivateMessagesV29(activePrivateNick);
     const wasNearBottom=isNearMessagesBottom();
     const previousScrollTop=els.messages.scrollTop;
     if(!list.length){
@@ -499,25 +585,35 @@
         const sender=cleanNick(msg.sender||'');
         const registered=normalizeRegisteredFlag(msg.registered) || targetRegistrationByNick(sender,false);
         if(msg.type==='image'){
-          return `<article class="live-message-v15 private-message-v28 user-target-v20" data-user-nick="${escapeHtml(sender)}" data-user-registered="${registered?'1':'0'}">${avatarHtmlV28(sender)}<div class="live-message-body-v15"><div class="live-message-meta-v15"><b style="color:${userVisualV28(sender).nickColor};font-weight:${userVisualV28(sender).boldNick?'900':'700'};text-decoration:${userVisualV28(sender).boldNick?'underline':'none'}">${escapeHtml(sender)}</b><small>${escapeHtml(msg.time||'')}</small></div><img class="live-image-v18" src="${escapeHtml(msg.data||'')}" alt="Gizli paylaşılan resim"></div></article>`;
+          return `<article class="live-message-v15 private-message-v28 user-target-v20" data-user-nick="${escapeHtml(sender)}" data-user-registered="${registered?'1':'0'}">${avatarHtmlV29(sender)}<div class="live-message-body-v15"><div class="live-message-meta-v15"><b style="color:${userVisualV29(sender).nickColor};font-weight:${userVisualV29(sender).boldNick?'900':'700'};text-decoration:${userVisualV29(sender).boldNick?'underline':'none'}">${escapeHtml(sender)}</b><small>${escapeHtml(msg.time||'')}</small></div><img class="live-image-v18" src="${escapeHtml(msg.data||'')}" alt="Gizli paylaşılan resim"></div>${ownMessageCheckboxV29({id:msg.id,type:'image',nick:sender})}</article>`;
         }
-        return `<article class="live-message-v15 private-message-v28 user-target-v20" data-user-nick="${escapeHtml(sender)}" data-user-registered="${registered?'1':'0'}">${avatarHtmlV28(sender)}<div class="live-message-body-v15"><div class="live-message-meta-v15"><b style="color:${userVisualV28(sender).nickColor};font-weight:${userVisualV28(sender).boldNick?'900':'700'};text-decoration:${userVisualV28(sender).boldNick?'underline':'none'}">${escapeHtml(sender)}</b><small>${escapeHtml(msg.time||'')}</small></div><p style="color:${userVisualV28(sender).textColor};font-weight:${userVisualV28(sender).boldText?'800':'400'};text-decoration:${userVisualV28(sender).boldText?'underline':'none'}">${renderChatText(msg.text||'')}</p></div></article>`;
+        return `<article class="live-message-v15 private-message-v28 user-target-v20 ${messageMentionsCurrentV29(msg.text)?'message-mentions-me-v29':''}" data-user-nick="${escapeHtml(sender)}" data-user-registered="${registered?'1':'0'}">${avatarHtmlV29(sender)}<div class="live-message-body-v15"><div class="live-message-meta-v15"><b style="color:${userVisualV29(sender).nickColor};font-weight:${userVisualV29(sender).boldNick?'900':'700'};text-decoration:${userVisualV29(sender).boldNick?'underline':'none'}">${escapeHtml(sender)}</b><small>${escapeHtml(msg.time||'')}</small></div><p style="color:${userVisualV29(sender).textColor};font-weight:${userVisualV29(sender).boldText?'800':'400'};text-decoration:${userVisualV29(sender).boldText?'underline':'none'}">${renderChatText(msg.text||'')}</p></div>${ownMessageCheckboxV29({id:msg.id,type:'chat',nick:sender})}</article>`;
       }).join('');
     }
     if(forceBottom || wasNearBottom) els.messages.scrollTop=els.messages.scrollHeight;
     else els.messages.scrollTop=previousScrollTop;
+    updateMessageSelectionMenuV29();
     requestAnimationFrame(updateLatestMessagesButton);
   }
 
-  function renderActiveConversationV28(forceBottom=false){
-    if(activePrivateNick) renderPrivateMessagesV28(forceBottom);
+  function renderActiveConversationV29(forceBottom=false){
+    if(activePrivateNick) renderPrivateMessagesV29(forceBottom);
     else renderMessages(forceBottom);
   }
 
 
+  function regexEscapeV29(v){return String(v||'').replace(/[.*+?^${}()|[\]\\]/g,'\\$&');}
+  function messageMentionsCurrentV29(text){
+    if(!currentNick) return false;
+    const rx=new RegExp('(^|\\s)@'+regexEscapeV29(currentNick)+'(?=\\s|$|[.,!?;:])','iu');
+    return rx.test(String(text||''));
+  }
   function renderChatText(text) {
     const safe = escapeHtml(text || '');
-    return safe.replace(/(^|\s)@([^\s<]{1,24})/g, '$1<span class="mention-tag-v23">@$2</span>');
+    if(!currentNick) return safe;
+    const escapedNick=escapeHtml(currentNick);
+    const rx=new RegExp('(^|\\s)@'+regexEscapeV29(escapedNick)+'(?=\\s|$|[.,!?;:])','giu');
+    return safe.replace(rx,(m,prefix)=>prefix+'<span class="mention-tag-v29">@'+escapedNick+'</span>');
   }
 
   function leaveSeenMap() { return safeParse(localStorage.getItem(STORAGE_LEAVE_SEEN), {}); }
@@ -610,7 +706,7 @@
       .filter(u=>!q||String(u.nick).toLocaleLowerCase('tr-TR').includes(q))
       .slice(0,40);
     if(!users.length){els.mentionSuggest.hidden=true;return;}
-    els.mentionSuggest.innerHTML=users.map(u=>`<button type="button" data-mention="${escapeHtml(u.nick)}">${avatarHtmlV28(u.nick,true)}<b>${escapeHtml(u.nick)}</b></button>`).join('');
+    els.mentionSuggest.innerHTML=users.map(u=>`<button type="button" data-mention="${escapeHtml(u.nick)}">${avatarHtmlV29(u.nick,true)}<b>${escapeHtml(u.nick)}</b></button>`).join('');
     els.mentionSuggest.hidden=false;
   }
 
@@ -659,25 +755,26 @@
     els.messages.innerHTML = list.filter(msg=>!msg.nick || !V.isIgnored(msg.nick)).map(msg => {
       const registered = targetRegistrationByNick(msg.nick, msg.registered);
       if (msg.type === 'join') {
-        const vv=userVisualV28(msg.nick||'');
+        const vv=userVisualV29(msg.nick||'');
         return `<div class="system-message-v15 user-target-v20" data-user-nick="${escapeHtml(msg.nick||'')}" data-user-registered="${registered?'1':'0'}"><button class="system-nick-v15" style="color:${vv.nickColor};font-weight:${vv.boldNick?'900':'800'};text-decoration:${vv.boldNick?'underline':'none'}" type="button">@${escapeHtml(msg.nick)}</button> <span>${cfg.language==='en'?'joined us...':'bize katılıyor...'}</span> <small>${escapeHtml(msg.time || '')}</small></div>`;
       }
       if (msg.type === 'leave') {
-        const vv=userVisualV28(msg.nick||'');
+        const vv=userVisualV29(msg.nick||'');
         return `<div class="system-message-v15 leave user-target-v20" data-user-nick="${escapeHtml(msg.nick||'')}" data-user-registered="${registered?'1':'0'}"><button class="system-nick-v15" style="color:${vv.nickColor};font-weight:${vv.boldNick?'900':'800'};text-decoration:${vv.boldNick?'underline':'none'}" type="button">@${escapeHtml(msg.nick)}</button> <span>${cfg.language==='en'?'left us...':'bizi terk ediyor...'}</span> <small>${escapeHtml(msg.time || '')}</small></div>`;
       }
       if (msg.type === 'bot') {
         return `<article class="bot-message-v17"><div class="bot-avatar-v17">S</div><div class="bot-message-body-v17"><div class="bot-message-meta-v17"><b>${escapeHtml(BOT_NICK)}</b><small>${escapeHtml(msg.time || '')}</small></div><p>${escapeHtml(msg.text || BOT_PURGE_TEXT)}</p></div></article>`;
       }
-      if(msg.type==='image') return `<article class="live-message-v15 user-target-v20" data-user-nick="${escapeHtml(msg.nick||'')}" data-user-registered="${registered?'1':'0'}">${avatarHtmlV28(msg.nick||'')}<div class="live-message-body-v15"><div class="live-message-meta-v15"><b style="color:${userVisualV28(msg.nick||'').nickColor};font-weight:${userVisualV28(msg.nick||'').boldNick?'900':'700'};text-decoration:${userVisualV28(msg.nick||'').boldNick?'underline':'none'}">${escapeHtml(msg.nick||'')}</b><small>${escapeHtml(msg.time||'')}</small></div><img class="live-image-v18" src="${escapeHtml(msg.data||'')}" alt="Paylaşılan resim"></div></article>`;
-      return `<article class="live-message-v15 user-target-v20" data-user-nick="${escapeHtml(msg.nick||'')}" data-user-registered="${registered?'1':'0'}">${avatarHtmlV28(msg.nick||'')}<div class="live-message-body-v15"><div class="live-message-meta-v15"><b style="color:${userVisualV28(msg.nick||'').nickColor};font-weight:${userVisualV28(msg.nick||'').boldNick?'900':'700'};text-decoration:${userVisualV28(msg.nick||'').boldNick?'underline':'none'}">${escapeHtml(msg.nick||'')}</b><small>${escapeHtml(msg.time || '')}</small></div><p style="color:${userVisualV28(msg.nick||'').textColor};font-weight:${userVisualV28(msg.nick||'').boldText?'800':'400'};text-decoration:${userVisualV28(msg.nick||'').boldText?'underline':'none'}">${renderChatText(msg.text||'')}</p></div></article>`;
+      if(msg.type==='image') return `<article class="live-message-v15 user-target-v20" data-user-nick="${escapeHtml(msg.nick||'')}" data-user-registered="${registered?'1':'0'}">${avatarHtmlV29(msg.nick||'')}<div class="live-message-body-v15"><div class="live-message-meta-v15"><b style="color:${userVisualV29(msg.nick||'').nickColor};font-weight:${userVisualV29(msg.nick||'').boldNick?'900':'700'};text-decoration:${userVisualV29(msg.nick||'').boldNick?'underline':'none'}">${escapeHtml(msg.nick||'')}</b><small>${escapeHtml(msg.time||'')}</small></div><img class="live-image-v18" src="${escapeHtml(msg.data||'')}" alt="Paylaşılan resim"></div>${ownMessageCheckboxV29(msg)}</article>`;
+      return `<article class="live-message-v15 user-target-v20 ${messageMentionsCurrentV29(msg.text)?'message-mentions-me-v29':''}" data-user-nick="${escapeHtml(msg.nick||'')}" data-user-registered="${registered?'1':'0'}">${avatarHtmlV29(msg.nick||'')}<div class="live-message-body-v15"><div class="live-message-meta-v15"><b style="color:${userVisualV29(msg.nick||'').nickColor};font-weight:${userVisualV29(msg.nick||'').boldNick?'900':'700'};text-decoration:${userVisualV29(msg.nick||'').boldNick?'underline':'none'}">${escapeHtml(msg.nick||'')}</b><small>${escapeHtml(msg.time || '')}</small></div><p style="color:${userVisualV29(msg.nick||'').textColor};font-weight:${userVisualV29(msg.nick||'').boldText?'800':'400'};text-decoration:${userVisualV29(msg.nick||'').boldText?'underline':'none'}">${renderChatText(msg.text||'')}</p></div>${ownMessageCheckboxV29(msg)}</article>`;
     }).join('');
     if (forceBottom || wasNearBottom) els.messages.scrollTop = els.messages.scrollHeight;
     else els.messages.scrollTop = previousScrollTop;
+    updateMessageSelectionMenuV29();
     requestAnimationFrame(updateLatestMessagesButton);
   }
 
-  function dedupePresenceV28(presence) {
+  function dedupePresenceV29(presence) {
     const best=new Map();
     for(const [id,item] of Object.entries(presence||{})){
       if(!item) continue;
@@ -706,7 +803,7 @@
     for (const [id, item] of Object.entries(presence)) {
       if (!item || now - Number(item.lastSeen || 0) > PRESENCE_TTL) delete presence[id];
     }
-    return dedupePresenceV28(presence);
+    return dedupePresenceV29(presence);
   }
 
   function renderPresence() {
@@ -721,12 +818,16 @@
         seenNicks.add(key);
         return true;
       })
-      .sort((a,b)=>String(a.nick).localeCompare(String(b.nick),'tr'));
+      .sort((a,b)=>{
+        const av=userVisualV29(a.nick), bv=userVisualV29(b.nick);
+        if(av.vip!==bv.vip) return av.vip ? -1 : 1;
+        return String(a.nick).localeCompare(String(b.nick),'tr');
+      });
     els.onlineCount.textContent = cfg.language==='en'?`${users.length} online`:`${users.length} çevrimiçi`;
     const filtered = users.filter(u => !q || String(u.nick).toLocaleLowerCase('tr-TR').includes(q));
     const botMatches = !q || BOT_NICK.toLocaleLowerCase('tr-TR').includes(q);
     const botRow = botMatches ? `<li class="room-bot-user-v17"><span class="room-mini-avatar-v15 room-bot-avatar-v17">S</span><b>${escapeHtml(BOT_NICK)}</b></li>` : '';
-    els.userList.innerHTML = botRow + filtered.filter(u=>!V.isIgnored(u.nick)).map(u => {const vv=userVisualV28(u.nick);return `<li class="user-target-v20 ${vv.vip?'vip-user-v28':''}" data-user-nick="${escapeHtml(u.nick||'')}" data-user-registered="${normalizeRegisteredFlag(u.registered)?'1':'0'}">${avatarHtmlV28(u.nick,true)}<b style="color:${vv.nickColor};font-weight:${vv.boldNick?'900':'700'};text-decoration:${vv.boldNick?'underline':'none'}">${escapeHtml(u.nick)}</b>${vv.vip?'<span class="vip-crown-v28">VIP</span>':''}</li>`;}).join('');
+    els.userList.innerHTML = botRow + filtered.filter(u=>!V.isIgnored(u.nick)).map(u => {const vv=userVisualV29(u.nick);return `<li class="user-target-v20 ${vv.vip?'vip-user-v28':''}" data-user-nick="${escapeHtml(u.nick||'')}" data-user-registered="${normalizeRegisteredFlag(u.registered)?'1':'0'}">${avatarHtmlV29(u.nick,true)}${presenceStatusHtmlV29(u.status)}<b style="color:${vv.nickColor};font-weight:${vv.boldNick?'900':'700'};text-decoration:${vv.boldNick?'underline':'none'}">${escapeHtml(u.nick)}</b>${vv.vip?'<span class="vip-crown-v28">VIP</span>':''}</li>`;}).join('');
   }
 
   function heartbeatPresence() {
@@ -738,8 +839,8 @@
         delete presence[id];
       }
     }
-    presence[clientId]={nick:currentNick,registered:isRegistered,ownerId:AUTH_ID||'',profileId:V.getProfileByNick(currentNick)?.id||'',lastSeen:Date.now()};
-    writePresence(dedupePresenceV28(presence));
+    presence[clientId]={nick:currentNick,registered:isRegistered,ownerId:AUTH_ID||'',profileId:V.getProfileByNick(currentNick)?.id||'',status:currentStatus,lastSeen:Date.now()};
+    writePresence(dedupePresenceV29(presence));
     renderPresence();
   }
 
@@ -768,6 +869,8 @@
     if (els.profileSaveHint) els.profileSaveHint.hidden = !!isRegistered;
     if (on) {
       els.roomAccountNick.textContent = currentNick;
+      currentStatus=loadStatusV29(currentNick);
+      updateAccountStatusIconV29();
       setTimeout(() => els.messageInput.focus(), 50);
     }
   }
@@ -836,6 +939,8 @@
 
     if(!nick) return;
     currentNick = nick;
+    currentStatus=loadStatusV29(currentNick);
+    updateAccountStatusIconV29();
     if(isRegistered){
       const prof=V.getProfileByNick(currentNick);
       if(prof){
@@ -858,9 +963,10 @@
 
   function leaveRoom() {
     if (!currentNick) return;
+    clearMessageSelectionV29();
     activePrivateNick='';
     openedPrivateNicks.clear();
-    renderPrivateTabsV28();
+    renderPrivateTabsV29();
     clearInterval(heartbeat);
     removePresence(true);
     sessionStorage.removeItem(SESSION_NICK);
@@ -906,12 +1012,12 @@
     });
   }
 
-  if(els.mainChatTabV28) els.mainChatTabV28.addEventListener('click',showMainConversationV28);
-  if(els.privateTabsV28) els.privateTabsV28.addEventListener('click',e=>{
+  if(els.mainChatTabV29) els.mainChatTabV29.addEventListener('click',showMainConversationV29);
+  if(els.privateTabsV29) els.privateTabsV29.addEventListener('click',e=>{
     const close=e.target.closest('[data-private-close]');
-    if(close){ e.stopPropagation(); closePrivateConversationV28(close.dataset.privateClose); return; }
+    if(close){ e.stopPropagation(); closePrivateConversationV29(close.dataset.privateClose); return; }
     const open=e.target.closest('[data-private-open]');
-    if(open){ openPrivateConversationV28(open.dataset.privateOpen); }
+    if(open){ openPrivateConversationV29(open.dataset.privateOpen); }
   });
 
   els.openJoin.addEventListener('click', openJoinModal);
@@ -987,6 +1093,10 @@
   }
 
   function checkFloodBeforeSend(text){
+    if(isVipV25()){
+      hideFloodWarning();
+      return true;
+    }
     const now=Date.now();
     const state=readFloodState();
     state.events=state.events.filter(t=>now-Number(t)<FLOOD_WINDOW_MS);
@@ -997,8 +1107,8 @@
       return false;
     }
 
-    const similar=state.lastText && floodSimilarity(text,state.lastText)>=(isVipV25()?0.96:0.78);
-    const burst=state.events.length>=(isVipV25()?10:FLOOD_MAX_MESSAGES);
+    const similar=state.lastText && floodSimilarity(text,state.lastText)>=0.78;
+    const burst=state.events.length>=FLOOD_MAX_MESSAGES;
 
     if(similar || burst){
       state.blockUntil=now+FLOOD_WINDOW_MS;
@@ -1021,16 +1131,16 @@
     });
   }
 
-  if(els.chatImageButtonV28 && els.chatImageInputV28){
-    els.chatImageButtonV28.addEventListener('click',()=>{
+  if(els.chatImageButtonV29 && els.chatImageInputV29){
+    els.chatImageButtonV29.addEventListener('click',()=>{
       if(!currentNick)return;
       if(!cfg.imageShare && !isVipV25()){alert('Bu sohbette resim paylaşımı yalnızca VIP kullanıcılar için açık.');return;}
-      els.chatImageInputV28.click();
+      els.chatImageInputV29.click();
     });
-    els.chatImageInputV28.addEventListener('change',()=>{
-      const file=els.chatImageInputV28.files?.[0]; if(!file)return;
-      if(file.size>900000){alert('Resim çok büyük. En fazla 900 KB.');els.chatImageInputV28.value='';return;}
-      const reader=new FileReader(); reader.onload=()=>{const data=String(reader.result||'');if(activePrivateNick)addPrivateMessageV28(activePrivateNick,{type:'image',data});else addMessage('image',{nick:currentNick,data});els.chatImageInputV28.value='';}; reader.readAsDataURL(file);
+    els.chatImageInputV29.addEventListener('change',()=>{
+      const file=els.chatImageInputV29.files?.[0]; if(!file)return;
+      if(file.size>900000){alert('Resim çok büyük. En fazla 900 KB.');els.chatImageInputV29.value='';return;}
+      const reader=new FileReader(); reader.onload=()=>{const data=String(reader.result||'');if(activePrivateNick)addPrivateMessageV29(activePrivateNick,{type:'image',data});else addMessage('image',{nick:currentNick,data});els.chatImageInputV29.value='';}; reader.readAsDataURL(file);
     });
   }
 
@@ -1039,7 +1149,7 @@
     const text = els.messageInput.value.trim();
     if (!currentNick || !text) return;
     if (!checkFloodBeforeSend(text)) return;
-    if(activePrivateNick) addPrivateMessageV28(activePrivateNick,{type:'chat',text:text.slice(0,512)});
+    if(activePrivateNick) addPrivateMessageV29(activePrivateNick,{type:'chat',text:text.slice(0,512)});
     else addMessage('chat', {nick:currentNick, text:text.slice(0,512)});
     els.messageInput.value = '';
     els.messageInput.focus();
@@ -1060,17 +1170,26 @@
     const items=[...(e.clipboardData?.items||[])]; const image=items.find(i=>i.type&&i.type.startsWith('image/')); if(!image)return;
     e.preventDefault(); if(!cfg.imageShare && !isVipV25()){alert(cfg.language==='en'?'Image sharing is disabled in this chat.':'Bu sohbette resim paylaşımı kapalı. VIP kullanıcılar paylaşabilir.');return;}
     const file=image.getAsFile(); if(!file)return; if(file.size>900000){alert(cfg.language==='en'?'Image is too large. Maximum 900 KB.':'Resim çok büyük. En fazla 900 KB.');return;}
-    const reader=new FileReader(); reader.onload=()=>{try{if(activePrivateNick)addPrivateMessageV28(activePrivateNick,{type:'image',data:String(reader.result||'')});else addMessage('image',{nick:currentNick,data:String(reader.result||'')});}catch{alert('Resim kaydedilemedi.');}}; reader.readAsDataURL(file);
+    const reader=new FileReader(); reader.onload=()=>{try{if(activePrivateNick)addPrivateMessageV29(activePrivateNick,{type:'image',data:String(reader.result||'')});else addMessage('image',{nick:currentNick,data:String(reader.result||'')});}catch{alert('Resim kaydedilemedi.');}}; reader.readAsDataURL(file);
   });
-  els.roomAccountBtn.addEventListener('click', e => { e.stopPropagation(); els.roomAccountMenu.hidden = !els.roomAccountMenu.hidden; });
+  els.roomAccountBtn.addEventListener('click', e => { e.stopPropagation(); els.roomAccountMenu.hidden = !els.roomAccountMenu.hidden; updateAccountStatusIconV29(); });
+  if(els.roomAccountMenu){
+    els.roomAccountMenu.addEventListener('click',e=>{
+      e.stopPropagation();
+      const btn=e.target.closest('[data-presence-status]');
+      if(btn){setPresenceStatusV29(btn.dataset.presenceStatus);els.roomAccountMenu.hidden=true;}
+    });
+  }
   els.leaveBtn.addEventListener('click', leaveRoom);
+  if(els.deleteSelectedMessagesV29) els.deleteSelectedMessagesV29.addEventListener('click',deleteSelectedMessagesV29);
+  if(els.cancelSelectedMessagesV29) els.cancelSelectedMessagesV29.addEventListener('click',clearMessageSelectionV29);
   document.addEventListener('click', () => { els.roomAccountMenu.hidden = true; });
   window.addEventListener('storage', e => {
     if (e.key === STORAGE_MESSAGES && !activePrivateNick) renderMessages();
     if (e.key === STORAGE_PRESENCE) renderPresence();
-    if (e.key && e.key.startsWith(PRIVATE_STORAGE_PREFIX) && activePrivateNick) renderPrivateMessagesV28();
+    if (e.key && e.key.startsWith(PRIVATE_STORAGE_PREFIX) && activePrivateNick) renderPrivateMessagesV29();
   });
-  // V28: F5/yenilemede sahte katılma-ayrılma üretme.
+  // V29: F5/yenilemede sahte katılma-ayrılma üretme.
   // Gerçek sekme kapanışında presence TTL ile düşer; aynı nick yeni oturumda varsa ayrılma yazılmaz.
   window.addEventListener('pagehide', () => {});
   window.addEventListener('beforeunload', () => {});
@@ -1081,7 +1200,17 @@
   els.search.placeholder=cfg.language==='en'?'Nickname search':'Rumuz ara'; els.openJoin.textContent=cfg.language==='en'?'Enter chat':'Sohbete gir'; els.joinBtn.textContent=cfg.language==='en'?'Enter chat':'Sohbete gir'; els.messageInput.placeholder=cfg.language==='en'?'Write a message...':'Mesajını yaz...';
   if(cfg.disabled){if(els.disabledNotice){els.disabledNotice.hidden=false;els.disabledNotice.textContent=cfg.language==='en'?'This chat is temporarily disabled.':'Bu sohbet geçici olarak devre dışı bırakıldı.';}els.guestFooter.hidden=true;els.messageForm.hidden=true;}
   els.userList.addEventListener('click',e=>{const li=e.target.closest('.user-target-v20');if(!li)return;e.stopPropagation();showUserMenu(li.dataset.userNick,li.dataset.userRegistered==='1',li);});
-  els.messages.addEventListener('click',e=>{const row=e.target.closest('.user-target-v20');if(!row)return;e.stopPropagation();showUserMenu(row.dataset.userNick,row.dataset.userRegistered==='1',row);});
+  els.messages.addEventListener('click',e=>{
+    if(e.target.closest('.own-message-select-v29')) return;
+    const row=e.target.closest('.user-target-v20');if(!row)return;e.stopPropagation();showUserMenu(row.dataset.userNick,row.dataset.userRegistered==='1',row);
+  });
+  els.messages.addEventListener('change',e=>{
+    const box=e.target.closest('.own-message-select-v29'); if(!box || !isRegistered) return;
+    const id=String(box.dataset.messageId||'');
+    if(!id) return;
+    if(box.checked) selectedMessageIdsV29.add(id); else selectedMessageIdsV29.delete(id);
+    updateMessageSelectionMenuV29();
+  });
   els.messages.addEventListener('scroll',updateLatestMessagesButton,{passive:true});
   if(els.latestMessagesBtn) els.latestMessagesBtn.addEventListener('click',()=>scrollToLatestMessages(true));
   document.addEventListener('click',e=>{
@@ -1095,10 +1224,12 @@
     }
   });
   initEmojiPanelV23();
-  renderPrivateTabsV28();
+  renderPrivateTabsV29();
   renderMessages();
   renderPresence();
   if (currentNick) {
+    currentStatus=loadStatusV29(currentNick);
+    updateAccountStatusIconV29();
     setLoggedInState(true);
     const preHeartbeatPresence=sweepExpiredPresence(readPresence());
     const alreadyOnline=Object.values(preHeartbeatPresence).some(item =>
