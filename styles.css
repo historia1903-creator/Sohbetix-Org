@@ -2070,3 +2070,168 @@ html.room-fixed-viewport .room-grid-v15,body.room-page-v15 .room-grid-v15,.room-
   .message-selection-menu-v29{bottom:82px;min-width:122px}
   .room-account-menu-v29{width:158px!important}
 }
+
+/* ==============================================================
+   SOHBETIX V29 — MOR / LACIVERT DESEN TEMA FIX
+   Referans ana renk: #4B1D9A
+   =============================================================== */
+:root{
+  --bg:#f5f6f9!important;
+  --surface:#ffffff!important;
+  --surface-2:#f7f8fb!important;
+  --surface-3:#eef0f6!important;
+  --text:#171827!important;
+  --muted:#6c7080!important;
+  --line:#dfe2eb!important;
+  --brand:#4B1D9A!important;
+  --brand-2:#6A2BD4!important;
+  --blue:#4B1D9A!important;
+  --blue-2:#6A2BD4!important;
+}
+
+/* Referanstaki koyu lacivert + mor çapraz desen. */
+.topbar,.admin-top,.dash-top,.control-topbar,.profile-topbar-v28,.room-titlebar-v15{
+  position:relative!important;
+  color:#fff!important;
+  border-bottom:2px solid #7c28e8!important;
+  background:
+    linear-gradient(128deg,transparent 0 67%,rgba(121,35,213,.10) 67.3% 69.2%,transparent 69.5% 73.2%,rgba(121,35,213,.15) 73.5% 76%,transparent 76.3% 81%,rgba(121,35,213,.18) 81.3% 84%,transparent 84.3% 100%),
+    repeating-linear-gradient(135deg,rgba(255,255,255,0) 0 30px,rgba(107,34,191,.08) 31px 37px,rgba(255,255,255,0) 38px 58px),
+    linear-gradient(100deg,#17102f 0%,#15112e 46%,#20103b 74%,#3d176f 100%)!important;
+  box-shadow:0 1px 0 rgba(75,29,154,.55),0 4px 14px rgba(23,16,47,.12)!important;
+  backdrop-filter:none!important;
+}
+.topbar::after,.admin-top::after,.dash-top::after,.control-topbar::after,.profile-topbar-v28::after,.room-titlebar-v15::after{
+  content:"";
+  position:absolute;inset:0 0 0 auto;width:min(34vw,360px);pointer-events:none;opacity:.72;
+  background:
+    linear-gradient(132deg,transparent 0 45%,rgba(124,35,229,.18) 46% 50%,transparent 51% 57%,rgba(124,35,229,.22) 58% 62%,transparent 63% 100%),
+    linear-gradient(132deg,transparent 0 61%,rgba(77,25,151,.34) 62% 68%,transparent 69% 100%);
+}
+.topbar>*,.admin-top>*,.dash-top>*,.control-topbar>*,.profile-topbar-v28>*,.room-titlebar-v15>*{position:relative;z-index:1}
+
+/* Masaüstü ana navigasyon beyaz yazı. */
+.brand,.brand span,.nav nav>a,.more-btn,.control,.admin-nav-link,.dash-tab,.control-tab,
+.profile-topbar-v28 a,.room-title-btn-v15,.room-account-v15>button{
+  color:#fff!important;
+}
+.nav nav>a:hover,.more-btn:hover,.admin-nav-link:hover,.dash-tab:hover,.control-tab:hover{
+  color:#fff!important;background:rgba(255,255,255,.10)!important;
+}
+.control{border-color:rgba(255,255,255,.25)!important;background:rgba(255,255,255,.08)!important}
+.control:hover{background:rgba(255,255,255,.15)!important}
+
+/* Logo görsellerinin beyaz kutu gibi görünmesini önler, kendi logo içeriğini bozmaz. */
+.topbar .brand-logo-v21,.admin-top .brand-logo-v21,.dash-top .brand-logo-v21,.control-topbar .brand-logo-v21{
+  background:rgba(255,255,255,.94)!important;border-radius:8px!important;padding:3px 6px!important;
+}
+
+/* Chat üst bar: referanstaki kompakt görünüm. */
+.room-titlebar-v15{min-height:58px!important;height:58px!important;padding:0 18px!important}
+.room-title-btn-v15,.room-account-v15>button{font-size:18px!important;font-weight:900!important;text-shadow:0 1px 2px rgba(0,0,0,.22)}
+.room-account-icon-v29 svg{fill:#f2ebff!important;stroke:#fff!important}
+
+/* Chat gövdesi ve sağ kullanıcı alanı referanstaki açık gri-beyaz ton. */
+.room-page-v15,.room-shell-v15,.room-card-v15{background:#fff!important}
+.room-grid-v15{background:#fff!important}
+.room-chat-v15{background:#fff!important}
+.room-users-v15{background:#f7f8fb!important;border-color:#dfe2eb!important}
+.room-online-v15,.room-search-v15{background:#f8f9fc!important;border-color:#dfe2eb!important}
+.room-search-v15 input{background:#fff!important;border-color:#d9dce6!important}
+.room-search-v15 input:focus{border-color:#4B1D9A!important;box-shadow:0 0 0 2px rgba(75,29,154,.12)!important}
+.room-messages-v15{background:#fff!important}
+.room-composer-v15,.room-guest-footer-v15{background:#f6f7fb!important;border-color:#dfe2eb!important}
+.room-compose-box-v15 textarea{background:#fff!important;border-color:#cfd3df!important}
+.room-compose-box-v15 textarea:focus{border-color:#4B1D9A!important;box-shadow:0 0 0 2px rgba(75,29,154,.08)!important}
+
+/* Referanstaki mor aktif sekme ve yatay gizli sohbet sekmeleri. */
+.room-tabs-v15,.room-tabs-v28{
+  background:#f4f5f9!important;border-color:#dfe2eb!important;
+  min-height:49px!important;height:auto!important;padding:0!important;
+}
+.room-tabs-v15 button,.main-chat-tab-v28,.private-tab-v28{
+  border-radius:0!important;border:0!important;min-height:48px!important;
+  background:#eceef4!important;color:#242532!important;
+  box-shadow:inset 0 -1px 0 #d7dae4!important;
+}
+.room-tabs-v15 button.active,.main-chat-tab-v28.active,.private-tab-v28.active{
+  color:#fff!important;
+  background:linear-gradient(135deg,#6430C9 0%,#4B1D9A 100%)!important;
+  box-shadow:inset 0 -2px 0 rgba(255,255,255,.13)!important;
+}
+.private-tab-v28{border-left:1px solid #dfe2eb!important}
+.private-tab-v28 .private-tab-close-v28{background:rgba(0,0,0,.10)!important;color:inherit!important;border-radius:50%!important}
+
+/* Tüm ana eylem butonları referanstaki mor. Başarı/online yeşilleri korunur. */
+.room-enter-v15,.room-send-v15,.join-submit-v15,
+.btn:not(.green),.blue-btn,.light-btn,.submit-auth,.auth-main-btn,.admin-save,
+.create-chat-btn,.catalog-filter-btn,.profile-actions-v28 .blue,
+.profile-side-v28 a.active,.profile-edit-save-v28,.vip-buy-v28,
+.coin-pay-btn,.domain-save-button-v18,.settings-save,.design-save,
+.sohbetix-auth-open-v21{
+  color:#fff!important;
+  border-color:#3c147d!important;
+  background:linear-gradient(135deg,#6330C9 0%,#4B1D9A 100%)!important;
+  box-shadow:0 3px 8px rgba(75,29,154,.18)!important;
+}
+.room-enter-v15:hover,.room-send-v15:hover,.join-submit-v15:hover,
+.submit-auth:hover,.auth-main-btn:hover,.create-chat-btn:hover,
+.catalog-filter-btn:hover,.profile-actions-v28 .blue:hover,.vip-buy-v28:hover{
+  background:linear-gradient(135deg,#7340DB 0%,#5521AA 100%)!important;
+}
+
+/* Mevcut yeşil sınıfını ana tema ile uyumlu mor yap; online durum rozetleri yeşil kalır. */
+.btn.green,.green:not(.profile-online-v28):not(.online),.auth-main-btn.register{
+  color:#fff!important;border-color:#3c147d!important;
+  background:linear-gradient(135deg,#6330C9,#4B1D9A)!important;
+}
+
+/* Modal başlıkları ve hesap girişleri. */
+.join-modal-title-v15,.modal-title,.dialog-title,.profile-modal-v28 header{
+  background:linear-gradient(100deg,#17102f,#4B1D9A)!important;color:#fff!important;
+}
+.join-nick-v15:focus,input:focus,textarea:focus,select:focus{outline-color:#4B1D9A!important}
+
+/* Profil / VIP / Üyeler / profil düzenleme sayfaları aynı marka görünümü. */
+.profile-page-v28,.profile-edit-page-v28,.vip-page-v28,.vip-info-page-v28,.members-page-v28{
+  background:#fff!important;color:#292a35!important;
+}
+.profile-topbar-v28{height:64px!important}
+.profile-side-v28{background:#f6f7fb!important;border-color:#e1e4ec!important}
+.profile-side-v28 a,.profile-side-v28 button{color:#4B1D9A!important}
+.profile-side-v28 a.active{color:#fff!important;background:linear-gradient(135deg,#6330C9,#4B1D9A)!important}
+.profile-actions-v28 .green{background:linear-gradient(135deg,#6330C9,#4B1D9A)!important}
+.profile-photo-wrap-v28{border-color:#e0e3eb!important;background:#fafaff!important}
+.profile-facts-v28>div,.vip-card-v28,.vip-plan-v28,.members-filter-v28,.member-card-v28{
+  background:#f8f9fc!important;border-color:#e0e3eb!important;
+}
+.profile-footer-v28{background:#f5f6fa!important;border-color:#e0e3eb!important}
+
+/* Kontrol paneli, katalog ve diğer kartlar aynı açık zemin + mor vurgu. */
+.hero,.advantages,.catalog-main,.control-main,.dash-main,.admin-main{background:#f5f6f9!important}
+.signin-card,.stats-card,.side-box,.catalog-card,.feature-grid article,.coin-purchase-card,
+.settings-card,.design-card,.admin-card,.dash-menu,.chat-select,.fast-login-box,.auth-panel{
+  background:#fff!important;border-color:#e0e3eb!important;box-shadow:0 8px 25px rgba(28,19,55,.06)!important;
+}
+.catalog-filter-btn,.catalog-category-menu button.selected{background:#4B1D9A!important;color:#fff!important}
+.more-menu,.mobile-nav-panel,.catalog-category-menu{border-color:#dddfea!important;box-shadow:0 15px 38px rgba(28,19,55,.14)!important}
+.mobile-nav-panel a,.mobile-more-toggle{color:#4B1D9A!important}
+
+/* Linkler ve küçük marka vurguları. */
+a,.profile-about-v28 a,.vip-page-v28 a,.vip-info-page-v28 a{color:#4B1D9A}
+.system-nick-v15{color:#4B1D9A!important}
+.mention-tag-v29{color:#4B1D9A!important}
+
+/* Sohbete gir butonu referans boyut/yuvarlaklık. */
+.room-enter-v15{border-radius:7px!important;padding:10px 20px!important;font-size:15px!important}
+.room-send-v15{border-radius:7px!important;padding:9px 18px!important}
+
+/* Mobilde desen ve oranlar korunur. */
+@media(max-width:760px){
+  .room-titlebar-v15{height:58px!important;min-height:58px!important;padding:0 18px!important}
+  .room-title-btn-v15,.room-account-v15>button{font-size:17px!important}
+  .room-grid-v15{min-height:calc(100vh - 58px)!important}
+  .room-tabs-v15,.room-tabs-v28{min-height:49px!important}
+  .room-tabs-v15 button,.main-chat-tab-v28,.private-tab-v28{min-height:48px!important}
+  .topbar,.admin-top,.dash-top,.control-topbar,.profile-topbar-v28{background-position:center!important}
+}
