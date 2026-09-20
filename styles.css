@@ -2235,3 +2235,38 @@ a,.profile-about-v28 a,.vip-page-v28 a,.vip-info-page-v28 a{color:#4B1D9A}
   .room-tabs-v15 button,.main-chat-tab-v28,.private-tab-v28{min-height:48px!important}
   .topbar,.admin-top,.dash-top,.control-topbar,.profile-topbar-v28{background-position:center!important}
 }
+
+
+/* ==============================================================
+   SOHBETIX V30 STATIC — MOR DESEN + AUTH / NICK / EMOJI / YOKSAY FIX
+   =============================================================== */
+.auth-page-v21{background:#f4f5f9!important;color:#171827!important}
+.auth-top-v21{
+  position:relative!important;color:#fff!important;border-bottom:2px solid #7c28e8!important;
+  background:
+    linear-gradient(128deg,transparent 0 67%,rgba(121,35,213,.11) 67.3% 69.2%,transparent 69.5% 73.2%,rgba(121,35,213,.17) 73.5% 76%,transparent 76.3% 81%,rgba(121,35,213,.20) 81.3% 84%,transparent 84.3% 100%),
+    repeating-linear-gradient(135deg,rgba(255,255,255,0) 0 30px,rgba(107,34,191,.09) 31px 37px,rgba(255,255,255,0) 38px 58px),
+    linear-gradient(100deg,#17102f 0%,#15112e 46%,#20103b 74%,#3d176f 100%)!important;
+}
+.auth-top-v21::after{content:"";position:absolute;inset:0 0 0 auto;width:min(38vw,380px);pointer-events:none;background:linear-gradient(132deg,transparent 0 45%,rgba(124,35,229,.20) 46% 50%,transparent 51% 57%,rgba(124,35,229,.24) 58% 62%,transparent 63% 100%)}
+.auth-top-v21>*{position:relative;z-index:1}.auth-back-v21{color:#fff!important;border-color:rgba(255,255,255,.45)!important;background:rgba(255,255,255,.06)!important}.auth-back-v21:hover{background:rgba(255,255,255,.14)!important}
+.auth-tabs-v21 button.active,.auth-submit-v21{background:linear-gradient(135deg,#6330C9,#4B1D9A)!important;border-color:#3c147d!important;color:#fff!important;box-shadow:0 4px 12px rgba(75,29,154,.18)!important}
+.auth-icon-v21{color:#4B1D9A!important;background:#f0eaff!important}.auth-card-v21{border-color:#dedfea!important;box-shadow:0 14px 38px rgba(27,18,55,.09)!important}.auth-form-v21 input:focus{border-color:#4B1D9A!important;box-shadow:0 0 0 3px rgba(75,29,154,.10)!important}
+
+/* 24 karakter rumuzlar sağ kullanıcı kolonunda taşmadan 1-2 satıra sığar. */
+.room-user-list-v15 li{min-width:0!important;overflow:hidden!important;align-items:flex-start!important}
+.room-user-list-v15 li>b{display:block!important;min-width:0!important;max-width:100%!important;white-space:normal!important;overflow-wrap:anywhere!important;word-break:break-word!important;line-height:1.12!important;padding-top:3px!important}
+.room-bot-user-v17 b{overflow-wrap:anywhere!important;word-break:break-word!important}
+.vip-crown-v28{flex:0 0 auto!important;margin-top:3px!important}
+
+/* Mobil emoji penceresi tamamen ekranda kalır. */
+.emoji-panel-v23{max-height:min(48vh,330px)!important;overflow:hidden!important;width:min(390px,calc(100vw - 18px))!important;max-width:100%!important}
+.emoji-grid-v23{max-height:min(40vh,270px)!important;overflow-y:auto!important;grid-template-columns:repeat(8,minmax(30px,1fr))!important;gap:3px!important;padding:7px!important;overscroll-behavior:contain!important}
+.emoji-grid-v23 button{width:100%!important;min-width:0!important;height:34px!important;font-size:22px!important;padding:0!important}
+@media(max-width:520px){.emoji-panel-v23{left:0!important;right:auto!important;bottom:calc(100% + 6px)!important;width:min(360px,calc(100vw - 16px))!important;max-height:44vh!important}.emoji-grid-v23{grid-template-columns:repeat(7,minmax(29px,1fr))!important;max-height:36vh!important}.emoji-grid-v23 button{height:32px!important;font-size:21px!important}}
+
+/* Yoksay sonrası gizlenen öğeler boşluk bırakmaz. */
+.room-user-list-v15 li[hidden],.live-message-v15[hidden]{display:none!important}
+
+/* VIP satın alma modalı mor tema. */
+.vip-modal-v28>section{border:1px solid #d8d9e4!important;box-shadow:0 18px 48px rgba(25,15,55,.25)!important}.vip-modal-v28 header{background:linear-gradient(100deg,#17102f,#4B1D9A)!important;color:#fff!important}.vip-buy-main-v28,.vip-coins-link-v28{background:linear-gradient(135deg,#6330C9,#4B1D9A)!important;color:#fff!important;border-color:#3c147d!important}

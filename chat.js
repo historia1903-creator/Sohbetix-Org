@@ -1,17 +1,17 @@
 (() => {
   'use strict';
 
-  const V=window.SohbetixV29;
+  const V=window.SohbetixV30;
   let STORAGE_MESSAGES='';
   let STORAGE_PRESENCE='';
   const SESSION_NICK = 'sohbetix-v17-current-nick';
   const MAX_MESSAGES = 10000;
   const BOT_NICK = 'Sohbetix Bot';
   const BOT_PURGE_TEXT = 'Eski 10.000 tane mesaj kalıcı olarak silindi!';
-  const PRESENCE_TTL = 210000;
+  const PRESENCE_TTL = 240000;
   const HEARTBEAT_MS = 15000;
-  const STORAGE_LEAVE_SEEN = 'sohbetix-v28-leave-seen';
-  const SESSION_JOIN_FLAG = 'sohbetix-v28-join-announced';
+  const STORAGE_LEAVE_SEEN = 'sohbetix-v30-leave-seen';
+  const SESSION_JOIN_FLAG = 'sohbetix-v30-join-announced';
   const CONFIG_KEY='sohbetix-v18-chat-config';
   const DEFAULT_CONFIG={title:'Sohbetix',language:'tr',disabled:false,imageShare:false,privateMode:'entered',catalogVisible:true,description:'',category:'Arkadaşlık',slug:'sohbetix'};
   function readConfig(){
@@ -40,9 +40,10 @@
     return base;
   }
   const cfg=readConfig();
-  STORAGE_MESSAGES='sohbetix-v28-room-messages:'+String(cfg.slug||'sohbetix');
-  STORAGE_PRESENCE='sohbetix-v28-room-presence:'+String(cfg.slug||'sohbetix');
-  const isRegistered=localStorage.getItem('sohbetix-auth-type')==='registered' && !!String(localStorage.getItem('sohbetix-auth-nick')||'').trim();
+  STORAGE_MESSAGES='sohbetix-v30-room-messages:'+String(cfg.slug||'sohbetix');
+  if(!localStorage.getItem(STORAGE_MESSAGES)){const old=localStorage.getItem('sohbetix-v28-room-messages:'+String(cfg.slug||'sohbetix'));if(old)localStorage.setItem(STORAGE_MESSAGES,old);}
+  STORAGE_PRESENCE='sohbetix-v30-room-presence:'+String(cfg.slug||'sohbetix');
+  const isRegistered=localStorage.getItem('sohbetix-auth-type')==='registered' && !!String(localStorage.getItem('sohbetix-auth-id')||'').trim() && !!String(localStorage.getItem('sohbetix-auth-email')||'').trim();
 
   const $ = (id) => document.getElementById(id);
   const els = {
@@ -56,7 +57,7 @@
     registeredLogoutBtn:$('registeredLogoutBtn'), savedProfilesV25:$('savedProfilesV25'), newProfileBtnV25:$('newProfileBtnV25'),
     profileEditorV25:$('profileEditorV25'), profileEditorLabelV25:$('profileEditorLabelV25'), profileNickV25:$('profileNickV25'),
     profileNickCounterV25:$('profileNickCounterV25'), profileLimitV25:$('profileLimitV25'), profileVipBtnV25:$('profileVipBtnV25'),
-    profileRefreshBtn:$('profileRefreshBtn'), chatImageInputV29:$('chatImageInputV29'), chatImageButtonV29:$('chatImageButtonV29'),
+    profileRefreshBtn:$('profileRefreshBtn'), chatImageInputV29:$('chatImageInputV28'), chatImageButtonV29:$('chatImageButtonV28'),
     mainChatTabV29:$('mainChatTabV28'), privateTabsV29:$('privateTabsV28'),
     roomAccountStatusIcon:$('roomAccountStatusIcon'),
     messageSelectionMenuV29:$('messageSelectionMenuV29'),
@@ -64,7 +65,7 @@
     cancelSelectedMessagesV29:$('cancelSelectedMessagesV29')
   };
 
-  const CLIENT_ID_KEY='sohbetix-v28-client-id:'+String(cfg.slug||'sohbetix');
+  const CLIENT_ID_KEY='sohbetix-v30-client-id:'+String(cfg.slug||'sohbetix');
   let clientId=sessionStorage.getItem(CLIENT_ID_KEY);
   if(!clientId){
     clientId=(crypto?.randomUUID?.() || `client-${Date.now()}-${Math.random().toString(36).slice(2)}`);
@@ -72,7 +73,8 @@
   }
   let currentNick = sessionStorage.getItem(SESSION_NICK) || '';
   let heartbeat = null;
-  const PRIVATE_STORAGE_PREFIX = 'sohbetix-v28-private:' + String(cfg.slug || 'sohbetix') + ':';
+  const PRIVATE_STORAGE_PREFIX = 'sohbetix-v30-private:' + String(cfg.slug || 'sohbetix') + ':';
+  const PRIVATE_META_PREFIX = 'sohbetix-v30-private-meta:' + String(cfg.slug || 'sohbetix') + ':';
   let activePrivateNick = '';
   const openedPrivateNicks = new Set();
 
@@ -93,10 +95,10 @@
 
   const AUTH_ID = String(localStorage.getItem('sohbetix-auth-id') || '');
   const AUTH_EMAIL = String(localStorage.getItem('sohbetix-auth-email') || '');
-  const STATUS_STORAGE_PREFIX = 'sohbetix-v29-presence-status:' + String(cfg.slug||'sohbetix') + ':';
+  const STATUS_STORAGE_PREFIX = 'sohbetix-v30-presence-status:' + String(cfg.slug||'sohbetix') + ':';
   let currentStatus = 'online';
   const selectedMessageIdsV29 = new Set();
-  const PROFILE_STORE_KEY = 'sohbetix-v28-chat-profiles:' + (AUTH_ID || AUTH_EMAIL || 'guest');
+  const PROFILE_STORE_KEY = 'sohbetix-v30-chat-profiles:' + (AUTH_ID || AUTH_EMAIL || 'guest');
   let selectedProfileId = '';
   let profileMode = 'existing'; // existing | new | edit
 
@@ -233,7 +235,7 @@
     if(currentNick) removePresence(true);
     sessionStorage.removeItem(SESSION_NICK);
     sessionStorage.removeItem(SESSION_JOIN_FLAG);
-    sessionStorage.removeItem('sohbetix-v28-open-profile');
+    sessionStorage.removeItem('sohbetix-v30-open-profile');
     ['sohbetix-auth-type','sohbetix-auth-nick','sohbetix-auth-email','sohbetix-auth-id'].forEach(k=>localStorage.removeItem(k));
     location.reload();
   }
@@ -409,6 +411,16 @@
     return !!V.getProfileByNick(nick) || normalizeRegisteredFlag(fallback);
   }
 
+
+  function isBlockedWithV30(nick){
+    return !!(currentNick && nick && V.isBlockedBetween(currentNick,nick));
+  }
+  function closeBlockedPrivateTabsV30(){
+    for(const nick of [...openedPrivateNicks]) if(isBlockedWithV30(nick)) openedPrivateNicks.delete(nick);
+    if(activePrivateNick && isBlockedWithV30(activePrivateNick)) activePrivateNick='';
+    renderPrivateTabsV29();
+  }
+
   function iconSvg(kind) {
     const icons={
       mention:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M16 8v6a2 2 0 0 0 4 0v-2a8 8 0 1 0-2.3 5.7"/><circle cx="12" cy="12" r="3"/></svg>',
@@ -470,7 +482,11 @@
         location.href='profile.html?nick='+encodeURIComponent(nick);
       } else if(action==='ignore' && registered){
         V.ignoreNick(nick);
-        toastV20(`${nick} yoksayıldı.`);
+        closePrivateConversationV29(nick);
+        closeBlockedPrivateTabsV30();
+        renderPresence();
+        renderActiveConversationV29();
+        toastV20(`${nick} yoksayıldı. Artık birbirinizi göremezsiniz.`);
       }
       closeUserMenu();
     });
@@ -482,38 +498,54 @@
     const b=cleanNick(targetNick).toLocaleLowerCase('tr-TR');
     return [a,b].sort((x,y)=>x.localeCompare(y,'tr')).map(encodeURIComponent).join('~');
   }
-
-  function privateStorageKeyV29(targetNick){
-    return PRIVATE_STORAGE_PREFIX + privatePairKeyV29(targetNick);
+  function privateStorageKeyV29(targetNick){return PRIVATE_STORAGE_PREFIX + privatePairKeyV29(targetNick);}
+  function privateMetaKeyV30(targetNick){return PRIVATE_META_PREFIX + privatePairKeyV29(targetNick);}
+  function readPrivateMetaV30(targetNick){return safeParse(localStorage.getItem(privateMetaKeyV30(targetNick)),null);}
+  function ensurePrivateMetaV30(targetNick){
+    const key=privateMetaKeyV30(targetNick); let meta=safeParse(localStorage.getItem(key),null);
+    const targetRegistered=targetRegistrationByNick(targetNick,false);
+    if(!meta){
+      meta={participants:[cleanNick(currentNick),cleanNick(targetNick)],registered:[!!isRegistered,!!targetRegistered],persistent:!!isRegistered&&!!targetRegistered,createdAt:Date.now(),lastAt:Date.now()};
+    }else{
+      meta.lastAt=Date.now();
+      const flags=Array.isArray(meta.registered)?meta.registered:[];
+      meta.persistent=!!(meta.persistent || (flags.length===2&&flags.every(Boolean)) || (!!isRegistered&&!!targetRegistered));
+    }
+    localStorage.setItem(key,JSON.stringify(meta)); return meta;
   }
-
   function readPrivateMessagesV29(targetNick){
-    if(!currentNick || !targetNick) return [];
+    if(!currentNick || !targetNick || isBlockedWithV30(targetNick)) return [];
     const list=safeParse(localStorage.getItem(privateStorageKeyV29(targetNick)),[]);
     return Array.isArray(list) ? list : [];
   }
-
   function writePrivateMessagesV29(targetNick,list){
-    localStorage.setItem(privateStorageKeyV29(targetNick),JSON.stringify(list.slice(-3000)));
+    if(isBlockedWithV30(targetNick)) return false;
+    ensurePrivateMetaV30(targetNick);
+    localStorage.setItem(privateStorageKeyV29(targetNick),JSON.stringify(list.slice(-3000))); return true;
   }
-
+  function privateParticipantOnlineV30(nick,presence){
+    const n=cleanNick(nick).toLocaleLowerCase('tr-TR');
+    return Object.values(presence||{}).some(x=>x&&cleanNick(x.nick).toLocaleLowerCase('tr-TR')===n&&Date.now()-Number(x.lastSeen||0)<=PRESENCE_TTL);
+  }
+  function cleanupEphemeralPrivateV30(presence=readPresence()){
+    const keys=[]; for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith(PRIVATE_META_PREFIX))keys.push(k);}
+    for(const metaKey of keys){
+      const meta=safeParse(localStorage.getItem(metaKey),null); if(!meta||meta.persistent)continue;
+      const parts=Array.isArray(meta.participants)?meta.participants.filter(Boolean):[]; if(parts.length<2)continue;
+      if(parts.every(n=>!privateParticipantOnlineV30(n,presence))){
+        const suffix=metaKey.slice(PRIVATE_META_PREFIX.length);
+        localStorage.removeItem(PRIVATE_STORAGE_PREFIX+suffix); localStorage.removeItem(metaKey);
+      }
+    }
+  }
   function addPrivateMessageV29(targetNick,payload={}){
     targetNick=cleanNick(targetNick);
     if(!currentNick || !targetNick) return;
+    if(isBlockedWithV30(targetNick)){toastV20('Yoksay nedeniyle bu kullanıcıyla gizli sohbet kullanılamaz.');return;}
+    const meta=ensurePrivateMetaV30(targetNick);
     const list=readPrivateMessagesV29(targetNick);
-    list.push({
-      id:`pm-${Date.now()}-${Math.random().toString(36).slice(2)}`,
-      sender:currentNick,
-      receiver:targetNick,
-      type:payload.type || 'chat',
-      text:String(payload.text || '').slice(0,512),
-      data:String(payload.data || ''),
-      at:Date.now(),
-      time:nowTime(),
-      registered:isRegistered
-    });
-    writePrivateMessagesV29(targetNick,list);
-    renderPrivateMessagesV29(true);
+    list.push({id:`pm-${Date.now()}-${Math.random().toString(36).slice(2)}`,sender:currentNick,receiver:targetNick,type:payload.type||'chat',text:String(payload.text||'').slice(0,512),data:String(payload.data||''),at:Date.now(),time:nowTime(),registered:isRegistered,persistent:!!meta.persistent});
+    writePrivateMessagesV29(targetNick,list); renderPrivateMessagesV29(true);
   }
 
   function renderPrivateTabsV29(){
@@ -547,6 +579,8 @@
     clearMessageSelectionV29();
     nick=cleanNick(nick);
     if(!nick || nick===BOT_NICK) return;
+    if(isBlockedWithV30(nick)){toastV20('Yoksay nedeniyle bu kullanıcıyla gizli sohbet açılamaz.');return;}
+    ensurePrivateMetaV30(nick);
     openedPrivateNicks.add(nick);
     activePrivateNick=nick;
     renderPrivateTabsV29();
@@ -575,6 +609,7 @@
 
   function renderPrivateMessagesV29(forceBottom=false){
     if(!activePrivateNick){ renderMessages(forceBottom); return; }
+    if(isBlockedWithV30(activePrivateNick)){closePrivateConversationV29(activePrivateNick);renderMessages(forceBottom);return;}
     const list=readPrivateMessagesV29(activePrivateNick);
     const wasNearBottom=isNearMessagesBottom();
     const previousScrollTop=els.messages.scrollTop;
@@ -646,6 +681,7 @@
       }
     }
     if (changed) writePresence(presence);
+    cleanupEphemeralPrivateV30(presence);
     return presence;
   }
 
@@ -703,6 +739,7 @@
         const k=String(u.nick).toLocaleLowerCase('tr-TR');
         if(seen.has(k))return false; seen.add(k); return true;
       })
+      .filter(u=>!isBlockedWithV30(u.nick))
       .filter(u=>!q||String(u.nick).toLocaleLowerCase('tr-TR').includes(q))
       .slice(0,40);
     if(!users.length){els.mentionSuggest.hidden=true;return;}
@@ -752,7 +789,7 @@
       els.messages.innerHTML = '<div class="room-empty-v15">Sohbet henüz boş. İlk katılan sen olabilirsin.</div>';
       return;
     }
-    els.messages.innerHTML = list.filter(msg=>!msg.nick || !V.isIgnored(msg.nick)).map(msg => {
+    els.messages.innerHTML = list.filter(msg=>!msg.nick || !isBlockedWithV30(msg.nick)).map(msg => {
       const registered = targetRegistrationByNick(msg.nick, msg.registered);
       if (msg.type === 'join') {
         const vv=userVisualV29(msg.nick||'');
@@ -824,10 +861,10 @@
         return String(a.nick).localeCompare(String(b.nick),'tr');
       });
     els.onlineCount.textContent = cfg.language==='en'?`${users.length} online`:`${users.length} çevrimiçi`;
-    const filtered = users.filter(u => !q || String(u.nick).toLocaleLowerCase('tr-TR').includes(q));
+    const filtered = users.filter(u => !isBlockedWithV30(u.nick)).filter(u => !q || String(u.nick).toLocaleLowerCase('tr-TR').includes(q));
     const botMatches = !q || BOT_NICK.toLocaleLowerCase('tr-TR').includes(q);
     const botRow = botMatches ? `<li class="room-bot-user-v17"><span class="room-mini-avatar-v15 room-bot-avatar-v17">S</span><b>${escapeHtml(BOT_NICK)}</b></li>` : '';
-    els.userList.innerHTML = botRow + filtered.filter(u=>!V.isIgnored(u.nick)).map(u => {const vv=userVisualV29(u.nick);return `<li class="user-target-v20 ${vv.vip?'vip-user-v28':''}" data-user-nick="${escapeHtml(u.nick||'')}" data-user-registered="${normalizeRegisteredFlag(u.registered)?'1':'0'}">${avatarHtmlV29(u.nick,true)}${presenceStatusHtmlV29(u.status)}<b style="color:${vv.nickColor};font-weight:${vv.boldNick?'900':'700'};text-decoration:${vv.boldNick?'underline':'none'}">${escapeHtml(u.nick)}</b>${vv.vip?'<span class="vip-crown-v28">VIP</span>':''}</li>`;}).join('');
+    els.userList.innerHTML = botRow + filtered.map(u => {const vv=userVisualV29(u.nick);return `<li class="user-target-v20 ${vv.vip?'vip-user-v28':''}" data-user-nick="${escapeHtml(u.nick||'')}" data-user-registered="${normalizeRegisteredFlag(u.registered)?'1':'0'}">${avatarHtmlV29(u.nick,true)}${presenceStatusHtmlV29(u.status)}<b style="color:${vv.nickColor};font-weight:${vv.boldNick?'900':'700'};text-decoration:${vv.boldNick?'underline':'none'}">${escapeHtml(u.nick)}</b>${vv.vip?'<span class="vip-crown-v28">VIP</span>':''}</li>`;}).join('');
   }
 
   function heartbeatPresence() {
@@ -841,6 +878,7 @@
     }
     presence[clientId]={nick:currentNick,registered:isRegistered,ownerId:AUTH_ID||'',profileId:V.getProfileByNick(currentNick)?.id||'',status:currentStatus,lastSeen:Date.now()};
     writePresence(dedupePresenceV29(presence));
+    cleanupEphemeralPrivateV30(presence);
     renderPresence();
   }
 
@@ -857,6 +895,7 @@
     delete presence[clientId];
     writePresence(presence);
     if (announce) addMessage('leave', {nick:leavingNick, registered:isRegistered});
+    cleanupEphemeralPrivateV30(presence);
     renderPresence();
   }
 
@@ -935,6 +974,10 @@
       renderProfilesV25();
     }else{
       nick=cleanNick(els.guestNick.value);
+      if(nick && !V.nickAvailable(nick)){
+        toastV20('Bu rumuz kayıtlı bir profile ait. Başka bir rumuz seç.');
+        return;
+      }
     }
 
     if(!nick) return;
@@ -950,14 +993,16 @@
         V.saveProfileData(prof.id,{...pd,rooms:rooms.slice(-100)});
       }
     }
-    sessionStorage.setItem('sohbetix-v28-last-room',String(cfg.slug||'sohbetix'));
+    sessionStorage.setItem('sohbetix-v30-last-room',String(cfg.slug||'sohbetix'));
     sessionStorage.setItem(SESSION_NICK, currentNick);
-    sessionStorage.removeItem('sohbetix-v28-open-profile');
+    sessionStorage.removeItem('sohbetix-v30-open-profile');
     closeJoinModal();
     setLoggedInState(true);
+    const beforeJoinPresence=sweepExpiredPresence(readPresence());
+    const alreadyOnline=Object.values(beforeJoinPresence).some(item=>item&&cleanNick(item.nick).toLocaleLowerCase('tr-TR')===cleanNick(currentNick).toLocaleLowerCase('tr-TR')&&Date.now()-Number(item.lastSeen||0)<=PRESENCE_TTL);
     startHeartbeat();
     sessionStorage.setItem(SESSION_JOIN_FLAG, currentNick);
-    addMessage('join', {nick:currentNick, registered:isRegistered});
+    if(!alreadyOnline) addMessage('join', {nick:currentNick, registered:isRegistered});
     renderPresence();
   }
 
@@ -980,7 +1025,7 @@
 
   if (els.accountAuthBtn) els.accountAuthBtn.addEventListener('click', () => {
     const ret = 'open-chat.html' + (location.search || '');
-    sessionStorage.setItem('sohbetix-auth-entry-v28', String(Date.now()));
+    sessionStorage.setItem('sohbetix-auth-entry-v30', String(Date.now()));
     location.href = 'auth.html?return=' + encodeURIComponent(ret);
   });
   if(els.registeredLogoutBtn) els.registeredLogoutBtn.addEventListener('click', logoutRegisteredV25);
@@ -1188,6 +1233,7 @@
     if (e.key === STORAGE_MESSAGES && !activePrivateNick) renderMessages();
     if (e.key === STORAGE_PRESENCE) renderPresence();
     if (e.key && e.key.startsWith(PRIVATE_STORAGE_PREFIX) && activePrivateNick) renderPrivateMessagesV29();
+    if (e.key && (e.key.startsWith('sohbetix-v30-ignore:') || e.key.startsWith(PRIVATE_META_PREFIX))){closeBlockedPrivateTabsV30();renderPresence();renderActiveConversationV29();}
   });
   // V29: F5/yenilemede sahte katılma-ayrılma üretme.
   // Gerçek sekme kapanışında presence TTL ile düşer; aynı nick yeni oturumda varsa ayrılma yazılmaz.
@@ -1246,7 +1292,7 @@
     }
   } else {
     setLoggedInState(false);
-    if(isRegistered || sessionStorage.getItem('sohbetix-v28-open-profile')==='1'){
+    if(isRegistered || sessionStorage.getItem('sohbetix-v30-open-profile')==='1'){
       setTimeout(openJoinModal, 60);
     }
   }

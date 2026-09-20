@@ -4,7 +4,7 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Sohbetix Hesap</title>
-<link rel="stylesheet" href="styles.css?v=V29-MOR-DESEN-FIX"/>
+<link rel="stylesheet" href="styles.css?v=V30-STATIC-FIX"/>
 <meta name="theme-color" content="#17102F"/>
 <link rel="icon" type="image/jpeg" href="sohbetix-logo.jpg"/>
 </head>
@@ -17,7 +17,6 @@
 <div class="auth-tabs-v21"><button id="tabRegister" class="active" type="button">Kayıt Ol</button><button id="tabLogin" type="button">Giriş Yap</button></div>
 
 <form id="registerForm" class="auth-form-v21" novalidate>
-<label>Kullanıcı adı<input id="regUser" type="text" maxlength="24" autocomplete="username" required placeholder="3-24 karakter"/></label>
 <label>E-posta<input id="regEmail" type="email" autocomplete="email" required placeholder="ornek@eposta.com"/></label>
 <label>Şifre<div class="password-wrap-v21"><input id="regPass" type="password" minlength="8" autocomplete="new-password" required placeholder="En az 8 karakter"/><button class="password-toggle-v21" type="button" aria-label="Şifreyi göster"></button></div></label>
 <label>Şifre tekrar<div class="password-wrap-v21"><input id="regPass2" type="password" minlength="8" autocomplete="new-password" required placeholder="Şifreyi tekrar yaz"/><button class="password-toggle-v21" type="button" aria-label="Şifreyi göster"></button></div></label>
@@ -26,7 +25,7 @@
 </form>
 
 <form id="loginForm" class="auth-form-v21" hidden novalidate>
-<label>Kullanıcı adı veya e-posta<input id="loginId" type="text" autocomplete="username" required placeholder="Kullanıcı adı veya e-posta"/></label>
+<label>E-posta<input id="loginId" type="email" autocomplete="email" required placeholder="ornek@eposta.com"/></label>
 <label>Şifre<div class="password-wrap-v21"><input id="loginPass" type="password" autocomplete="current-password" required placeholder="Şifreni yaz"/><button class="password-toggle-v21" type="button" aria-label="Şifreyi göster"></button></div></label>
 <button class="auth-submit-v21" type="submit">Giriş Yap</button>
 <div class="auth-status-v21" id="loginStatus"></div>
@@ -34,7 +33,7 @@
 
 </section>
 </main>
-<script src="v29-core.js?v=V29-MOR-DESEN-FIX"></script>
-<script src="auth.js?v=V29-MOR-DESEN-FIX"></script>
-<script src="app.js?v=V29-MOR-DESEN-FIX"></script>
-</body></html>
+<script src="v30-core.js?v=V30-STATIC-FIX"></script>
+<script src="auth.js?v=V30-STATIC-FIX"></script>
+<script src="app.js?v=V30-STATIC-FIX"></script>
+<script src="presence-bridge.js?v=V30-STATIC-FIX"></script></body></html>
