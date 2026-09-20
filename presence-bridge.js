@@ -1,6 +1,6 @@
 (() => {
   'use strict';
-  const V=window.SohbetixV30; if(!V) return;
+  const V=window.SohbetixV31; if(!V) return;
   const nick=String(sessionStorage.getItem('sohbetix-v17-current-nick')||'').trim();
   const slug=String(sessionStorage.getItem('sohbetix-v30-last-room')||sessionStorage.getItem('sohbetix-v28-last-room')||'').trim();
   if(!nick||!slug) return;

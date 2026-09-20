@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const V=window.SohbetixV30;
+  const V=window.SohbetixV31;
   let STORAGE_MESSAGES='';
   let STORAGE_PRESENCE='';
   const SESSION_NICK = 'sohbetix-v17-current-nick';
@@ -90,7 +90,7 @@
     return String(value).replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
   }
   function cleanNick(value) {
-    return String(value || '').replace(/[\r\n\t]/g, ' ').replace(/\s{2,}/g, ' ').trim().slice(0, 24);
+    return String(value || '').replace(/[\r\n\t]/g, ' ').replace(/\s{2,}/g, ' ').trim().slice(0, 20);
   }
 
   const AUTH_ID = String(localStorage.getItem('sohbetix-auth-id') || '');
@@ -159,12 +159,14 @@
       setProfileEditorV25('new');
     }
 
+    const allowedCount=profileLimitV25();
     els.savedProfilesV25.innerHTML = list.map((profile,index)=>{
-      const checked = profile.id===selectedProfileId && profileMode==='existing' ? 'checked' : '';
-      return `<div class="saved-profile-row-v25" data-profile-id="${escapeHtml(profile.id)}">
+      const locked=index>=allowedCount;
+      const checked = !locked && profile.id===selectedProfileId && profileMode==='existing' ? 'checked' : '';
+      return `<div class="saved-profile-row-v25 ${locked?'profile-locked-v31':''}" data-profile-id="${escapeHtml(profile.id)}">
         <label class="saved-profile-choice-v25">
-          <input type="radio" name="chatProfileV25" value="${escapeHtml(profile.id)}" ${checked}/>
-          <span>${escapeHtml(profile.nick)}</span>
+          <input type="radio" name="chatProfileV25" value="${escapeHtml(profile.id)}" ${checked} ${locked?'disabled':''}/>
+          <span>${escapeHtml(profile.nick)}</span>${locked?'<small class="profile-vip-lock-v31">VIP</small>':''}
         </label>
         <button class="profile-more-v25" type="button" data-profile-more="${escapeHtml(profile.id)}" aria-label="Profil seçenekleri">
           ${profileIconV25('more')}
@@ -181,7 +183,9 @@
 
   function selectExistingProfileV25(id){
     const list=readChatProfilesV25();
-    if(!list.some(x=>x.id===id)) return;
+    const idx=list.findIndex(x=>x.id===id);
+    if(idx<0) return;
+    if(idx>=profileLimitV25()){els.profileLimitV25.hidden=false;toastV20('Bu ek profil için aktif VIP gerekiyor.');return;}
     selectedProfileId=id;
     profileMode='existing';
     setProfileEditorV25('existing');
@@ -190,6 +194,8 @@
   }
 
   function beginNewProfileV25(){
+    const list=readChatProfilesV25();
+    if(list.length>=profileLimitV25()){els.profileLimitV25.hidden=false;toastV20(isVipV25()?'En fazla 10 kayıtlı profil oluşturabilirsin.':'Yeni ek profil oluşturmak için VIP gerekiyor.');return;}
     selectedProfileId='';
     setProfileEditorV25('new');
     updateJoinEnabled();
@@ -243,7 +249,9 @@
   function registeredNickCandidateV25(){
     const list=readChatProfilesV25();
     if(profileMode==='existing'){
-      return cleanNick(list.find(x=>x.id===selectedProfileId)?.nick || '');
+      const idx=list.findIndex(x=>x.id===selectedProfileId);
+      if(idx<0 || idx>=profileLimitV25()) return '';
+      return cleanNick(list[idx]?.nick || '');
     }
     return cleanNick(els.profileNickV25?.value || '');
   }
@@ -456,7 +464,7 @@
       <button type="button" data-action="mention">${iconSvg('mention')}<span>Bahset</span></button>
       ${(currentNick&&uv.privateEnabled)?`<button type="button" data-action="private">${iconSvg('private')}<span>Gizli</span></button>`:''}
       ${registered?`<button type="button" data-action="profile">${iconSvg('profile')}<span>Profil</span></button>`:''}
-      ${(registered&&isRegistered)?`<button type="button" data-action="ignore">${iconSvg('ignore')}<span>Yoksay</span></button>`:''}`;
+      ${(registered&&isRegistered&&cleanNick(nick).toLocaleLowerCase('tr-TR')!==cleanNick(currentNick).toLocaleLowerCase('tr-TR'))?`<button type="button" data-action="ignore">${iconSvg('ignore')}<span>Yoksay</span></button>`:''}`;
     document.body.appendChild(menu);
     const rect=anchor?.getBoundingClientRect?.() || {left:12,top:80,bottom:110,right:120};
     const mw=Math.min(230, window.innerWidth-16);
@@ -481,6 +489,7 @@
       } else if(action==='profile'){
         location.href='profile.html?nick='+encodeURIComponent(nick);
       } else if(action==='ignore' && registered){
+        if(cleanNick(nick).toLocaleLowerCase('tr-TR')===cleanNick(currentNick).toLocaleLowerCase('tr-TR')){closeUserMenu();return;}
         V.ignoreNick(nick);
         closePrivateConversationV29(nick);
         closeBlockedPrivateTabsV30();
@@ -538,6 +547,31 @@
       }
     }
   }
+  function appendPrivatePresenceEventV31(type,nick,registered=false){
+    nick=cleanNick(nick); if(!nick)return;
+    const metaKeys=[];
+    for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith(PRIVATE_META_PREFIX))metaKeys.push(k);}
+    for(const metaKey of metaKeys){
+      const meta=safeParse(localStorage.getItem(metaKey),null); if(!meta)continue;
+      const parts=Array.isArray(meta.participants)?meta.participants.map(cleanNick):[];
+      if(!parts.some(x=>x.toLocaleLowerCase('tr-TR')===nick.toLocaleLowerCase('tr-TR')))continue;
+      const suffix=metaKey.slice(PRIVATE_META_PREFIX.length);
+      const storageKey=PRIVATE_STORAGE_PREFIX+suffix;
+      const list=safeParse(localStorage.getItem(storageKey),[]);
+      const arr=Array.isArray(list)?list:[];
+      const last=arr[arr.length-1];
+      if(last && last.type===type && cleanNick(last.sender).toLocaleLowerCase('tr-TR')===nick.toLocaleLowerCase('tr-TR') && Date.now()-Number(last.at||0)<2500)continue;
+      arr.push({id:`pm-pres-${Date.now()}-${Math.random().toString(36).slice(2)}`,type,sender:nick,registered:!!registered,at:Date.now(),time:nowTime(),system:true});
+      localStorage.setItem(storageKey,JSON.stringify(arr.slice(-3000)));
+    }
+    if(activePrivateNick)renderPrivateMessagesV29(true);
+  }
+
+  function announcePresenceV31(type,nick,registered=false){
+    addMessage(type,{nick,registered:!!registered});
+    appendPrivatePresenceEventV31(type,nick,registered);
+  }
+
   function addPrivateMessageV29(targetNick,payload={}){
     targetNick=cleanNick(targetNick);
     if(!currentNick || !targetNick) return;
@@ -619,6 +653,11 @@
       els.messages.innerHTML=list.map(msg=>{
         const sender=cleanNick(msg.sender||'');
         const registered=normalizeRegisteredFlag(msg.registered) || targetRegistrationByNick(sender,false);
+        if(msg.type==='join' || msg.type==='leave'){
+          const vv=userVisualV29(sender||'');
+          const text=msg.type==='join'?(cfg.language==='en'?'joined us...':'bize katılıyor...'):(cfg.language==='en'?'left us...':'bizi terk ediyor...');
+          return `<div class="system-message-v15 private-presence-v31 ${msg.type==='leave'?'leave':''}" data-user-nick="${escapeHtml(sender)}" data-user-registered="${registered?'1':'0'}"><button class="system-nick-v15" style="color:${vv.nickColor};font-weight:${vv.boldNick?'900':'800'};text-decoration:${vv.boldNick?'underline':'none'}" type="button">@${escapeHtml(sender)}</button> <span>${text}</span> <small>${escapeHtml(msg.time||'')}</small></div>`;
+        }
         if(msg.type==='image'){
           return `<article class="live-message-v15 private-message-v28 user-target-v20" data-user-nick="${escapeHtml(sender)}" data-user-registered="${registered?'1':'0'}">${avatarHtmlV29(sender)}<div class="live-message-body-v15"><div class="live-message-meta-v15"><b style="color:${userVisualV29(sender).nickColor};font-weight:${userVisualV29(sender).boldNick?'900':'700'};text-decoration:${userVisualV29(sender).boldNick?'underline':'none'}">${escapeHtml(sender)}</b><small>${escapeHtml(msg.time||'')}</small></div><img class="live-image-v18" src="${escapeHtml(msg.data||'')}" alt="Gizli paylaşılan resim"></div>${ownMessageCheckboxV29({id:msg.id,type:'image',nick:sender})}</article>`;
         }
@@ -661,7 +700,7 @@
     for (const [k,v] of Object.entries(seen)) if (now - Number(v||0) > 10*60*1000) delete seen[k];
     seen[key] = now;
     localStorage.setItem(STORAGE_LEAVE_SEEN, JSON.stringify(seen));
-    addMessage('leave', {nick:item.nick, registered:normalizeRegisteredFlag(item.registered)});
+    announcePresenceV31('leave', item.nick, normalizeRegisteredFlag(item.registered));
   }
 
   function sweepExpiredPresence(presence) {
@@ -894,7 +933,7 @@
     const presence = prunePresence(readPresence());
     delete presence[clientId];
     writePresence(presence);
-    if (announce) addMessage('leave', {nick:leavingNick, registered:isRegistered});
+    if (announce) announcePresenceV31('leave', leavingNick, isRegistered);
     cleanupEphemeralPrivateV30(presence);
     renderPresence();
   }
@@ -933,7 +972,7 @@
       els.guestJoinPanel.hidden = false;
       els.guestNick.value = '';
       els.guestNick.placeholder=cfg.language==='en'?'Nickname':'Misafir rumuzu';
-      els.nickCounter.textContent='0/24';
+      els.nickCounter.textContent='0/20';
     }
 
     updateJoinEnabled();
@@ -955,7 +994,7 @@
       return;
     }
     const nick=cleanNick(els.guestNick.value);
-    els.nickCounter.textContent=`${Array.from(nick).length}/24`;
+    els.nickCounter.textContent=`${Array.from(nick).length}/20`;
     els.joinBtn.disabled=!(nick.length>0);
   }
 
@@ -1002,7 +1041,7 @@
     const alreadyOnline=Object.values(beforeJoinPresence).some(item=>item&&cleanNick(item.nick).toLocaleLowerCase('tr-TR')===cleanNick(currentNick).toLocaleLowerCase('tr-TR')&&Date.now()-Number(item.lastSeen||0)<=PRESENCE_TTL);
     startHeartbeat();
     sessionStorage.setItem(SESSION_JOIN_FLAG, currentNick);
-    if(!alreadyOnline) addMessage('join', {nick:currentNick, registered:isRegistered});
+    if(!alreadyOnline) announcePresenceV31('join', currentNick, isRegistered);
     renderPresence();
   }
 
@@ -1235,6 +1274,17 @@
     if (e.key && e.key.startsWith(PRIVATE_STORAGE_PREFIX) && activePrivateNick) renderPrivateMessagesV29();
     if (e.key && (e.key.startsWith('sohbetix-v30-ignore:') || e.key.startsWith(PRIVATE_META_PREFIX))){closeBlockedPrivateTabsV30();renderPresence();renderActiveConversationV29();}
   });
+  function reconcilePresenceOnReturnV31(){
+    if(!currentNick)return;
+    const before=sweepExpiredPresence(readPresence());
+    const key=cleanNick(currentNick).toLocaleLowerCase('tr-TR');
+    const wasOnline=Object.values(before).some(item=>item&&cleanNick(item.nick).toLocaleLowerCase('tr-TR')===key&&Date.now()-Number(item.lastSeen||0)<=PRESENCE_TTL);
+    heartbeatPresence();
+    if(!wasOnline){sessionStorage.setItem(SESSION_JOIN_FLAG,currentNick);announcePresenceV31('join',currentNick,isRegistered);}
+  }
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)reconcilePresenceOnReturnV31();});
+  window.addEventListener('pageshow',()=>setTimeout(reconcilePresenceOnReturnV31,40));
+
   // V29: F5/yenilemede sahte katılma-ayrılma üretme.
   // Gerçek sekme kapanışında presence TTL ile düşer; aynı nick yeni oturumda varsa ayrılma yazılmaz.
   window.addEventListener('pagehide', () => {});
@@ -1284,12 +1334,8 @@
       Date.now()-Number(item.lastSeen||0)<=PRESENCE_TTL
     );
     startHeartbeat();
-    if (sessionStorage.getItem(SESSION_JOIN_FLAG) !== currentNick && !alreadyOnline) {
-      sessionStorage.setItem(SESSION_JOIN_FLAG, currentNick);
-      addMessage('join', {nick:currentNick, registered:isRegistered});
-    } else {
-      sessionStorage.setItem(SESSION_JOIN_FLAG, currentNick);
-    }
+    sessionStorage.setItem(SESSION_JOIN_FLAG, currentNick);
+    if (!alreadyOnline) announcePresenceV31('join', currentNick, isRegistered);
   } else {
     setLoggedInState(false);
     if(isRegistered || sessionStorage.getItem('sohbetix-v30-open-profile')==='1'){

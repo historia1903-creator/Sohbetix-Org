@@ -2270,3 +2270,36 @@ a,.profile-about-v28 a,.vip-page-v28 a,.vip-info-page-v28 a{color:#4B1D9A}
 
 /* VIP satın alma modalı mor tema. */
 .vip-modal-v28>section{border:1px solid #d8d9e4!important;box-shadow:0 18px 48px rgba(25,15,55,.25)!important}.vip-modal-v28 header{background:linear-gradient(100deg,#17102f,#4B1D9A)!important;color:#fff!important}.vip-buy-main-v28,.vip-coins-link-v28{background:linear-gradient(135deg,#6330C9,#4B1D9A)!important;color:#fff!important;border-color:#3c147d!important}
+
+
+/* ==========================================================
+   SOHBETIX V31 — PROFIL / PRESENCE / VIP / USER LIST FIX
+   ========================================================== */
+/* Sağ kullanıcı listesinde durum ve VIP rozetleri artık nick alanını daraltmaz. */
+.room-user-list-v15 li.user-target-v20{position:relative!important;min-width:0!important;overflow:hidden!important;align-items:flex-start!important;padding-right:3px!important}
+.room-user-list-v15 li.user-target-v20>.presence-status-v29{position:absolute!important;left:23px!important;top:24px!important;z-index:3!important;margin:0!important}
+.room-user-list-v15 li.user-target-v20>.vip-crown-v28{position:absolute!important;right:2px!important;top:2px!important;z-index:3!important;margin:0!important;font-size:7px!important;padding:1px 2px!important}
+.room-user-list-v15 li.user-target-v20>b{flex:1 1 auto!important;min-width:0!important;max-width:100%!important;white-space:normal!important;word-break:normal!important;overflow-wrap:anywhere!important;line-height:1.08!important;padding-top:3px!important;padding-right:0!important;display:-webkit-box!important;-webkit-box-orient:vertical!important;-webkit-line-clamp:3!important;overflow:hidden!important}
+.room-user-list-v15 .room-mini-avatar-v15.user-avatar-v28{flex:0 0 27px!important}
+@media(max-width:760px){
+  html.room-fixed-viewport .room-grid-v15,body.room-page-v15 .room-grid-v15,.room-grid-v15{grid-template-columns:minmax(0,1fr) clamp(96px,25vw,126px)!important}
+  .room-user-list-v15 li{gap:5px!important;padding:6px 3px!important}
+  .room-user-list-v15 b{font-size:11px!important}
+  .room-user-list-v15 li.user-target-v20>.presence-status-v29{left:22px!important;top:23px!important}
+}
+@media(min-width:761px){
+  html.room-fixed-viewport .room-grid-v15,body.room-page-v15 .room-grid-v15,.room-grid-v15{grid-template-columns:minmax(0,1fr) clamp(120px,12vw,170px)!important}
+}
+
+/* Gizli sohbette katılma / ayrılma sistem satırları. */
+.private-presence-v31{padding:5px 10px!important;border-radius:4px!important;background:rgba(75,29,154,.045)!important}
+.private-presence-v31.leave{opacity:.78!important}
+
+/* VIP kalan süre kartı. */
+.vip-live-status-v31{display:grid;gap:5px;margin:12px 0 18px;padding:12px 14px;border:1px solid #d9d4e8;border-radius:9px;background:linear-gradient(135deg,#faf8ff,#f2ecff);color:#31224f}
+.vip-live-status-v31 strong{font-size:15px;color:#4B1D9A}.vip-live-status-v31 span{font-size:12px;color:#62606b}
+
+/* V31 nick sınırı 20 karakter; profil seçim kutusunda sayaç görünümü. */
+.profile-counter-v25{font-variant-numeric:tabular-nums}
+
+.profile-locked-v31{opacity:.58}.profile-vip-lock-v31{margin-left:auto;background:#d6a000;color:#fff;border-radius:3px;padding:2px 4px;font-size:8px;font-weight:900}.profile-locked-v31 .profile-more-v25{opacity:.75}
