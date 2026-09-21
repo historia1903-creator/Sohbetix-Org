@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const V=window.SohbetixV31;
+  const V=window.SohbetixV32;
   let STORAGE_MESSAGES='';
   let STORAGE_PRESENCE='';
   const SESSION_NICK = 'sohbetix-v17-current-nick';
@@ -77,6 +77,10 @@
   const PRIVATE_META_PREFIX = 'sohbetix-v30-private-meta:' + String(cfg.slug || 'sohbetix') + ':';
   let activePrivateNick = '';
   const openedPrivateNicks = new Set();
+  const PRIVATE_NOTIFY_PREFIX='sohbetix-v32-private-notify:' + String(cfg.slug||'sohbetix') + ':';
+  const PRIVATE_CHANNEL_NAME='sohbetix-v32-private:' + String(cfg.slug||'sohbetix');
+  let privateChannelV32=null;
+  try{ if('BroadcastChannel' in window) privateChannelV32=new BroadcastChannel(PRIVATE_CHANNEL_NAME); }catch{}
 
   function safeParse(raw, fallback) {
     try { return raw ? JSON.parse(raw) : fallback; } catch { return fallback; }
@@ -149,9 +153,8 @@
   function renderProfilesV25(){
     if(!isRegistered || !els.savedProfilesV25) return;
     const list = readChatProfilesV25();
-    if(list.length && !list.some(x=>x.id===selectedProfileId)){
+    if(list.length && profileMode==='existing' && !list.some(x=>x.id===selectedProfileId)){
       selectedProfileId = list[0].id;
-      profileMode = 'existing';
     }
     if(!list.length){
       selectedProfileId = '';
@@ -502,6 +505,24 @@
   }
 
 
+  function containsLinkV32(text){
+    return /(?:https?:\/\/|www\.|(?:[a-z0-9-]+\.)+(?:com|net|org|io|co|me|tv|gg|online|site|link|app|dev|xyz|tr)(?:\/|\b))/iu.test(String(text||''));
+  }
+  function linkifyPrivateTextV32(text, allowLinks){
+    const safe=renderChatText(text||'');
+    if(!allowLinks) return safe;
+    const urlRx=/(https?:\/\/[^\s<]+|www\.[^\s<]+)/giu;
+    return safe.replace(urlRx,(raw)=>{
+      const href=raw.toLowerCase().startsWith('www.')?'https://'+raw:raw;
+      return `<a class="private-link-v32" href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer">${raw}</a>`;
+    });
+  }
+  function emitPrivateNotificationV32(targetNick,msg){
+    const payload={id:msg.id,room:String(cfg.slug||'sohbetix'),sender:cleanNick(currentNick),receiver:cleanNick(targetNick),type:msg.type||'chat',text:String(msg.text||'').slice(0,140),at:Date.now()};
+    try{privateChannelV32?.postMessage(payload);}catch{}
+    try{localStorage.setItem(PRIVATE_NOTIFY_PREFIX+encodeURIComponent(cleanNick(targetNick).toLocaleLowerCase('tr-TR')),JSON.stringify(payload));}catch{}
+  }
+
   function privatePairKeyV29(targetNick){
     const a=cleanNick(currentNick).toLocaleLowerCase('tr-TR');
     const b=cleanNick(targetNick).toLocaleLowerCase('tr-TR');
@@ -534,7 +555,7 @@
   }
   function privateParticipantOnlineV30(nick,presence){
     const n=cleanNick(nick).toLocaleLowerCase('tr-TR');
-    return Object.values(presence||{}).some(x=>x&&cleanNick(x.nick).toLocaleLowerCase('tr-TR')===n&&Date.now()-Number(x.lastSeen||0)<=PRESENCE_TTL);
+    return Object.values(presence||{}).some(x=>x&&cleanNick(x.nick).toLocaleLowerCase('tr-TR')===n&&presenceItemActiveV32(x));
   }
   function cleanupEphemeralPrivateV30(presence=readPresence()){
     const keys=[]; for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith(PRIVATE_META_PREFIX))keys.push(k);}
@@ -578,8 +599,10 @@
     if(isBlockedWithV30(targetNick)){toastV20('Yoksay nedeniyle bu kullanıcıyla gizli sohbet kullanılamaz.');return;}
     const meta=ensurePrivateMetaV30(targetNick);
     const list=readPrivateMessagesV29(targetNick);
-    list.push({id:`pm-${Date.now()}-${Math.random().toString(36).slice(2)}`,sender:currentNick,receiver:targetNick,type:payload.type||'chat',text:String(payload.text||'').slice(0,512),data:String(payload.data||''),at:Date.now(),time:nowTime(),registered:isRegistered,persistent:!!meta.persistent});
-    writePrivateMessagesV29(targetNick,list); renderPrivateMessagesV29(true);
+    const msg={id:`pm-${Date.now()}-${Math.random().toString(36).slice(2)}`,sender:currentNick,receiver:targetNick,type:payload.type||'chat',text:String(payload.text||'').slice(0,512),data:String(payload.data||''),at:Date.now(),time:nowTime(),registered:isRegistered,senderVip:!!isVipV25(),persistent:!!meta.persistent};
+    list.push(msg);
+    if(writePrivateMessagesV29(targetNick,list)) emitPrivateNotificationV32(targetNick,msg);
+    renderPrivateMessagesV29(true);
   }
 
   function renderPrivateTabsV29(){
@@ -604,6 +627,7 @@
   function showMainConversationV29(){
     clearMessageSelectionV29();
     activePrivateNick='';
+    sessionStorage.removeItem('sohbetix-v32-active-private');
     renderPrivateTabsV29();
     renderMessages(true);
     els.messageInput.placeholder=cfg.language==='en'?'Write a message...':'Mesajını yaz...';
@@ -617,6 +641,7 @@
     ensurePrivateMetaV30(nick);
     openedPrivateNicks.add(nick);
     activePrivateNick=nick;
+    sessionStorage.setItem('sohbetix-v32-active-private',nick);
     renderPrivateTabsV29();
     renderPrivateMessagesV29(true);
     els.messageInput.placeholder=`${nick} kişisine gizli mesaj yaz...`;
@@ -630,6 +655,7 @@
       const left=[...openedPrivateNicks];
       if(left.length){
         activePrivateNick=left[left.length-1];
+        sessionStorage.setItem('sohbetix-v32-active-private',activePrivateNick);
         renderPrivateTabsV29();
         renderPrivateMessagesV29(true);
         els.messageInput.placeholder=`${activePrivateNick} kişisine gizli mesaj yaz...`;
@@ -661,7 +687,7 @@
         if(msg.type==='image'){
           return `<article class="live-message-v15 private-message-v28 user-target-v20" data-user-nick="${escapeHtml(sender)}" data-user-registered="${registered?'1':'0'}">${avatarHtmlV29(sender)}<div class="live-message-body-v15"><div class="live-message-meta-v15"><b style="color:${userVisualV29(sender).nickColor};font-weight:${userVisualV29(sender).boldNick?'900':'700'};text-decoration:${userVisualV29(sender).boldNick?'underline':'none'}">${escapeHtml(sender)}</b><small>${escapeHtml(msg.time||'')}</small></div><img class="live-image-v18" src="${escapeHtml(msg.data||'')}" alt="Gizli paylaşılan resim"></div>${ownMessageCheckboxV29({id:msg.id,type:'image',nick:sender})}</article>`;
         }
-        return `<article class="live-message-v15 private-message-v28 user-target-v20 ${messageMentionsCurrentV29(msg.text)?'message-mentions-me-v29':''}" data-user-nick="${escapeHtml(sender)}" data-user-registered="${registered?'1':'0'}">${avatarHtmlV29(sender)}<div class="live-message-body-v15"><div class="live-message-meta-v15"><b style="color:${userVisualV29(sender).nickColor};font-weight:${userVisualV29(sender).boldNick?'900':'700'};text-decoration:${userVisualV29(sender).boldNick?'underline':'none'}">${escapeHtml(sender)}</b><small>${escapeHtml(msg.time||'')}</small></div><p style="color:${userVisualV29(sender).textColor};font-weight:${userVisualV29(sender).boldText?'800':'400'};text-decoration:${userVisualV29(sender).boldText?'underline':'none'}">${renderChatText(msg.text||'')}</p></div>${ownMessageCheckboxV29({id:msg.id,type:'chat',nick:sender})}</article>`;
+        return `<article class="live-message-v15 private-message-v28 user-target-v20 ${messageMentionsCurrentV29(msg.text)?'message-mentions-me-v29':''}" data-user-nick="${escapeHtml(sender)}" data-user-registered="${registered?'1':'0'}">${avatarHtmlV29(sender)}<div class="live-message-body-v15"><div class="live-message-meta-v15"><b style="color:${userVisualV29(sender).nickColor};font-weight:${userVisualV29(sender).boldNick?'900':'700'};text-decoration:${userVisualV29(sender).boldNick?'underline':'none'}">${escapeHtml(sender)}</b><small>${escapeHtml(msg.time||'')}</small></div><p style="color:${userVisualV29(sender).textColor};font-weight:${userVisualV29(sender).boldText?'800':'400'};text-decoration:${userVisualV29(sender).boldText?'underline':'none'}">${linkifyPrivateTextV32(msg.text||'',!!msg.senderVip)}</p></div>${ownMessageCheckboxV29({id:msg.id,type:'chat',nick:sender})}</article>`;
       }).join('');
     }
     if(forceBottom || wasNearBottom) els.messages.scrollTop=els.messages.scrollHeight;
@@ -703,16 +729,22 @@
     announcePresenceV31('leave', item.nick, normalizeRegisteredFlag(item.registered));
   }
 
+  function presenceItemActiveV32(item,now=Date.now()){
+    if(!item)return false;
+    const last=Number(item.lastSeen||0), closing=Number(item.closingAt||0);
+    if(closing>0) return now-closing<8000;
+    if(item.suspended) return now-last<=12*60*60*1000;
+    return now-last<=PRESENCE_TTL;
+  }
   function sweepExpiredPresence(presence) {
     const now = Date.now();
     let changed = false;
     for (const [id, item] of Object.entries(presence)) {
-      if (!item || now - Number(item.lastSeen || 0) > PRESENCE_TTL) {
+      if (!presenceItemActiveV32(item,now)) {
         const sameNickStillOnline = !!(item && item.nick && Object.entries(presence).some(([otherId,other]) =>
-          otherId !== id &&
-          other &&
+          otherId !== id && other &&
           cleanNick(other.nick).toLocaleLowerCase('tr-TR') === cleanNick(item.nick).toLocaleLowerCase('tr-TR') &&
-          now - Number(other.lastSeen || 0) <= PRESENCE_TTL
+          presenceItemActiveV32(other,now)
         ));
         if (item && item.nick && !sameNickStillOnline) announceDroppedPresence(id, item);
         delete presence[id];
@@ -877,7 +909,7 @@
   function prunePresence(presence) {
     const now = Date.now();
     for (const [id, item] of Object.entries(presence)) {
-      if (!item || now - Number(item.lastSeen || 0) > PRESENCE_TTL) delete presence[id];
+      if (!presenceItemActiveV32(item,now)) delete presence[id];
     }
     return dedupePresenceV29(presence);
   }
@@ -915,10 +947,18 @@
         delete presence[id];
       }
     }
-    presence[clientId]={nick:currentNick,registered:isRegistered,ownerId:AUTH_ID||'',profileId:V.getProfileByNick(currentNick)?.id||'',status:currentStatus,lastSeen:Date.now()};
+    presence[clientId]={nick:currentNick,registered:isRegistered,ownerId:AUTH_ID||'',profileId:V.getProfileByNick(currentNick)?.id||'',status:currentStatus,lastSeen:Date.now(),suspended:!!document.hidden,closingAt:0};
     writePresence(dedupePresenceV29(presence));
     cleanupEphemeralPrivateV30(presence);
     renderPresence();
+  }
+
+  function markPresenceLifecycleV32({suspended=false,closing=false}={}){
+    if(!currentNick)return;
+    const presence=readPresence();
+    const item=presence[clientId]||{};
+    presence[clientId]={...item,nick:currentNick,registered:isRegistered,ownerId:AUTH_ID||'',profileId:V.getProfileByNick(currentNick)?.id||'',status:currentStatus,lastSeen:Date.now(),suspended:!!suspended,closingAt:closing?Date.now():0};
+    writePresence(dedupePresenceV29(presence));
   }
 
   function startHeartbeat() {
@@ -1020,6 +1060,12 @@
     }
 
     if(!nick) return;
+    const previousNick=cleanNick(currentNick);
+    if(previousNick && previousNick.toLocaleLowerCase('tr-TR')!==cleanNick(nick).toLocaleLowerCase('tr-TR')){
+      clearInterval(heartbeat);
+      const p=readPresence(); delete p[clientId]; writePresence(p);
+      announcePresenceV31('leave',previousNick,isRegistered);
+    }
     currentNick = nick;
     currentStatus=loadStatusV29(currentNick);
     updateAccountStatusIconV29();
@@ -1038,7 +1084,7 @@
     closeJoinModal();
     setLoggedInState(true);
     const beforeJoinPresence=sweepExpiredPresence(readPresence());
-    const alreadyOnline=Object.values(beforeJoinPresence).some(item=>item&&cleanNick(item.nick).toLocaleLowerCase('tr-TR')===cleanNick(currentNick).toLocaleLowerCase('tr-TR')&&Date.now()-Number(item.lastSeen||0)<=PRESENCE_TTL);
+    const alreadyOnline=Object.values(beforeJoinPresence).some(item=>item&&cleanNick(item.nick).toLocaleLowerCase('tr-TR')===cleanNick(currentNick).toLocaleLowerCase('tr-TR')&&presenceItemActiveV32(item));
     startHeartbeat();
     sessionStorage.setItem(SESSION_JOIN_FLAG, currentNick);
     if(!alreadyOnline) announcePresenceV31('join', currentNick, isRegistered);
@@ -1218,13 +1264,13 @@
   if(els.chatImageButtonV29 && els.chatImageInputV29){
     els.chatImageButtonV29.addEventListener('click',()=>{
       if(!currentNick)return;
-      if(!cfg.imageShare && !isVipV25()){alert('Bu sohbette resim paylaşımı yalnızca VIP kullanıcılar için açık.');return;}
+      if(!isVipV25()){alert('Fotoğraf ve GIF paylaşımı yalnızca VIP kullanıcılar içindir.');return;}
       els.chatImageInputV29.click();
     });
     els.chatImageInputV29.addEventListener('change',()=>{
       const file=els.chatImageInputV29.files?.[0]; if(!file)return;
-      if(file.size>900000){alert('Resim çok büyük. En fazla 900 KB.');els.chatImageInputV29.value='';return;}
-      const reader=new FileReader(); reader.onload=()=>{const data=String(reader.result||'');if(activePrivateNick)addPrivateMessageV29(activePrivateNick,{type:'image',data});else addMessage('image',{nick:currentNick,data});els.chatImageInputV29.value='';}; reader.readAsDataURL(file);
+      if(file.size>10*1024*1024){alert('Dosya çok büyük. En fazla 10 MB.');els.chatImageInputV29.value='';return;}
+      const reader=new FileReader(); reader.onload=()=>{const data=String(reader.result||'');try{if(activePrivateNick)addPrivateMessageV29(activePrivateNick,{type:'image',data});else addMessage('image',{nick:currentNick,data});}catch(err){alert('Dosya tarayıcı depolama sınırına sığmadı. Daha küçük bir dosya dene.');}els.chatImageInputV29.value='';}; reader.readAsDataURL(file);
     });
   }
 
@@ -1232,6 +1278,10 @@
     e.preventDefault();
     const text = els.messageInput.value.trim();
     if (!currentNick || !text) return;
+    if(containsLinkV32(text)){
+      if(!activePrivateNick){toastV20('Ana sayfada bağlantı paylaşmak yasaktır.');return;}
+      if(!isVipV25()){toastV20('Gizli sohbette bağlantı paylaşımı yalnızca VIP kullanıcılar içindir.');return;}
+    }
     if (!checkFloodBeforeSend(text)) return;
     if(activePrivateNick) addPrivateMessageV29(activePrivateNick,{type:'chat',text:text.slice(0,512)});
     else addMessage('chat', {nick:currentNick, text:text.slice(0,512)});
@@ -1252,8 +1302,8 @@
   });
   els.messageInput.addEventListener('paste', e => {
     const items=[...(e.clipboardData?.items||[])]; const image=items.find(i=>i.type&&i.type.startsWith('image/')); if(!image)return;
-    e.preventDefault(); if(!cfg.imageShare && !isVipV25()){alert(cfg.language==='en'?'Image sharing is disabled in this chat.':'Bu sohbette resim paylaşımı kapalı. VIP kullanıcılar paylaşabilir.');return;}
-    const file=image.getAsFile(); if(!file)return; if(file.size>900000){alert(cfg.language==='en'?'Image is too large. Maximum 900 KB.':'Resim çok büyük. En fazla 900 KB.');return;}
+    e.preventDefault(); if(!isVipV25()){alert(cfg.language==='en'?'Photo/GIF sharing is for VIP users only.':'Fotoğraf ve GIF paylaşımı yalnızca VIP kullanıcılar içindir.');return;}
+    const file=image.getAsFile(); if(!file)return; if(file.size>10*1024*1024){alert(cfg.language==='en'?'File is too large. Maximum 10 MB.':'Dosya çok büyük. En fazla 10 MB.');return;}
     const reader=new FileReader(); reader.onload=()=>{try{if(activePrivateNick)addPrivateMessageV29(activePrivateNick,{type:'image',data:String(reader.result||'')});else addMessage('image',{nick:currentNick,data:String(reader.result||'')});}catch{alert('Resim kaydedilemedi.');}}; reader.readAsDataURL(file);
   });
   els.roomAccountBtn.addEventListener('click', e => { e.stopPropagation(); els.roomAccountMenu.hidden = !els.roomAccountMenu.hidden; updateAccountStatusIconV29(); });
@@ -1274,24 +1324,26 @@
     if (e.key && e.key.startsWith(PRIVATE_STORAGE_PREFIX) && activePrivateNick) renderPrivateMessagesV29();
     if (e.key && (e.key.startsWith('sohbetix-v30-ignore:') || e.key.startsWith(PRIVATE_META_PREFIX))){closeBlockedPrivateTabsV30();renderPresence();renderActiveConversationV29();}
   });
-  function reconcilePresenceOnReturnV31(){
+  function reconcilePresenceOnReturnV32(){
     if(!currentNick)return;
-    const before=sweepExpiredPresence(readPresence());
+    const raw=readPresence();
+    const mine=raw[clientId];
     const key=cleanNick(currentNick).toLocaleLowerCase('tr-TR');
-    const wasOnline=Object.values(before).some(item=>item&&cleanNick(item.nick).toLocaleLowerCase('tr-TR')===key&&Date.now()-Number(item.lastSeen||0)<=PRESENCE_TTL);
+    const sameNickKnown=Object.values(raw).some(item=>item&&cleanNick(item.nick).toLocaleLowerCase('tr-TR')===key&&presenceItemActiveV32(item));
     heartbeatPresence();
-    if(!wasOnline){sessionStorage.setItem(SESSION_JOIN_FLAG,currentNick);announcePresenceV31('join',currentNick,isRegistered);}
+    if(!sameNickKnown){sessionStorage.setItem(SESSION_JOIN_FLAG,currentNick);announcePresenceV31('join',currentNick,isRegistered);}
   }
-  document.addEventListener('visibilitychange',()=>{if(!document.hidden)reconcilePresenceOnReturnV31();});
-  window.addEventListener('pageshow',()=>setTimeout(reconcilePresenceOnReturnV31,40));
-
-  // V29: F5/yenilemede sahte katılma-ayrılma üretme.
-  // Gerçek sekme kapanışında presence TTL ile düşer; aynı nick yeni oturumda varsa ayrılma yazılmaz.
-  window.addEventListener('pagehide', () => {});
-  window.addEventListener('beforeunload', () => {});
+  document.addEventListener('visibilitychange',()=>{
+    if(!currentNick)return;
+    if(document.hidden) markPresenceLifecycleV32({suspended:true,closing:false});
+    else reconcilePresenceOnReturnV32();
+  });
+  window.addEventListener('pageshow',()=>setTimeout(reconcilePresenceOnReturnV32,40));
+  window.addEventListener('pagehide',(e)=>{if(!e.persisted)markPresenceLifecycleV32({suspended:false,closing:true});});
+  window.addEventListener('beforeunload',()=>markPresenceLifecycleV32({suspended:false,closing:true}));
 
   document.title=(cfg.title||'Sohbetix')+(cfg.language==='en'?' Chat':' Sohbet');
-  const titleBtn=document.getElementById('roomTitleBtn'); if(titleBtn) titleBtn.firstChild.nodeValue=(cfg.title||'Sohbetix')+' ';
+  const titleBtn=document.getElementById('roomTitleBtn'); if(titleBtn) titleBtn.textContent=(cfg.title||'Sohbetix');
   const tab=document.querySelector('.room-tabs-v15 button'); if(tab)tab.textContent=cfg.language==='en'?'Home':'Ana sayfa';
   els.search.placeholder=cfg.language==='en'?'Nickname search':'Rumuz ara'; els.openJoin.textContent=cfg.language==='en'?'Enter chat':'Sohbete gir'; els.joinBtn.textContent=cfg.language==='en'?'Enter chat':'Sohbete gir'; els.messageInput.placeholder=cfg.language==='en'?'Write a message...':'Mesajını yaz...';
   if(cfg.disabled){if(els.disabledNotice){els.disabledNotice.hidden=false;els.disabledNotice.textContent=cfg.language==='en'?'This chat is temporarily disabled.':'Bu sohbet geçici olarak devre dışı bırakıldı.';}els.guestFooter.hidden=true;els.messageForm.hidden=true;}
@@ -1331,11 +1383,13 @@
     const alreadyOnline=Object.values(preHeartbeatPresence).some(item =>
       item &&
       cleanNick(item.nick).toLocaleLowerCase('tr-TR')===cleanNick(currentNick).toLocaleLowerCase('tr-TR') &&
-      Date.now()-Number(item.lastSeen||0)<=PRESENCE_TTL
+      presenceItemActiveV32(item)
     );
     startHeartbeat();
     sessionStorage.setItem(SESSION_JOIN_FLAG, currentNick);
     if (!alreadyOnline) announcePresenceV31('join', currentNick, isRegistered);
+    const pendingPrivate=sessionStorage.getItem('sohbetix-v32-open-private');
+    if(pendingPrivate){sessionStorage.removeItem('sohbetix-v32-open-private');setTimeout(()=>openPrivateConversationV29(pendingPrivate),80);}
   } else {
     setLoggedInState(false);
     if(isRegistered || sessionStorage.getItem('sohbetix-v30-open-profile')==='1'){

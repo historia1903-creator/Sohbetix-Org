@@ -2303,3 +2303,13 @@ a,.profile-about-v28 a,.vip-page-v28 a,.vip-info-page-v28 a{color:#4B1D9A}
 .profile-counter-v25{font-variant-numeric:tabular-nums}
 
 .profile-locked-v31{opacity:.58}.profile-vip-lock-v31{margin-left:auto;background:#d6a000;color:#fff;border-radius:3px;padding:2px 4px;font-size:8px;font-weight:900}.profile-locked-v31 .profile-more-v25{opacity:.75}
+
+
+/* ============================================================
+   SOHBETIX V32 STATIC FIX
+   ============================================================ */
+.room-title-static-v32{cursor:default!important;user-select:none!important;pointer-events:none!important;display:flex!important;align-items:center!important}
+.private-link-v32{color:#5b21b6!important;text-decoration:underline!important;font-weight:800!important;overflow-wrap:anywhere!important;word-break:break-word!important}
+.private-notification-v32{position:fixed;right:14px;top:78px;z-index:20000;width:min(330px,calc(100vw - 28px));border:1px solid rgba(124,58,237,.35);background:#fff;color:#20232b;border-radius:13px;padding:12px 14px;box-shadow:0 16px 46px rgba(23,16,47,.28);display:grid;grid-template-columns:1fr;gap:3px;text-align:left;cursor:pointer}
+.private-notification-v32 strong{font-size:14px;color:#4B1D9A;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.private-notification-v32 span{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.private-notification-v32 small{font-size:10px;color:#7a7f8a;font-weight:700}
+@media(max-width:600px){.private-notification-v32{top:70px;right:8px;width:calc(100vw - 16px)}}

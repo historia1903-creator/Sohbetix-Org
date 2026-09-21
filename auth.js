@@ -1,6 +1,6 @@
 (() => {
   'use strict';
-  const V=window.SohbetixV31;
+  const V=window.SohbetixV32;
   const gateTime=Number(sessionStorage.getItem('sohbetix-auth-entry-v30')||sessionStorage.getItem('sohbetix-auth-entry-v28')||0);
   if(!gateTime || Date.now()-gateTime>10*60*1000){ location.replace('open-chat.html'); return; }
   const $=id=>document.getElementById(id);

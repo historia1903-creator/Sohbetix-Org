@@ -1,5 +1,5 @@
 (() => {
-'use strict';const V=window.SohbetixV31,$=id=>document.getElementById(id);
+'use strict';const V=window.SohbetixV32,$=id=>document.getElementById(id);
 const target=V.cleanNick(new URLSearchParams(location.search).get('nick')||sessionStorage.getItem('sohbetix-v17-current-nick')||'');
 const profile=V.getProfileByNick(target);if(!profile||String(profile.ownerId)!==String(V.currentUserId())){location.replace('profile.html?nick='+encodeURIComponent(target));return;}
 let data=V.getProfileDataByProfile(profile);const user=V.profileOwnerUser(profile);let vip=V.isVipUser(user);
