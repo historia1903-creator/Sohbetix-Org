@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,interactive-widget=resizes-content"/>
   <title>Sohbetix Sohbet</title>
-  <link rel="stylesheet" href="styles.css?v=V32-STATIC-FIX"/>
+  <link rel="stylesheet" href="styles.css?v=V33-STATIC-FIX"/>
   <meta name="theme-color" content="#17102F"/>
 <link rel="icon" type="image/jpeg" href="sohbetix-logo.jpg"/>
 </head>
@@ -99,9 +99,15 @@
             </div>
             <div class="room-compose-actions-v15">
               <input id="chatImageInputV28" type="file" accept="image/jpeg,image/png,image/webp,image/gif" hidden>
-              <button class="room-photo-v28" id="chatImageButtonV28" type="button" aria-label="Fotoğraf gönder">📷</button>
+              <button class="room-photo-v28" id="chatImageButtonV28" type="button" aria-label="Fotoğraf veya GIF gönder">📷</button>
               <span class="room-profile-hint-v15" id="profileSaveHint">👤 Profilini kaydet</span>
-              <button class="room-send-v15" type="submit">Gönder</button>
+              <div class="room-send-tools-v33">
+                <span class="voice-record-time-v33" id="voiceRecordTimeV33" hidden>00:00</span>
+                <button class="room-voice-v33" id="voiceRecordButtonV33" type="button" aria-label="Sesli mesaj kaydet" title="Sesli mesaj">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"></path></svg>
+                </button>
+                <button class="room-send-v15" type="submit">Gönder</button>
+              </div>
             </div>
           </form>
         </section>
@@ -185,7 +191,7 @@
     </section>
   </div>
 
-  <script src="v32-core.js?v=V32-STATIC-FIX"></script>
-  <script src="chat.js?v=V32-STATIC-FIX"></script>
-<script src="presence-bridge.js?v=V32-STATIC-FIX"></script></body>
+  <script src="v33-core.js?v=V33-STATIC-FIX"></script>
+  <script src="chat.js?v=V33-STATIC-FIX"></script>
+<script src="presence-bridge.js?v=V33-STATIC-FIX"></script></body>
 </html>

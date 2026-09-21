@@ -1,5 +1,5 @@
 (() => {
-'use strict'; const V=window.SohbetixV32,$=id=>document.getElementById(id);
+'use strict'; const V=window.SohbetixV33,$=id=>document.getElementById(id);
 const target=V.cleanNick(new URLSearchParams(location.search).get('nick')||sessionStorage.getItem('sohbetix-v17-current-nick')||'Kullanıcı');
 const ctx=V.profileContext(target), me=V.currentUserId(), isOwn=!!ctx.profile&&String(ctx.profile.ownerId)===String(me), d=ctx.data||V.defaultProfileData();
 $('profileNickV28').textContent=target;document.title=target+' - Sohbetix Profil';$('profileNickV28').style.color=d.nickColor||'#4B1D9A';$('profileNickV28').style.fontWeight=(ctx.vip&&d.boldNick)?'900':'800';$('profileNickV28').style.textDecoration=(ctx.vip&&d.boldNick)?'underline':'none';

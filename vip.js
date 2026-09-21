@@ -1,6 +1,6 @@
 (()=>{
 'use strict';
-const V=window.SohbetixV32,$=id=>document.getElementById(id),u=V.ensureCurrentUser();
+const V=window.SohbetixV33,$=id=>document.getElementById(id),u=V.ensureCurrentUser();
 if(!u){location.replace('open-chat.html');return;}
 const m=$('vipModalV28'),open=$('buyVipOpenV28'),close=$('vipCloseV28'),balance=$('vipBalanceV28'),status=$('vipModalStatusV28'),vipState=$('vipStateV31'),vipExpiry=$('vipExpiryV31'),vipCountdown=$('vipCountdownV31');
 function draw(){if(balance)balance.textContent=V.coinBalance().toLocaleString('tr-TR');drawVipTime();}

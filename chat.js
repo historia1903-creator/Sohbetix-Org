@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const V=window.SohbetixV32;
+  const V=window.SohbetixV33;
   let STORAGE_MESSAGES='';
   let STORAGE_PRESENCE='';
   const SESSION_NICK = 'sohbetix-v17-current-nick';
@@ -62,7 +62,8 @@
     roomAccountStatusIcon:$('roomAccountStatusIcon'),
     messageSelectionMenuV29:$('messageSelectionMenuV29'),
     deleteSelectedMessagesV29:$('deleteSelectedMessagesV29'),
-    cancelSelectedMessagesV29:$('cancelSelectedMessagesV29')
+    cancelSelectedMessagesV29:$('cancelSelectedMessagesV29'),
+    voiceRecordButtonV33:$('voiceRecordButtonV33'), voiceRecordTimeV33:$('voiceRecordTimeV33')
   };
 
   const CLIENT_ID_KEY='sohbetix-v30-client-id:'+String(cfg.slug||'sohbetix');
@@ -77,8 +78,8 @@
   const PRIVATE_META_PREFIX = 'sohbetix-v30-private-meta:' + String(cfg.slug || 'sohbetix') + ':';
   let activePrivateNick = '';
   const openedPrivateNicks = new Set();
-  const PRIVATE_NOTIFY_PREFIX='sohbetix-v32-private-notify:' + String(cfg.slug||'sohbetix') + ':';
-  const PRIVATE_CHANNEL_NAME='sohbetix-v32-private:' + String(cfg.slug||'sohbetix');
+  const PRIVATE_NOTIFY_PREFIX='sohbetix-v33-private-notify:' + String(cfg.slug||'sohbetix') + ':';
+  const PRIVATE_CHANNEL_NAME='sohbetix-v33-private:' + String(cfg.slug||'sohbetix');
   let privateChannelV32=null;
   try{ if('BroadcastChannel' in window) privateChannelV32=new BroadcastChannel(PRIVATE_CHANNEL_NAME); }catch{}
 
@@ -334,7 +335,7 @@
   }
 
   function isOwnSelectableMessageV29(msg){
-    return !!(isRegistered && currentNick && msg && ['chat','image'].includes(msg.type) &&
+    return !!(isRegistered && currentNick && msg && ['chat','image','voice'].includes(msg.type) &&
       cleanNick(msg.nick).toLocaleLowerCase('tr-TR')===cleanNick(currentNick).toLocaleLowerCase('tr-TR'));
   }
   function ownMessageCheckboxV29(msg){
@@ -367,7 +368,7 @@
     let list=readMessages();
     list=list.filter(msg=>!(
       selectedMessageIdsV29.has(String(msg.id)) &&
-      ['chat','image'].includes(msg.type) &&
+      ['chat','image','voice'].includes(msg.type) &&
       cleanNick(msg.nick).toLocaleLowerCase('tr-TR')===cleanNick(currentNick).toLocaleLowerCase('tr-TR')
     ));
     writeMessages(list);
@@ -518,10 +519,28 @@
     });
   }
   function emitPrivateNotificationV32(targetNick,msg){
-    const payload={id:msg.id,room:String(cfg.slug||'sohbetix'),sender:cleanNick(currentNick),receiver:cleanNick(targetNick),type:msg.type||'chat',text:String(msg.text||'').slice(0,140),at:Date.now()};
+    const payload={id:msg.id,room:String(cfg.slug||'sohbetix'),sender:cleanNick(currentNick),receiver:cleanNick(targetNick),type:msg.type||'chat',text:(msg.type==='voice'?'🎙️ Sesli mesaj':String(msg.text||'').slice(0,140)),at:Date.now()};
     try{privateChannelV32?.postMessage(payload);}catch{}
     try{localStorage.setItem(PRIVATE_NOTIFY_PREFIX+encodeURIComponent(cleanNick(targetNick).toLocaleLowerCase('tr-TR')),JSON.stringify(payload));}catch{}
   }
+
+  const VOICE_DB_NAME='sohbetix-v33-media';
+  const VOICE_STORE='voice';
+  const VOICE_MAX_MS=5*60*1000;
+  const voiceObjectUrlsV33=new Map();
+  let voiceRecorderV33=null, voiceStreamV33=null, voiceChunksV33=[], voiceStartedAtV33=0, voiceTimerV33=null, voiceStopTimerV33=null;
+  function openVoiceDbV33(){return new Promise((resolve,reject)=>{const req=indexedDB.open(VOICE_DB_NAME,1);req.onupgradeneeded=()=>{const db=req.result;if(!db.objectStoreNames.contains(VOICE_STORE))db.createObjectStore(VOICE_STORE);};req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);});}
+  async function saveVoiceBlobV33(key,blob){const db=await openVoiceDbV33();return new Promise((resolve,reject)=>{const tx=db.transaction(VOICE_STORE,'readwrite');tx.objectStore(VOICE_STORE).put(blob,key);tx.oncomplete=()=>{db.close();resolve(true)};tx.onerror=()=>{db.close();reject(tx.error)};});}
+  async function getVoiceBlobV33(key){const db=await openVoiceDbV33();return new Promise((resolve,reject)=>{const tx=db.transaction(VOICE_STORE,'readonly');const req=tx.objectStore(VOICE_STORE).get(key);req.onsuccess=()=>{const v=req.result;db.close();resolve(v||null)};req.onerror=()=>{db.close();reject(req.error)};});}
+  function formatVoiceDurationV33(sec){sec=Math.max(0,Math.floor(Number(sec)||0));const m=Math.floor(sec/60),s=sec%60;return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;}
+  function voiceMessageHtmlV33(msg,sender,registered,privateMode=false){const duration=formatVoiceDurationV33(msg.duration||0);const vv=userVisualV29(sender);return `<article class="live-message-v15 ${privateMode?'private-message-v28 ':''}voice-message-v33 user-target-v20" data-user-nick="${escapeHtml(sender)}" data-user-registered="${registered?'1':'0'}">${avatarHtmlV29(sender)}<div class="live-message-body-v15"><div class="live-message-meta-v15"><b style="color:${vv.nickColor};font-weight:${vv.boldNick?'900':'700'};text-decoration:${vv.boldNick?'underline':'none'}">${escapeHtml(sender)}</b><small>${escapeHtml(msg.time||'')}</small></div><div class="voice-bubble-v33"><button class="voice-play-fallback-v33" type="button" aria-label="Sesli mesajı oynat">▶</button><audio class="voice-audio-v33" controls preload="metadata" data-voice-key="${escapeHtml(msg.audioKey||'')}"></audio><span>${duration}</span></div></div>${ownMessageCheckboxV29({id:msg.id,type:'voice',nick:sender})}</article>`;}
+  async function hydrateVoicePlayersV33(){const nodes=[...els.messages.querySelectorAll('audio.voice-audio-v33[data-voice-key]')];for(const a of nodes){const key=a.dataset.voiceKey;if(!key||a.src)continue;try{let url=voiceObjectUrlsV33.get(key);if(!url){const blob=await getVoiceBlobV33(key);if(!blob)continue;url=URL.createObjectURL(blob);voiceObjectUrlsV33.set(key,url);}a.src=url;const fallback=a.parentElement?.querySelector('.voice-play-fallback-v33');if(fallback)fallback.hidden=true;}catch{}}}
+  function updateVoiceButtonV33(recording){if(!els.voiceRecordButtonV33)return;els.voiceRecordButtonV33.classList.toggle('recording',recording);els.voiceRecordButtonV33.setAttribute('aria-label',recording?'Kaydı durdur':'Sesli mesaj kaydet');if(els.voiceRecordTimeV33)els.voiceRecordTimeV33.hidden=!recording;}
+  function stopVoiceRecordingV33(){if(voiceRecorderV33&&voiceRecorderV33.state!=='inactive')voiceRecorderV33.stop();}
+  async function startVoiceRecordingV33(){if(!currentNick){openJoinModal();return;}if(!navigator.mediaDevices?.getUserMedia||!window.MediaRecorder){toastV20('Bu tarayıcı sesli mesaj kaydını desteklemiyor.');return;}try{voiceStreamV33=await navigator.mediaDevices.getUserMedia({audio:true});voiceChunksV33=[];let opts={audioBitsPerSecond:32000};const preferred=['audio/webm;codecs=opus','audio/webm','audio/mp4'];for(const m of preferred){if(MediaRecorder.isTypeSupported?.(m)){opts.mimeType=m;break;}}try{voiceRecorderV33=new MediaRecorder(voiceStreamV33,opts);}catch{voiceRecorderV33=new MediaRecorder(voiceStreamV33);}voiceRecorderV33.ondataavailable=e=>{if(e.data&&e.data.size)voiceChunksV33.push(e.data);};voiceRecorderV33.onstop=async()=>{clearInterval(voiceTimerV33);clearTimeout(voiceStopTimerV33);const duration=Math.min(300,Math.max(1,Math.round((Date.now()-voiceStartedAtV33)/1000)));const blob=new Blob(voiceChunksV33,{type:voiceRecorderV33?.mimeType||'audio/webm'});voiceStreamV33?.getTracks?.().forEach(t=>t.stop());voiceStreamV33=null;voiceRecorderV33=null;updateVoiceButtonV33(false);if(els.voiceRecordTimeV33)els.voiceRecordTimeV33.textContent='00:00';if(!blob.size)return;if(blob.size>10*1024*1024){toastV20('Ses kaydı 10 MB sınırını aştı. Daha kısa kayıt gönder.');return;}const key=`voice-${Date.now()}-${Math.random().toString(36).slice(2)}`;try{await saveVoiceBlobV33(key,blob);if(activePrivateNick)addPrivateMessageV29(activePrivateNick,{type:'voice',audioKey:key,duration,mime:blob.type});else addMessage('voice',{nick:currentNick,audioKey:key,duration,mime:blob.type});renderActiveConversationV29(true);}catch{toastV20('Ses kaydı tarayıcı depolamasına kaydedilemedi.');}};voiceRecorderV33.start(500);voiceStartedAtV33=Date.now();updateVoiceButtonV33(true);voiceTimerV33=setInterval(()=>{const sec=Math.min(300,Math.floor((Date.now()-voiceStartedAtV33)/1000));if(els.voiceRecordTimeV33)els.voiceRecordTimeV33.textContent=formatVoiceDurationV33(sec);},500);voiceStopTimerV33=setTimeout(()=>stopVoiceRecordingV33(),VOICE_MAX_MS);toastV20('Ses kaydı başladı. Bitirmek için mikrofon butonuna tekrar bas.');}catch(err){voiceStreamV33?.getTracks?.().forEach(t=>t.stop());voiceStreamV33=null;updateVoiceButtonV33(false);toastV20('Mikrofon izni verilmedi veya mikrofon kullanılamıyor.');}}
+
+  function showPrivateNotificationV33(payload){if(!payload||!currentNick)return;if(cleanNick(payload.receiver).toLocaleLowerCase('tr-TR')!==cleanNick(currentNick).toLocaleLowerCase('tr-TR'))return;if(cleanNick(payload.sender).toLocaleLowerCase('tr-TR')===cleanNick(currentNick).toLocaleLowerCase('tr-TR'))return;if(isBlockedWithV30(payload.sender))return;document.querySelectorAll('.private-notification-v32,.private-notification-v33').forEach(x=>x.remove());const n=document.createElement('button');n.type='button';n.className='private-notification-v32 private-notification-v33';n.innerHTML=`<strong>${escapeHtml(payload.sender)} kişisinden gizli mesaj</strong><span>${escapeHtml(payload.text||'Yeni mesaj')}</span><small>Görmek için dokun</small>`;document.body.appendChild(n);n.addEventListener('click',()=>{n.remove();openPrivateConversationV29(payload.sender);});setTimeout(()=>n.remove(),7000);}
+  if(privateChannelV32) privateChannelV32.addEventListener('message',e=>showPrivateNotificationV33(e.data));
 
   function privatePairKeyV29(targetNick){
     const a=cleanNick(currentNick).toLocaleLowerCase('tr-TR');
@@ -599,7 +618,7 @@
     if(isBlockedWithV30(targetNick)){toastV20('Yoksay nedeniyle bu kullanıcıyla gizli sohbet kullanılamaz.');return;}
     const meta=ensurePrivateMetaV30(targetNick);
     const list=readPrivateMessagesV29(targetNick);
-    const msg={id:`pm-${Date.now()}-${Math.random().toString(36).slice(2)}`,sender:currentNick,receiver:targetNick,type:payload.type||'chat',text:String(payload.text||'').slice(0,512),data:String(payload.data||''),at:Date.now(),time:nowTime(),registered:isRegistered,senderVip:!!isVipV25(),persistent:!!meta.persistent};
+    const msg={id:`pm-${Date.now()}-${Math.random().toString(36).slice(2)}`,sender:currentNick,receiver:targetNick,type:payload.type||'chat',text:String(payload.text||'').slice(0,512),data:String(payload.data||''),audioKey:String(payload.audioKey||''),duration:Number(payload.duration||0),mime:String(payload.mime||''),at:Date.now(),time:nowTime(),registered:isRegistered,senderVip:!!isVipV25(),persistent:!!meta.persistent};
     list.push(msg);
     if(writePrivateMessagesV29(targetNick,list)) emitPrivateNotificationV32(targetNick,msg);
     renderPrivateMessagesV29(true);
@@ -627,7 +646,7 @@
   function showMainConversationV29(){
     clearMessageSelectionV29();
     activePrivateNick='';
-    sessionStorage.removeItem('sohbetix-v32-active-private');
+    sessionStorage.removeItem('sohbetix-v33-active-private');
     renderPrivateTabsV29();
     renderMessages(true);
     els.messageInput.placeholder=cfg.language==='en'?'Write a message...':'Mesajını yaz...';
@@ -641,7 +660,7 @@
     ensurePrivateMetaV30(nick);
     openedPrivateNicks.add(nick);
     activePrivateNick=nick;
-    sessionStorage.setItem('sohbetix-v32-active-private',nick);
+    sessionStorage.setItem('sohbetix-v33-active-private',nick);
     renderPrivateTabsV29();
     renderPrivateMessagesV29(true);
     els.messageInput.placeholder=`${nick} kişisine gizli mesaj yaz...`;
@@ -655,7 +674,7 @@
       const left=[...openedPrivateNicks];
       if(left.length){
         activePrivateNick=left[left.length-1];
-        sessionStorage.setItem('sohbetix-v32-active-private',activePrivateNick);
+        sessionStorage.setItem('sohbetix-v33-active-private',activePrivateNick);
         renderPrivateTabsV29();
         renderPrivateMessagesV29(true);
         els.messageInput.placeholder=`${activePrivateNick} kişisine gizli mesaj yaz...`;
@@ -687,6 +706,7 @@
         if(msg.type==='image'){
           return `<article class="live-message-v15 private-message-v28 user-target-v20" data-user-nick="${escapeHtml(sender)}" data-user-registered="${registered?'1':'0'}">${avatarHtmlV29(sender)}<div class="live-message-body-v15"><div class="live-message-meta-v15"><b style="color:${userVisualV29(sender).nickColor};font-weight:${userVisualV29(sender).boldNick?'900':'700'};text-decoration:${userVisualV29(sender).boldNick?'underline':'none'}">${escapeHtml(sender)}</b><small>${escapeHtml(msg.time||'')}</small></div><img class="live-image-v18" src="${escapeHtml(msg.data||'')}" alt="Gizli paylaşılan resim"></div>${ownMessageCheckboxV29({id:msg.id,type:'image',nick:sender})}</article>`;
         }
+        if(msg.type==='voice') return voiceMessageHtmlV33(msg,sender,registered,true);
         return `<article class="live-message-v15 private-message-v28 user-target-v20 ${messageMentionsCurrentV29(msg.text)?'message-mentions-me-v29':''}" data-user-nick="${escapeHtml(sender)}" data-user-registered="${registered?'1':'0'}">${avatarHtmlV29(sender)}<div class="live-message-body-v15"><div class="live-message-meta-v15"><b style="color:${userVisualV29(sender).nickColor};font-weight:${userVisualV29(sender).boldNick?'900':'700'};text-decoration:${userVisualV29(sender).boldNick?'underline':'none'}">${escapeHtml(sender)}</b><small>${escapeHtml(msg.time||'')}</small></div><p style="color:${userVisualV29(sender).textColor};font-weight:${userVisualV29(sender).boldText?'800':'400'};text-decoration:${userVisualV29(sender).boldText?'underline':'none'}">${linkifyPrivateTextV32(msg.text||'',!!msg.senderVip)}</p></div>${ownMessageCheckboxV29({id:msg.id,type:'chat',nick:sender})}</article>`;
       }).join('');
     }
@@ -694,6 +714,7 @@
     else els.messages.scrollTop=previousScrollTop;
     updateMessageSelectionMenuV29();
     requestAnimationFrame(updateLatestMessagesButton);
+    hydrateVoicePlayersV33();
   }
 
   function renderActiveConversationV29(forceBottom=false){
@@ -874,12 +895,14 @@
         return `<article class="bot-message-v17"><div class="bot-avatar-v17">S</div><div class="bot-message-body-v17"><div class="bot-message-meta-v17"><b>${escapeHtml(BOT_NICK)}</b><small>${escapeHtml(msg.time || '')}</small></div><p>${escapeHtml(msg.text || BOT_PURGE_TEXT)}</p></div></article>`;
       }
       if(msg.type==='image') return `<article class="live-message-v15 user-target-v20" data-user-nick="${escapeHtml(msg.nick||'')}" data-user-registered="${registered?'1':'0'}">${avatarHtmlV29(msg.nick||'')}<div class="live-message-body-v15"><div class="live-message-meta-v15"><b style="color:${userVisualV29(msg.nick||'').nickColor};font-weight:${userVisualV29(msg.nick||'').boldNick?'900':'700'};text-decoration:${userVisualV29(msg.nick||'').boldNick?'underline':'none'}">${escapeHtml(msg.nick||'')}</b><small>${escapeHtml(msg.time||'')}</small></div><img class="live-image-v18" src="${escapeHtml(msg.data||'')}" alt="Paylaşılan resim"></div>${ownMessageCheckboxV29(msg)}</article>`;
+      if(msg.type==='voice') return voiceMessageHtmlV33(msg,cleanNick(msg.nick||''),registered,false);
       return `<article class="live-message-v15 user-target-v20 ${messageMentionsCurrentV29(msg.text)?'message-mentions-me-v29':''}" data-user-nick="${escapeHtml(msg.nick||'')}" data-user-registered="${registered?'1':'0'}">${avatarHtmlV29(msg.nick||'')}<div class="live-message-body-v15"><div class="live-message-meta-v15"><b style="color:${userVisualV29(msg.nick||'').nickColor};font-weight:${userVisualV29(msg.nick||'').boldNick?'900':'700'};text-decoration:${userVisualV29(msg.nick||'').boldNick?'underline':'none'}">${escapeHtml(msg.nick||'')}</b><small>${escapeHtml(msg.time || '')}</small></div><p style="color:${userVisualV29(msg.nick||'').textColor};font-weight:${userVisualV29(msg.nick||'').boldText?'800':'400'};text-decoration:${userVisualV29(msg.nick||'').boldText?'underline':'none'}">${renderChatText(msg.text||'')}</p></div>${ownMessageCheckboxV29(msg)}</article>`;
     }).join('');
     if (forceBottom || wasNearBottom) els.messages.scrollTop = els.messages.scrollHeight;
     else els.messages.scrollTop = previousScrollTop;
     updateMessageSelectionMenuV29();
     requestAnimationFrame(updateLatestMessagesButton);
+    hydrateVoicePlayersV33();
   }
 
   function dedupePresenceV29(presence) {
@@ -1261,6 +1284,13 @@
     });
   }
 
+  if(els.voiceRecordButtonV33){
+    els.voiceRecordButtonV33.addEventListener('click',()=>{
+      if(voiceRecorderV33&&voiceRecorderV33.state!=='inactive') stopVoiceRecordingV33();
+      else startVoiceRecordingV33();
+    });
+  }
+
   if(els.chatImageButtonV29 && els.chatImageInputV29){
     els.chatImageButtonV29.addEventListener('click',()=>{
       if(!currentNick)return;
@@ -1322,6 +1352,7 @@
     if (e.key === STORAGE_MESSAGES && !activePrivateNick) renderMessages();
     if (e.key === STORAGE_PRESENCE) renderPresence();
     if (e.key && e.key.startsWith(PRIVATE_STORAGE_PREFIX) && activePrivateNick) renderPrivateMessagesV29();
+    if (e.key && e.key.startsWith(PRIVATE_NOTIFY_PREFIX) && e.newValue){try{showPrivateNotificationV33(JSON.parse(e.newValue));}catch{}}
     if (e.key && (e.key.startsWith('sohbetix-v30-ignore:') || e.key.startsWith(PRIVATE_META_PREFIX))){closeBlockedPrivateTabsV30();renderPresence();renderActiveConversationV29();}
   });
   function reconcilePresenceOnReturnV32(){
@@ -1388,8 +1419,8 @@
     startHeartbeat();
     sessionStorage.setItem(SESSION_JOIN_FLAG, currentNick);
     if (!alreadyOnline) announcePresenceV31('join', currentNick, isRegistered);
-    const pendingPrivate=sessionStorage.getItem('sohbetix-v32-open-private');
-    if(pendingPrivate){sessionStorage.removeItem('sohbetix-v32-open-private');setTimeout(()=>openPrivateConversationV29(pendingPrivate),80);}
+    const pendingPrivate=sessionStorage.getItem('sohbetix-v33-open-private')||sessionStorage.getItem('sohbetix-v32-open-private');
+    if(pendingPrivate){sessionStorage.removeItem('sohbetix-v33-open-private');sessionStorage.removeItem('sohbetix-v32-open-private');setTimeout(()=>openPrivateConversationV29(pendingPrivate),80);}
   } else {
     setLoggedInState(false);
     if(isRegistered || sessionStorage.getItem('sohbetix-v30-open-profile')==='1'){
